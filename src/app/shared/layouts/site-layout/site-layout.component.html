@@ -1,0 +1,1419 @@
+<!-- Nav bares - Main -->
+<div class="full-width">
+    <div class="row">
+        <div class="toolNav1 col s12 m9 l8 xl8 offset-s0 offset-m0 offset-l0 offset-xl0" style="width: 67%;">
+            <nav style="height: 40px;">
+                <div class="nav-wrapper teal lighten-2">
+                    <div class=" brand-logo right" style="margin-top: -8px;">
+                        Design
+                    </div>
+                    <a href="#" class="sidenav-trigger" data-target="mobile-links">
+                        <i class="material-icons">menu</i>
+                    </a>
+                    <!-- <ul id="nav-mobile" class="hide-on-med-and-down">
+                        <li routerLinkActive="color"><a routerLink='/login'>LogOut</a></li>
+                        <li routerLinkActive="color"><a routerLink='/register'>Registration</a></li>
+                    </ul> -->
+                </div>
+            </nav>
+
+        </div>
+
+        <div class="toolNav1 col s5 m3 l4 xl4 offset-s0 offset-m9 offset-l8 offset-xl8"
+            style="width: 34%; margin-left: 66%;">
+            <nav style="height: 40px;">
+                <div class="nav-wrapper #e8eaf6 indigo lighten-4">
+                    <div class="brand-logo left" style="margin-top: -8px;"> Your Style</div>
+                    <!-- <a href="#" class="right sidenav-trigger" data-target="mobile-links">
+                        <i class="material-icons">menu</i>
+                    </a> -->
+                </div>
+            </nav>
+
+        </div>
+    </div>
+</div>
+<!-- /Nav bares - Main -->
+
+<!-- Tools sideNav -->
+<div class="nav-wrapper">
+    <div class="row sidenav" id="mobile-links" style="width: 50%">
+        <nav style="height: 50px;">
+            <div class="nav-wrapper teal lighten-2">
+                <a class="brand-logo left"> Your2 design</a>
+                <a href="#" class="right sidenav-trigger" data-target="mobile-links">
+                    <i class="material-icons">menu</i>
+                </a>
+            </div>
+        </nav>
+
+        <div class="tabBoxNav center-align">
+
+            <div class="full-width">
+                <div class="row">
+                    <div class="col s12">
+                        <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
+                            <li style="width:10%" class="tab i"><a href="#test11"> <i style="margin-left: 33.33%"
+                                        class="small material-icons">color_lens</i>
+                                </a></li>
+                            <li style="width:10%" class="tab "><a href="#test22"> <i style="margin-left: 33.33%"
+                                        class="small material-icons">photo</i>
+                                </a></li>
+                            <li style="width:10%" class="tab"><a href="#test33"> <i style="margin-left: 33.33%"
+                                        class="small material-icons">format_size</i>
+                                </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div id="test11" class="col s12 m12">
+                        <div class="colorConteiner left-align">
+                            <button type="button" class="colorButton" (click)="isOpen = !isOpen" cdkOverlayOrigin
+                                [style.background]="selectColor || 'none'">Color</button>
+
+                            <ng-template #display>
+                                Select color
+                            </ng-template>
+
+                            <div *ngIf="isOpen; else display">
+                                <div class="colorBox" role="dialog" aria-label="Color picker">
+                                    <div *ngFor="let color of productsColor" role="option"
+                                        [style.background]="color.hex" [attr.aria-label]="color.name"
+                                        [attr.aria-selected]="color.hex == selectColor"
+                                        (click)="selectColor = color.hex; isOpen = false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="colorConteiner left-align">
+                            <!-- <button type="button" class="colorButton" (click)="isOpen = !isOpen" cdkOverlayOrigin
+                                [style.background]="selectColor || 'none'">Color</button> -->
+
+                            <!-- <ng-template #display>
+                                Select color
+                            </ng-template> -->
+
+                            <!-- <div class="colorBox" role="dialog" aria-label="Color picker">
+                                <div class="card-panel hoverable" *ngFor="let color of productsColor" role="option"
+                                    [style.background]="color.hex" [attr.aria-label]="color.name"
+                                    [attr.aria-selected]="color.hex == selectColor" (click)="selectColor = color.hex;">
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+
+                    <div id="test22" class="active col s12 ">
+                        <p>Test 2</p>op
+                    </div>
+                    <div id="test33" class="col s12 ">
+                        <p>Test 3</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <ul class="sidenav" id="mobile-links" style="width: 45%">
+        <li routerLinkActive="color"><a routerLink='/login'>LogOuttt</a></li>
+        <li routerLinkActive="color"><a routerLink='/register'>Registrationtt</a></li>
+    </ul> -->
+    </div>
+</div>
+<!-- /Tools sideNav -->
+
+
+
+<main>
+    <router-outlet></router-outlet>
+</main>
+
+
+<!-- T-shirt display box with canvas and tool box -->
+
+<div class="full-width">
+
+    <div class="row">
+
+
+        <!-- T-shirt display box -->
+
+        <div class="col s12 m6 l3 xl2 offset-s1 offset-m3 offset-l2 offset-xl2">
+            <!-- <app-editor-pic #canvas></app-editor-pic> -->
+
+            <div class="imgBox">
+                <!-- <div class="imgBack embed-responsive" [ngStyle]="{'backgroundColor': [selectColor]}">
+                    <img class="imgFront" src="assets/img/Trafaret3.png" alt="oo">
+                </div> -->
+            </div>
+        </div>
+
+
+
+        <!-- <div class="col ">Options</div> -->
+        <div class="col s7 m3 l4 xl2 offset-s0 offset-m9 offset-l6 offset-xl0"
+            style="padding-top: 35px; position: absolute;">
+            <div class="btn-group" role="group" aria-label="...">
+                <button data-toggle="tooltip" data-placement="bottom" title="Delete element" type="button"
+                    class="btn btn-outline-danger remove" [disabled]="!canvas.selected || canvas.selected == 'group'"
+                    (click)="removeSelected(); ">
+                    <i class="large material-icons" aria-hidden="true">delete</i>
+                </button>
+                <button data-toggle="tooltip" data-placement="bottom" title="Send to back" type="button"
+                    class="btn btn-outline-primary" [disabled]="!canvas.selected || canvas.selected.type == 'group'"
+                    (click)="sendToBack();">
+                    <i class="large material-icons" aria-hidden="true">flip_to_back</i>
+                </button>
+                <button data-toggle="tooltip" data-placement="bottom" title="Send to front" type="button"
+                    class="btn btn-outline-primary" [disabled]="!canvas.selected || canvas.selected.type == 'group'"
+                    (click)="bringToFront();">
+                    <i class="large material-icons" aria-hidden="true">flip_to_front</i>
+                </button>
+                <button data-toggle="tooltip" data-placement="bottom" title="Clone" type="button"
+                    class="btn btn-outline-primary" [disabled]="!canvas.selected || canvas.selected.type == 'group'"
+                    (click)="clone();">
+                    <i class="large material-icons" aria-hidden="true">content_copy</i>
+                </button>
+                <button data-toggle="tooltip" data-placement="bottom" title="Done" type="button"
+                    class="btn btn-outline-primary" [disabled]="!canvas.selected || canvas.selected.type == 'group'"
+                    (click)="cleanSelect(); bob = true">
+                    <i class="large material-icons" aria-hidden="true">done_all</i>
+                </button>
+
+            </div>
+
+
+
+            <div class="colorConteiner left-align" style="margin-top: 300px;">
+                <button type="button" class="colorButton" (click)="isOpen = !isOpen" cdkOverlayOrigin
+                    [style.background]="selectColor || 'none'">Themes</button>
+
+                <ng-template #display>
+                    Select theme
+                </ng-template>
+
+                <div *ngIf="isOpen;">
+                    <div class="colorBox" role="dialog" aria-label="Color picker">
+                        <div class="card-panel hoverable" *ngFor="let categoryy of categories" role="option"
+                            (click)="category = categoryy.name; Themes(); funk()">
+                            {{categoryy.name}}
+                            <!-- {{images | json}} -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <select>
+                <option *ngFor="let answer of categories;">{{answer.id}} {{answer.name}}</option>
+            </select>
+
+
+        </div>
+
+        <div class="col s7 m3 l4 xl10 offset-s0 offset-m9 offset-l6 offset-xl6"
+            style="padding-top: 530px; position: absolute; width: 180px;">
+            <button data-toggle="tooltip" data-placement="bottom" title="Clean Canvas" type="button"
+                class="btn btn-danger" [disabled]="canvas.selected" (click)="confirmClear();">
+                <i aria-hidden="true"></i> Clean
+            </button>
+            <button data-toggle="tooltip" data-placement="bottom" title="Send" type="button" class="btn btn-danger"
+                [disabled]="canvas.selected" (click)="sendMail(); ">
+                <i aria-hidden="true"></i> Apply
+            </button>
+        </div>
+
+
+        <!-- buttons for export image and clean canvas -->
+
+        <!-- <div class="full-with">
+            <div class="row">
+                <div class="col offset-s1 offset-m2 offset-l1 offset-xl1"
+                    style="position: absolute; top: 570px; z-index: 1;">
+                    <button id="exp" data-toggle="tooltip" data-placement="bottom" title="Export to image" type="button"
+                        class="btn btn-primary" (click)="rasterize(); ">
+                        <i class="fa fa-download" aria-hidden="true"></i> Export to image</button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Export to SVG" type="button"
+                        class="btn btn-primary" (click)="rasterizeSVG();">
+                        <i class="fa fa-download" aria-hidden="true"></i> Export to SVG</button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Save in localStorage" type="button"
+                        class="btn btn-primary" (click)="saveCanvasToJSON();">
+                        <i class="fa fa-save" aria-hidden="true"></i> Save local</button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Load from localStorage" type="button"
+                        class="btn btn-primary" (click)="loadCanvasFromJSON();">
+                        <i class="fa fa-save" aria-hidden="true"></i> Load local</button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Clean Canvas" type="button"
+                        class="btn btn-danger" (click)="confirmClear();">
+                        <i class="fa fa-ban" aria-hidden="true"></i> Clean</button>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Clean Canvas" type="button"
+                        class="btn btn-danger" (click)="sendMail();">
+                        <i class="fa fa-ban" aria-hidden="true"></i> Test</button>
+
+                </div>
+            </div>
+        </div> -->
+
+        <!-- <img id="imgg" src="https://cdn1.iconfinder.com/data/icons/ui-color/512/Untitled-12-128.png" class="deleteBtn" style="position:absolute;top:' + 'px;left:' + 'px;cursor:pointer;width:20px;height:20px;"/> -->
+
+        <!-- /buttons for export image and clean canvas -->
+
+        <!-- /T-shirt display box -->
+
+        <br><br>
+        <div #imagePath class="divv" style="display: none;"></div>
+        <div class="col offset-s1 offset-m4 offset-l2 offset-xl2"
+            style="margin-top: 7px; position: absolute; z-index: 1;">
+            <!-- || canvas.textEditor || canvas.figureEditor -->
+            <button style="margin-right: 10px;" [disabled]="canvas.selected || canvas.canvasCount !== 0"
+                class="but btn #00e676 green accent-4 black-text"
+                [ngClass]="{'z-index': canvas.selected || canvas.canvasCount !== 0}"
+                (click)="selectPicture();  canvas.defoultUpdate();  isCarouselOpen = false"> <i
+                    class="large material-icons">check</i>
+            </button>
+            <div #coord style="margin-left: -40px; margin-top: 0px;"> {{imageCoordy}}sm</div>
+            <div #coord style="margin-left: -40px; margin-top: 0px;"> {{imageCoordx}}sm</div>
+
+
+            
+
+
+            <!-- <button [disabled]="!canvas.selected || canvas.selected == 'rect'" class="removePicBut btn #f44336 red lighten-1 black-text"
+                (click)="removeSelected(); isCarouselOpen = true; bob = false"> <i
+                    class="large material-icons">delete</i>
+            </button> -->
+        </div>
+
+        <div *ngIf="isCarouselOpen == false">
+            <div class="col xl2 offset-s3 offset-m4 offset-l2 offset-xl2"
+                style="margin-top: 500px; position: absolute; z-index: 10;">
+                <input type="range" [(ngModel)]="canvas.props.opacity" (change)="setOpacity()"
+                    [disabled]="canvas.canvasCount == 0">
+            </div>
+            <label class="col offset-s1 offset-m4 offset-l3 offset-xl1"
+                style="margin-top: 490px; position: absolute; cursor:pointer; z-index: 10;">
+                <input id="shadowSVG" type="checkbox" (change)="shadowSVG = !shadowSVG" class="filled-in"
+                    [disabled]="canvas.canvasCount == 0" />
+                <i class="fa fa-cloud" style="font-size:40px; color:#009688;text-shadow:12px 8px 4px #4d4a4a;"></i>
+            </label>
+        </div>
+
+        <!-- <owl-carousel [options]="SlideOptions" [items]="images" [carouselClasses]="['owl-theme', 'sliding']" >  
+            <div class="item" *ngFor="let img of Images">  
+            <div style="align-content: center">  
+            <img style="height: 260px;width:100%"src={{img}}/>  
+            </div>  
+            </div>  
+            </owl-carousel>   -->
+
+        <div class="canvas col s12 m6 l3 xl4 offset-s1 offset-m3 offset-l2 offset-xl2" style="margin-top: -90px;">
+            <app-editor-pic #canvas></app-editor-pic>
+
+
+        </div>
+
+
+        <!-- <h1>{{categories[0].imageSrc}}</h1>
+        <div class="owl-carousel owl-theme">
+            <div *ngFor="let i of categories;" class="item">
+                <div >
+                    <h4>{{i._id}}</h4>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- <div class="owl-carousel owl-theme selectPic col s12 m12 l8 xl8 offset-s0 offset-m0 offset-l0 offset-xl0">
+            <div class="item" *ngFor="let image of images; let i = index;">
+                <img src={{image.imageSrc}} style="width: 25%; margin-left: 32%;">
+                {{image.imageSrc}}
+            </div>
+        </div> -->
+
+
+
+        <div Load="myFunction()" [ngClass]="{'class1': toggle === true}" style="margin-top: -20px;"
+            class="owlCarousel owl-theme selectPic col s12 m12 l8 xl8 offset-s0 offset-m0 offset-l0 offset-xl0">
+            <owl-carousel-o id="myCarousel" #owlElement [options]="customOptions" (translated)="getPassedData($event)">
+
+                <ng-container *ngFor="let image of images">
+                    <ng-template dotContent="content" carouselSlide [id]="image.id">
+                        <img [src]="image.imageSrc" style="width: 70%; margin-left: 18%;" [alt]="image.alt"
+                            [title]="image.title">
+                    </ng-template>
+                </ng-container>
+
+            </owl-carousel-o>
+        </div>
+
+
+        
+
+
+
+
+
+        <!-- <label for="hue">Hue</label>
+        <input id="hue" name="hue" type="range" min="0" max="300" value="0">
+        <label for="contrast">Contrast</label>
+        <input id="contrast" name="contrast" type="range" min="-20" max="20" value="0"> -->
+
+        <!-- <div class="row">
+            <div class="carousel carousel1 selectPic hide-on-med-and-down col l8 xl8 offset-l0 offset-xl0"
+                style="border:3px solid black">
+                <a class="carousel-item" href="#one1"><img style="width: 100px; height: 185px;"
+                        src="assets/img/sketch-of-white-tool-png-clip-art-thumbnail.png"></a>
+                <div class="carousel-item" (click)="getImgPolaroid($event)"><img src="https://lorempixel.com/250/250/nature/2"></div>
+                <a class="carousel-item" href="#three!"><img src="https://lorempixel.com/250/250/nature/3"></a>
+                <a class="carousel-item" href="#four!"><img src="https://lorempixel.com/250/250/nature/4"></a>
+                <a class="carousel-item"> <img class="images-item" (click)="getImgPolaroid($event)"
+                        src="assets/img/pikachu.svg">
+                </a>
+            </div>
+
+            <div class="carousel carousel2 selectPic hide-on-large-only col s12 m9 offset-s0 offset-m0"
+                style="border:3px solid black">
+                <a class="carousel-item" href="#one1"><img
+                        src="assets/img/sketch-of-white-tool-png-clip-art-thumbnail.png"></a>
+                <a class="carousel-item" href="#two!"><img src="https://lorempixel.com/250/250/nature/2"></a>
+                <a class="carousel-item" href="#three!"><img src="https://lorempixel.com/250/250/nature/3"></a>
+                <a class="carousel-item" href="#four!"><img src="https://lorempixel.com/250/250/nature/4"></a>
+                <a class="carousel-item" href="#five!"><img src="https://lorempixel.com/250/250/nature/5"></a>
+            </div>
+        </div> -->
+
+        <!-- /T-shirt display box with canvas box -->
+
+        <!-- Right side for design specific with tools -->
+        <div class="toolNav col s5 m3 l4 xl4 offset-s7 offset-m9 offset-l8 offset-xl8">
+
+            <!-- Tabs box -->
+
+            <div style="background-color:rgb(228, 232, 243); height: 560px; overflow-y: scroll;" id="nav-mobile"
+                class="center-align hide-on-med-and-down ">
+                <ul class="tabs tabs-fixed-width tab-demo z-depth-1"
+                    style="height: 40px; background-color:rgb(255, 255, 255);">
+                    <li class="tab"><a id="ilo" href="#test1"> <i class="small material-icons"
+                                [ngStyle]="{'padding-top': '3px'}">color_lens</i>
+                        </a></li>
+                    <li class="tab"><a href="#test2"> <i class="small material-icons"
+                                [ngStyle]="{'padding-top': '3px'}">photo</i>
+                        </a></li>
+                    <li class="tab"><a href="#test3"> <i class="small material-icons"
+                                [ngStyle]="{'padding-top': '3px'}">text_format</i>
+                        </a></li>
+                </ul>
+
+                <div id="test1" class="col s12 offset-s0">
+
+                    <div class="colorConteiner left-align">
+                        <!-- <button type="button" class="colorButton" (click)="isOpen = !isOpen" cdkOverlayOrigin
+                            [style.background]="selectColor || 'none'">Color</button> -->
+
+                        <!-- <ng-template #display>
+                            Select color
+                        </ng-template> -->
+
+                        <div>
+                            <div class="" role="dialog" aria-label="Color picker">
+                                <div class="card-panel hoverable" *ngFor="let color of arrColor" role="option"
+                                    [style.background]="color" 
+                                    [attr.aria-selected]="color == selectColor"
+                                    (click)="canvas.props.canvasFill = color; setCanvasFill()"
+                                    (colorPickerChange)="setCanvasFill()">
+
+                                    <!-- [style.background]="canvas.props.canvasFill" [value]="canvas.props.canvasFill" -->
+                                </div> <br>
+
+
+
+                                <!-- <div class="card small" *ngFor="let imageProduct of products"
+                                    (click)="canvas.props.canvasImage = imageProduct.type; setCanvasImage()"
+                                    (colorPickerChange)="setCanvasFill()">
+                                    <div class="card-image waves-effect waves-block waves-light">
+                                        <img class="activator" [src]="imageProduct.type">
+                                    </div>
+                                    <div class="card-content">
+                                        <span class="card-title activator grey-text text-darken-4">Card Title<i
+                                                class="material-icons right">more_vert</i></span>
+                                        <p><a href="#">This is a link</a></p>
+                                    </div>
+                                    <div class="card-reveal">
+                                        <span class="card-title grey-text text-darken-4">Card Title<i
+                                                class="material-icons right">close</i></span>
+                                        <p>Here is some more information about this product that is only revealed once
+                                            clicked on.</p>
+                                    </div>
+                                </div> -->
+
+
+                                
+                                <div class="card" >
+                                    <div class="card-content">
+                                        <img style="width: 40%;" class="activator" [src]="products[index]==undefined?canvas.props.canvasImage: products[index].type1">
+                                    </div>
+                                    <div class="card-tabs">
+                                        <ul class="tabs tabs-fixed-width">
+                                            <li class="tab"><a href="#test4">Test 1</a></li>
+                                            <li class="tab"><a class="active" href="#test5">Test 2</a></li>
+                                            <li class="tab"><a href="#test6">Test 3</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-content grey lighten-4">
+                                        <div id="test4">Test 1</div>
+                                        <div id="test5">{{index}}</div>
+                                        <div id="test6">Test 3</div>
+                                    </div>
+                                </div>
+
+
+                                <!-- <div class="card-panel hoverable" *ngFor="let imageProduct of products"
+                                    (click)="canvas.props.canvasImage = imageProduct.type; setCanvasImage()"
+                                    (colorPickerChange)="setCanvasFill()">
+                                    <img [src]="imageProduct.type" style="width: 15%; margin-left: 8%;"
+                                        [alt]="imageProduct.alt" [title]="imageProduct.title"> op
+
+                                </div> -->
+
+
+
+                                <div class="card-panel hoverable" id="show" *ngFor="let imageProduct of products; let i = index" 
+                                    (click)="canvas.props.canvasImage = imageProduct.type; setCanvasImage(); index = i; productsType()"
+                                    (colorPickerChange)="setCanvasFill()">
+                                    <img style="height: 230%; margin: -60% 0% 10% -35%;" class="activator"
+                                        [src]="imageProduct.type1">
+                                    <!-- [style.background]="canvas.props.canvasFill" [value]="canvas.props.canvasFill" -->
+                                </div>
+                                <!-- <div class="custom-item-title">Background Image (url)</div> -->
+                                <!-- <div class="custom-item-body">
+                                        <input type="text" class="form-control" placeholder="http://example.jpg"
+                                            [(ngModel)]="canvas.props.canvasImage" (keyup)="setCanvasImage()">
+                                    </div> -->
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col s12" *ngIf="!canvas.selected" style="padding-top: 90px;">
+                        <!-- <div class="card-header">Canvas</div> -->
+                        <div class="card-body">
+                            <div class="custom-item" *ngIf="canvas.props.canvasImage">
+                                <div class="custom-item-title">Background Color</div>
+                                <div class="custom-item-body">
+
+                                    <input type="text" class="form-control" [cpPosition]="'bottom'"
+                                        [(colorPicker)]="canvas.props.canvasFill"
+                                        [style.background]="canvas.props.canvasFill" [value]="canvas.props.canvasFill"
+                                        (colorPickerChange)="setCanvasFill()">
+                                </div>
+                            </div>
+                            <div class="custom-item">
+                                <div class="custom-item-title">Background Image (url)</div>
+                                <div class="custom-item-body">
+                                    <input type="text" class="form-control" placeholder="http://example.jpg"
+                                        [(ngModel)]="canvas.props.canvasImage" (keyup)="setCanvasImage()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="test2" class="active row">
+
+                    <!-- Filters imges -->
+                    <div class="col offset-s0" style="margin-top: 10px;">
+                        <label class="col s2" style="margin: 5px;">
+                            <input id="origin" type="radio" name="test" value="big" checked>
+                            <img class="hoverable" width="60px" height="60px" src="../assets/img/Origin.png">
+                        </label>
+                        <label class="col s2" style="margin: 5px;">
+                            <input id="grayscale" type="radio" name="test" value="big">
+                            <img class="hoverable" width="60px" height="60px" src="../assets/img/BlackWhite.png">
+                        </label>
+                        <label class="col s2" style="margin: 5px;">
+                            <input id="vintage" type="radio" name="test" value="grayscale">
+                            <img class="hoverable" width="60px" height="60px" src="../assets/img/Vintage.png">
+                        </label>
+                        <label class="col s2" style="margin: 5px;">
+                            <input id="sepia" type="radio" name="test" value="sepia">
+                            <img class="hoverable" width="60px" height="60px" src="../assets/img/Vintage.png">
+                        </label>
+                        <label class="col s2" style="margin: 5px;">
+                            <input id="invert" type="radio" name="test" value="invert">
+                            <img class="hoverable" width="60px" height="60px" src="../assets/img/Vintage.png">
+                        </label>
+                    </div>
+                    <br>
+                    <label class="col s3 offset-s0;" style="margin-top: 10px; cursor:pointer">
+                        <input id="shadow" type="checkbox" (change)="shadow = !shadow" class="filled-in"
+                            [disabled]="canvas.canvasCount == 0" />
+                        <i class="fa fa-cloud"
+                            style="font-size:40px; color:#009688;text-shadow:12px 8px 4px #4d4a4a;"></i>
+                    </label>
+
+
+
+
+                    <!-- <input type="range" [(ngModel)]="canvas.props.opacity" (change)="setOpacity()"> -->
+
+                    <!-- <label> <input type="range" id="hue-value" [(ngModel)]="canvas.props.distance" (change)="setDistance()" value="0.02" min="0" max="1"
+                        step="0.01">Value</label>
+                            {{canvas.props.distance}} -->
+
+                    <div class="col s12 offset-s0" style="padding-top: 5px;">
+                        <div class="col s2">Distance</div>
+                        <div class="col s8">
+                            <input type="range" id="hue-value" [(ngModel)]="removeColorValue" (change)="setDistance()"
+                                value="0" min="0" max="1" step="0.02">
+                        </div>
+                        <div>{{removeColorValue}}</div>
+                    </div>
+                    <div class="col s12 offset-s0" style="padding-top: 0px;">
+                        <div class="col s2">Saturation</div>
+                        <div class="col s8">
+                            <input type="range" id="saturation" [(ngModel)]="saturation" value="0" min="-1" max="1"
+                                step="0.02">
+                        </div>
+                        <div>{{saturation}}</div>
+                    </div>
+                    <div class="col s12 offset-s0" style="padding-top: 0px;">
+                        <div class="col s2">Blur</div>
+                        <div class="col s8">
+                            <input type="range" id="blur" [(ngModel)]="blur" value="0.1" min="0" max="1" step="0.02">
+                        </div>
+                        <div>{{blur}}</div>
+                    </div>
+                    <div class="col s12 offset-s0" style="padding-top: 0px;">
+                        <div class="col s2">Contrast</div>
+                        <div class="col s8">
+                            <input type="range" id="contrast1" [(ngModel)]="contrast" value="0" min="-1" max="1"
+                                step="0.02">
+                        </div>
+                        <div>{{contrast}}</div>
+                    </div>
+                    <div class="col s12 offset-s0" style="padding-top: 0px;">
+                        <div class="col s2">Noise</div>
+                        <div class="col s8">
+                            <input type="range" id="noise" [(ngModel)]="noise" value="100" min="0" max="1000"
+                                step="0.02">
+                        </div>
+                        <div>{{noise}}</div>
+                    </div>
+                    <!-- /Filters imges -->
+
+
+                    <div style="background-color:rgb(228, 232, 243); padding-top: 10px;" id="nav-mobile"
+                        class="tabBox center-align hide-on-med-and-down col s12">
+                        <ul class="tabs tabs-fixed-width tab-demo z-depth-1" style="height: 40px;">
+                            <li class="tab"><a class="active" href="#tab1"> <i class="small material-icons"
+                                        [ngStyle]="{'padding-top': '4px'}">monochrome_photos</i>
+                                </a></li>
+                            <li class="tab"><a href="#tab2"> <i class="small material-icons"
+                                        [ngStyle]="{'padding-top': '4px'}">extension</i>
+                                </a></li>
+                            <li class="tab"><a href="#tab3"> <i class="small material-icons"
+                                        [ngStyle]="{'padding-top': '4px'}">text_format</i>
+                                </a></li>
+                        </ul>
+                    </div>
+                    <div id="tab1">
+                        <div class="">
+                            <!-- <input type="file"  (change)="readUrl($event);"> -->
+                            <div class="file-field input-field col s12">
+                                <div *ngIf="isOpasity1" (click)="addImageOnCanvas(canvas.url); "
+                                    style="border-style: dashed; opacity: 0.4; margin-top: 0px;">
+                                    <i class="large material-icons" [ngStyle]="{'padding-top': '4px'}">move_to_inbox</i>
+                                    <input type="file" class="input"
+                                        (change)="readUrl($event); routerlink();   isOpasity1 = false" multiple>
+                                </div>
+                            </div>
+                            <!-- </input type="file"  (change)="readUrl($event);"> -->
+
+                            <!-- <img class="card-header">Upload image -->
+                            <div id="testImage" class="col s4 offset-s3" style="margin-top: -20px;">
+                                <img *ngIf="canvas.url" class="images-item-upload" [src]="canvas.url"
+                                    style="width: 130px; "
+                                    (click)="addImageOnCanvas(canvas.url);  isOpasity = true; toggle = true">
+                                <!-- <div class="tabs tabs-fixed-width tab-demo ">
+                                    <li class="tab"><a href="#test1"> tab 
+                                        </a></li>
+                                </div>
+                                <a [routerLink]="[ '#test1' ]">name1</a>
+                                <a  href="#test1"  > name </a> -->
+                            </div>
+                            <button *ngIf="isOpasity" type="button" class="col s3 offset-s1 btn #ef5350 red lighten-1"
+                                (click)="removeWhite(canvas.url); isOpasity1 = true; isOpasity = false">
+                                <i aria-hidden="true"></i>
+                                Remove
+                            </button>
+                            <!-- </img class="card-header">Upload image -->
+
+                            <div class="col s12 offset-s0"
+                                *ngIf="isOpasity && canvas.selected && canvas.selected.type != 'group'">
+
+                                <div class="col s12 offset-s0" style="padding-top: 0px;">
+                                    <div class="col s2">Opacity</div>
+                                    <div class="col s8">
+                                        <input type="range" [(ngModel)]="canvas.props.opacity" (change)="setOpacity()">
+                                    </div>
+                                    <div>{{canvas.props.opacity}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab2" class="row">
+
+                        <!-- <div class="card-header">Add figure</div> -->
+                        <div style="margin-left: 60px; width: 280px; margin-top: 350px; " role="group" aria-label="...">
+
+                            <img class="col s3" id="square" (click)="addFigure('square'); toggle = true ;" width="40px"
+                                height="55px" src="https://i.ya-webdesign.com/images/blank-checkbox-png-9.png" alt="">
+
+                            <img class="col s3" id="triangle" (click)="addFigure('triangle'); toggle = true;"
+                                width="45px" height="55px"
+                                src="https://cdn1.iconfinder.com/data/icons/materia-arrows-symbols-vol-9/24/018_343_insignia_badge_shape_triangle-512.png"
+                                alt="">
+
+                            <img class="col s3" id="circle" (click)="addFigure('circle'); toggle = true;" width="40px"
+                                height="55px"
+                                src="https://cdn2.iconfinder.com/data/icons/player-rounded-set/154/player-function-circle-round-empty-512.png"
+                                alt="">
+
+                        </div>
+
+                        <div class="col s12 offset-s0" *ngIf="canvas.selected && canvas.selected.type != 'group'">
+
+                            <div class="col s2">Opacity</div>
+                            <div class="col s8">
+                                <input type="range" [(ngModel)]="canvas.props.opacity" (change)="setOpacity()">
+                            </div>
+                            <div>{{canvas.props.opacity}}</div>
+
+
+                            <div class="col s10 offset-s0"
+                                *ngIf="canvas.selected && canvas.textEditor || canvas.selected && canvas.figureEditor">
+                                <div class="col s2" style="padding-top: 0px;">Fill</div>
+
+                                <div class="col s8">
+                                    <input type="text" class="form-control" style="height:20px; top: 5px;"
+                                        [cpPosition]="'top'" [(colorPicker)]="canvas.props.fill"
+                                        [style.background]="canvas.props.fill" [value]="canvas.props.fill"
+                                        (colorPickerChange)="setFill()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab3" class="col s12">3</div>
+
+                </div>
+
+                <div id="test3" class="col s12">
+                    <!-- Add text for T-shirt with tools -->
+
+                    <div class="row">
+
+                        <div class="input-field col s8" style="margin-top: 20px;">
+                            <i id="addText"
+                                (click)="addText();  expression = true; toggle = true; activatebutton = false"
+                                style="cursor: pointer;" class="material-icons prefix">add_box</i>
+                            <input id="icon_prefix2" type="text" class="materialize-textarea"
+                                [(ngModel)]="canvas.textString">
+                            <!-- <input type="text" class="form-control" [(ngModel)]="canvas.textString"> -->
+                            <label for="icon_prefix2">Input text</label>
+                        </div>
+                        <label class="col s3" style="margin-top: 20px; cursor: pointer;">
+                            <input id="shadowText" type="checkbox" (change)="shadowText = !shadowText"
+                                class="filled-in" />
+                            <i class="fa fa-cloud"
+                                style="font-size:40px; color:#009688;text-shadow:12px 8px 4px #4d4a4a;"></i>
+                        </label>
+
+                        <div class="row">
+                            <div class="col s12" *ngIf="canvas.selected  && canvas.selected.type == 'group'">
+                                Group Selected
+                            </div>
+                            <div class="col s12" *ngIf="!canvas.selected">
+                                <div [ngStyle]="{'margin-top': '-20px'}"> No items selected</div>
+                            </div>
+                            <!-- <div class="col s12" *ngIf="canvas.selected && canvas.selected.type != 'group'">
+                                    <div class="custom-item-title">ID</div>
+                                                <div class="custom-item-body">
+                                                    <input type="text" class="form-control" [(ngModel)]="canvas.props.id"
+                                                        (keyup)="setId()">
+                                                </div>
+                                </div> -->
+
+
+                            <div class="col s5 offset-s0">
+                                <!-- *ngIf="canvas.selected && canvas.textEditor" -->
+                                <div class="col s2" [ngStyle]="{'margin-top': '20px'}">Fill</div>
+
+                                <div class="col s8 offset-s1">
+                                    <input [attr.disabled]="!canvas.textEditor ? '' : null"
+                                        [ngStyle]="{'margin-top': '20px'}" type="text" class="form-control"
+                                        [cpPosition]="'bottom'" [(colorPicker)]="canvas.props.fill"
+                                        [style.background]="canvas.props.fill" [value]="canvas.props.fill"
+                                        (colorPickerChange)="setFill()">
+                                </div>
+                            </div>
+
+                            <div class="col s7 offset-s0">
+                                <!-- *ngIf="canvas.selected && canvas.textEditor" -->
+                                <div class="col s2 offset-s0" [ngStyle]="{'margin-top': '20px'}">Font
+                                </div>
+                                <div class="col s8 offset-s1">
+                                    <select [attr.disabled]="!canvas.textEditor ? '' : null"
+                                        [ngStyle]="{'margin-top': '20px'}" class="browser-default"
+                                        [(ngModel)]="canvas.props.fontFamily" (change)="setFontFamily()">
+                                        <option value="" disabled selected>Choose your option</option>
+                                        <option value="helvetica" selected>Helvetica</option>
+                                        <option *ngFor="let font of fonts" [ngStyle]="{'font-family': font.value}"
+                                            value="{{font.value}}">{{font.name}}</option>
+                                        <!-- <option value="arial">Arial</option>
+                                        <option value="Comic Sans MS" selected>Comic Sans MS</option>
+                                        <option style="font-family:verdana;" value="verdana">Verdana</option>
+                                        <option style="font-family:courier;" value="courier">Courier</option>
+                                        <option value="Roboto">Roboto</option>
+                                        <option value="Open Sans MT">Open Sans MT</option>
+                                        <option value="Script">Script</option>
+                                        <option value="Lato">Lato</option>
+                                        <option value="Bellefair">Bellefair</option>
+                                        <option value="ShelleyVolante BT">ShelleyVolante BT</option>
+                                        <option style="font-family:fantasy;" value="fantasy">fantasy</option>
+                                        <option value="Open Sans Condensed MT">Open Sans Condensed</option>
+                                        <option value="Bookman Old Style">Bookman Old Style</option>
+                                        <option value="Exotc350 Bd BT">Exotc350 Bd BT</option>
+                                        <option style="font-family:Kaufmann BT;" value="Kaufmann BT">Kaufmann BT</option>
+                                        <option style="font-family:Calisto Mt;" value="Calisto Mt">Calisto MT</option>
+                                        <option value="Brush Script Mt">Brush Script MT</option>
+                                        <option value="TypoUpright BT">TypoUpright BT</option>
+                                        <option value="Lucida Handwriting">Lucida Handwriting</option>
+                                        <option value="grapalat">grapalat</option>
+                                        <option value="Sylfaen">Sylfaen</option>
+                                        <option value="Briberra">Briberra</option>
+
+                                        <option value="ArialArmST Italic">ArialArmST Italic</option> -->
+
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col s12 offset-s0 " style="padding-top: 20px;">
+
+                                <div class="col s12 offset-s0 z-depth-2">
+
+                                    <a [attr.disabled]="!canvas.textEditor ? '' : null" class="btn-flat"
+                                        [class.myClass]="isClickedBold" [ngClass]="{'active': canvas.props.fontWeight }"
+                                        (click)="setBold(); isClickedBold = !isClickedBold">
+                                        <i class="material-icons">format_bold</i>
+                                    </a>
+                                    <a [attr.disabled]="!canvas.textEditor ? '' : null" class=" btn-flat"
+                                        [class.myClass]="isClickedItalic"
+                                        [ngClass]="{'active': canvas.props.fontStyle }"
+                                        (click)="setFontStyle(); isClickedItalic = !isClickedItalic">
+                                        <i class="material-icons">format_italic</i>
+                                    </a>
+
+                                    <a [attr.disabled]="!canvas.textEditor ? '' : null" class="btn-flat"
+                                        [class.myClass]="isClickedOverline"
+                                        (click)="setTextDecoration('overline'); !isClickedOverline = !isClickedOverline">
+                                        <i class="material-icons">vertical_align_top</i>
+                                    </a>
+                                    <a [attr.disabled]="!canvas.textEditor ? '' : null" class="btn-flat"
+                                        [class.myClass]="isClickedUnderline"
+                                        (click)="setTextDecoration('underline'); !isClickedUnderline = !isClickedUnderline">
+                                        <i class="material-icons">vertical_align_bottom</i>
+                                    </a>
+                                    <a [attr.disabled]="!canvas.textEditor ? '' : null" class="btn-flat"
+                                        [class.myClass]="isClickedCenterline"
+                                        (click)="setTextDecoration('line-through'); !isClickedCenterline = !isClickedCenterline">
+                                        <i class="material-icons">vertical_align_center</i>
+                                    </a>
+
+
+                                    <button [attr.disabled]="!canvas.textEditor ? '' : null" class="btn-flat waves-teal"
+                                        [ngClass]="{'active': canvas.props.textAlign == 'left' }"
+                                        (click)="setTextAlign('left')">
+                                        <i class="material-icons">format_align_left</i>
+                                    </button>
+
+                                    <button [attr.disabled]="!canvas.textEditor ? '' : null" class="btn-flat waves-teal"
+                                        [ngClass]="{'active': canvas.props.textAlign == 'center' }"
+                                        (click)="setTextAlign('center')">
+                                        <i class="material-icons">format_align_right</i>
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="col s12 offset-s0" style="padding-top: 25px;">
+                                <div class="col s2">Opasity</div>
+                                <div class="col s8">
+                                    <input [attr.disabled]="!canvas.textEditor ? '' : null" type="range"
+                                        [(ngModel)]="canvas.props.opacity" (change)="setOpacity()">
+                                </div>
+                                <div>{{canvas.props.opacity}}</div>
+                            </div>
+
+                            <div class="col s12 offset-s0" style="padding-top: 20px;">
+
+                                <div class="col s2">Char Spacing</div>
+                                <div class="col s8">
+                                    <input [attr.disabled]="!canvas.textEditor ? '' : null" type="range"
+                                        [(ngModel)]="canvas.props.charSpacing" (change)="setCharSpacing()" step="10"
+                                        min="-200" max="800">
+                                </div>
+                                <div>{{canvas.props.charSpacing}}</div>
+                            </div>
+
+                            <div class="col s12 offset-s0" style="padding-top: 20px;">
+
+                                <div class="col s2">Line Height</div>
+                                <div class="col s8">
+                                    <input [attr.disabled]="!canvas.textEditor ? '' : null" type="range"
+                                        [(ngModel)]="canvas.props.lineHeight" (change)="setLineHeight()" step="0.05"
+                                        min="0" max="5">
+                                </div>
+                                <div>{{canvas.props.lineHeight}}</div>
+                            </div>
+
+                            <div class="col s12 offset-s0" style="padding-top: 20px;">
+
+                                <div class="col s2">Font Size</div>
+                                <div class="col s8">
+                                    <input [attr.disabled]="!canvas.textEditor ? '' : null" type="range"
+                                        [(ngModel)]="canvas.props.fontSize" (change)="setFontSize()" step="1" min="1"
+                                        max="120">
+                                </div>
+                                <div>{{canvas.props.fontSize}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add text for T-shirt with tools -->
+                </div>
+            </div>
+        </div>
+        <div class="filters" style="display:none;">
+            <label><input type="checkbox" data-filter="0"><span>Sepia</span> </label>
+            <label><input type="checkbox" data-filter="0"><span>Blend Colr:</span> </label>
+            <label><input type="checkbox" data-filter="0"><span>Blend Clor:</span> </label>
+            <label><input type="checkbox" data-filter="0"><span>Blend olor:</span> </label>
+            <label><input type="checkbox" data-filter="0"><span>Ble Color:</span> </label>
+
+            <img id="img" style="display:none"
+                src="data:image/jpeg;base64,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" />
+
+            <!-- <input type="checkbox" data-filter="0">Grayscale
+            <input type="checkbox" data-filter="1">Sepia
+            <input type="checkbox" data-filter="2">Invert
+            <input type="checkbox" data-filter="3">Emboss
+            <input type="checkbox" data-filter="4">Sharpen -->
+        </div>
+
+
+
+
+
+
+
+        <!-- <div class="container">
+
+            <div class="row">
+
+                <div class="col-xl-12">
+                    <div class="row">
+                        <div class="col-xl-12 text-right">
+                            <button data-toggle="tooltip" data-placement="bottom" title="Export to image" type="button"
+                                class="btn btn-primary" (click)="rasterize();">
+                                <i class="fa fa-download" aria-hidden="true"></i> Export to image</button>
+                            <button data-toggle="tooltip" data-placement="bottom" title="Export to SVG" type="button"
+                                class="btn btn-primary" (click)="rasterizeSVG();">
+                                <i class="fa fa-download" aria-hidden="true"></i> Export to SVG</button>
+                            <button data-toggle="tooltip" data-placement="bottom" title="Save in localStorage"
+                                type="button" class="btn btn-primary" (click)="saveCanvasToJSON();">
+                                <i class="fa fa-save" aria-hidden="true"></i> Save local</button>
+                            <button data-toggle="tooltip" data-placement="bottom" title="Load from localStorage"
+                                type="button" class="btn btn-primary" (click)="loadCanvasFromJSON();">
+                                <i class="fa fa-save" aria-hidden="true"></i> Load local</button>
+                            <button data-toggle="tooltip" data-placement="bottom" title="Clean Canvas" type="button"
+                                class="btn btn-danger" (click)="confirmClear();">
+                                <i class="fa fa-ban" aria-hidden="true"></i> Clean</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+
+            <div class="row">
+                <div class="col-xl-3">
+                    <div class="card">
+                        <div class="card-header">Size</div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" [(ngModel)]="canvas.size.width"
+                                        (keyup)="changeSize()">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            Width
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" [(ngModel)]="canvas.size.left"
+                                        (keyup)="changeSize()">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            left
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" [(ngModel)]="canvas.size.height"
+                                        (keyup)="changeSize()">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            Height
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="card">
+                        <div class="card-header">Add text</div>
+                        <div class="card-body">
+                            <div class="input-group">
+                                <input type="text" class="form-control" [(ngModel)]="canvas.textString">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <button id="add-text" data-toggle="tooltip" data-placement="bottom"
+                                            title="Add text" class="btn btn-primary" (click)="addText()">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
+
+                    <div class="card">
+                        <div class="card-header">Add images</div>
+                        <div class="card-body max-height">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/squirtle.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)"
+                                src="../assets/img/bullbasaur.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)"
+                                src="../assets/img/charmander.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)"
+                                src="../assets/img/bellsprout.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/caterpie.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/dratini.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/eevee.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)"
+                                src="../assets/img/jigglypuff.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/mankey.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/meowth.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/pidgey.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/psyduck.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/rattata.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/abra.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/snorlax.svg">
+                            <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/img/zubat.svg">
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="card">
+                        <div class="card-header">Upload image</div>
+                        <div class="card-body text-center">
+                            <img id="testImage" *ngIf="canvas.url" class="images-item-upload" [src]="canvas.url"
+                                (click)="addImageOnCanvas(canvas.url);">
+                            <input type="file" (change)="readUrl($event);">
+                            <br />
+                            <br />
+                            <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                        (click)="removeWhite(canvas.url);">
+                                        <i class="fa fa-times" aria-hidden="true"></i> Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="card">
+                        <div class="card-header">Add figure</div>
+                        <div class="card-body text-center max-height">
+                            <div class="btn-group btn-group-vertical" role="group" aria-label="...">
+                                <button type="button" class="btn btn-primary"
+                                    (click)="addFigure('rectangle');">Rectangle</button>
+                                <button type="button" class="btn btn-primary"
+                                    (click)="addFigure('square'); ">Square</button>
+                                <button type="button" class="btn btn-primary"
+                                    (click)="addFigure('triangle'); ">Triangle</button>
+                                <button type="button" class="btn btn-primary"
+                                    (click)="addFigure('circle');">Circle</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="header">Custom</div> -->
+        <!-- <div class="col-xl-3">
+                    <div class="card">
+                        <div class="card-header">Options</div>
+                        <div class="card-body text-center">
+                            <div class="btn-group" role="group" aria-label="...">
+                                <button data-toggle="tooltip" data-placement="bottom" title="Delete element"
+                                    type="button" class="btn btn-outline-danger" [disabled]="!canvas.selected"
+                                    (click)="removeSelected();">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                                <button data-toggle="tooltip" data-placement="bottom" title="Send to back" type="button"
+                                    class="btn btn-outline-primary" [disabled]="!canvas.selected"
+                                    (click)="sendToBack();">
+                                    <i class="fa fa-level-down" aria-hidden="true"></i>
+                                </button>
+                                <button data-toggle="tooltip" data-placement="bottom" title="Send to front"
+                                    type="button" class="btn btn-outline-primary" [disabled]="!canvas.selected"
+                                    (click)="bringToFront();">
+                                    <i class="fa fa-level-up" aria-hidden="true"></i>
+                                </button>
+                                <button data-toggle="tooltip" data-placement="bottom" title="Clone" type="button"
+                                    class="btn btn-outline-primary"
+                                    [disabled]="!canvas.selected || canvas.selected.type == 'group'" (click)="clone();">
+                                    <i class="fa fa-clone" aria-hidden="true"></i>
+                                </button>
+                                <button data-toggle="tooltip" data-placement="bottom" title="Unselect" type="button"
+                                    class="btn btn-outline-primary" [disabled]="!canvas.selected"
+                                    (click)="cleanSelect()">
+                                    <i class="fa fa-remove" aria-hidden="true"></i>
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="card" *ngIf="!canvas.selected">
+                        <div class="card-header">Canvas</div>
+                        <div class="card-body">
+                            <div class="custom-item" *ngIf="!canvas.props.canvasImage">
+                                <div class="custom-item-title">Background Color</div>
+                                <div class="custom-item-body">
+                                    <input type="text" class="form-control" [cpPosition]="'bottom'"
+                                        [(colorPicker)]="canvas.props.canvasFill"
+                                        [style.background]="canvas.props.canvasFill" [value]="canvas.props.canvasFill"
+                                        (colorPickerChange)="setCanvasFill()">
+                                </div>
+                            </div>
+                            <div class="custom-item">
+                                <div class="custom-item-title">Background Image (url)</div>
+                                <div class="custom-item-body">
+                                    <input type="text" class="form-control" placeholder="http://example.jpg"
+                                        [(ngModel)]="canvas.props.canvasImage" (keyup)="setCanvasImage()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="card">
+                        <div class="card-header">Custom</div>
+                        <div class="card-body">
+                            <div class="custom-item" *ngIf="canvas.selected  && canvas.selected.type == 'group'">
+                                Group
+                                Selected
+                            </div>
+                            <div class="custom-item" *ngIf="!canvas.selected">No items selected</div>
+                            <div class="custom-item" *ngIf="canvas.selected && canvas.selected.type != 'group'">
+                                <div class="custom-item-title">ID</div>
+                                <div class="custom-item-body">
+                                    <input type="text" class="form-control" [(ngModel)]="canvas.props.id"
+                                        (keyup)="setId()">
+                                </div>
+                            </div>
+                            <div class="custom-item" *ngIf="canvas.selected && canvas.selected.type != 'group'">
+                                <div class="custom-item-title">Opacity</div>
+                                <div class="custom-item-body">
+                                    <input type="range" [(ngModel)]="canvas.props.opacity"
+                                        (change)="setOpacity()">{{canvas.props.opacity}}
+                                </div>
+                            </div>
+                            <div class="custom-item"
+                                *ngIf="canvas.selected && canvas.textEditor || canvas.selected && canvas.figureEditor">
+                                <div class="custom-item-title">Fill</div>
+                                <div class="custom-item-body">
+                                    <input type="text" class="form-control" [cpPosition]="'bottom'"
+                                        [(colorPicker)]="canvas.props.fill" [style.background]="canvas.props.fill"
+                                        [value]="canvas.props.fill" (colorPickerChange)="setFill()">
+                                </div>
+                            </div>
+                            <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+                                <div class="custom-item-title">Font family</div>
+                                <div class="custom-item-body">
+                                    <select [(ngModel)]="canvas.props.fontFamily" class="form-control"
+                                        (change)="setFontFamily()">
+                                        <option value="arial">Arial</option>
+                                        <option value="Pacifico">Pacifico</option>
+                                        <option value="helvetica" selected>Helvetica</option>
+                                        <option value="verdana">Verdana</option>
+                                        <option value="courier">Courier</option>
+                                        <option value="Roboto">Roboto</option>
+                                        <option value="Open Sans">Open Sans</option>
+                                        <option value="Zilla Slab">Zilla Slab</option>
+                                        <option value="Lato">Lato</option>
+                                        <option value="Bellefair">Bellefair</option>
+                                        <option value="Fresca">Fresca</option>
+                                        <option value="Raleway">Raleway</option>
+                                        <option value="Open Sans Condensed">Open Sans Condensed</option>
+                                        <option value="Indie Flower">Indie Flower</option>
+                                        <option value="Josefin Sans">Josefin Sans</option>
+                                        <option value="Inconsolata">Inconsolata</option>
+                                        <option value="Pacifico">Pacifico</option>
+                                        <option value="Gloria Hallelujah">Gloria Hallelujah</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+                                <div class="custom-item-title">Text Align</div>
+                                <div class="custom-item-body text-center">
+                                    <div class="btn-group" role="group" aria-label="...">
+                                        <button type="button" class="btn btn-primary"
+                                            [ngClass]="{'active': canvas.props.textAlign == 'left' }"
+                                            (click)="setTextAlign('left')">
+                                            <i class="fa fa-align-left"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary"
+                                            [ngClass]="{'active': canvas.props.textAlign == 'center' }"
+                                            (click)="setTextAlign('center')">
+                                            <i class="fa fa-align-center"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary"
+                                            [ngClass]="{'active': canvas.props.textAlign == 'right' }"
+                                            (click)="setTextAlign('right')">
+                                            <i class="fa fa-align-right"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary"
+                                            [ngClass]="{'active': canvas.props.textAlign == 'justify' }"
+                                            (click)="setTextAlign('justify')">
+                                            <i class="fa fa-align-justify"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+                                <div class="custom-item-title">Style</div>
+                                <div class="custom-item-body text-center">
+                                    <div class="btn-group" role="group" aria-label="...">
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            [ngClass]="{'active': canvas.props.fontWeight }" (click)="setBold()">
+                                            <i class="fa fa-bold"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            [ngClass]="{'active': canvas.props.fontStyle }" (click)="setFontStyle()">
+                                            <i class="fa fa-italic"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            [ngClass]="{'active': hasTextDecoration('underline') }"
+                                            (click)="setTextDecoration('underline')">
+                                            <i class="fa fa-underline"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            [ngClass]="{'active': hasTextDecoration('overline') }"
+                                            (click)="setTextDecoration('overline')">
+                                            <i class="fa fa-underline fa-flip-vertical"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            [ngClass]="{'active': hasTextDecoration('line-through') }"
+                                            (click)="setTextDecoration('line-through')">
+                                            <i class="fa fa-strikethrough"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+                                <div class="custom-item-title">Font Size</div>
+                                <div class="custom-item-body">
+                                    <input type="range" [(ngModel)]="canvas.props.fontSize" (change)="setFontSize()"
+                                        step="1" min="1" max="120">{{canvas.props.fontSize}}
+                                </div>
+                            </div>
+                            <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+                                <div class="custom-item-title">Line Height</div>
+                                <div class="custom-item-body">
+                                    <input type="range" [(ngModel)]="canvas.props.lineHeight" (change)="setLineHeight()"
+                                        step="0.1" min="0" max="10">{{canvas.props.lineHeight}}
+                                </div>
+                            </div>
+                            <div class="custom-item" *ngIf="canvas.selected && canvas.textEditor">
+                                <div class="custom-item-title">Char Spacing</div>
+                                <div class="custom-item-body">
+                                    <input type="range" [(ngModel)]="canvas.props.charSpacing"
+                                        (change)="setCharSpacing()" step="10" min="-200"
+                                        max="800">{{canvas.props.charSpacing}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <br />
+                    <div class="card">
+                        <div class="card-header">
+                            <button type="button" class="btn btn-primary btn-sm" (click)="rasterizeJSON()">
+                                <i class="fa fa-refresh" aria-hidden="true"></i> Render to json</button>
+                        </div>
+                        <div class="card-body">
+                            <pre>{{canvas.json}}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+        </div> 
+
+    </div>
+</div> -->
+
+        <!-- <div class="controls">
+    <h3>Filters:</h3>
+    <label>Use WebGl<input type="checkbox" id="webgl" checked=""></label>
+    <div id="bench">1920 x 1200px 28ms</div>
+    <p>
+
+        <label><input type="checkbox" class="filled-in" id="grayscale"
+                checked="checked" /><span>Grayscale</span></label><br>
+        <label><input type="radio" id="average" name="grayscale"><span>Avg.</span> </label><br>
+        <label><input type="radio" id="lightness" name="grayscale"><span>Lum.</span> </label><br>
+        <label><input type="radio" id="luminosity" name="grayscale"><span>Light.</span> </label><br>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="invert"><span>Invert:</span></label>
+    </p>
+    <p>
+        <label>Colormatrix filters:</label>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="sepia"><span>Sepia:</span></label>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="blackwhite"><span>Black/White:</span></label>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="brownie"><span>Brownie:</span></label>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="vintage"><span>Vintage:</span></label>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="kodachrome"><span>Kodachrome:</span></label>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="technicolor"><span>Technicolor:</span></label>
+    </p>
+    <p>
+        <label><input type="checkbox" id="polaroid"><span>Polaroid:</span> </label>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="remove-color"><span>Remove color:</span></label><br>
+        <label>Color: <input type="color" id="remove-color-color" value="#00f900"></label><br>
+        <br>
+        <label>Distance: <input type="range" id="remove-color-distance" value="0.02" min="0" max="1"
+                step="0.01"></label>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="brightness"><span>Brightness:</span></label>
+        <br>
+        <label>Value: <input type="range" id="brightness-value" value="0.1" min="-1" max="1" step="0.003921"></label>
+    </p>
+    <p>
+        <label><input type="checkbox" id="gamma"><span>Gamma:</span> </label>
+        <br>
+        <label>Red: <input type="range" id="gamma-red" value="1" min="0.2" max="2.2" step="0.003921"></label>
+        <br>
+        <label>Green: <input type="range" id="gamma-green" value="1" min="0.2" max="2.2" step="0.003921"></label>
+        <br>
+        <label>Blue: <input type="range" id="gamma-blue" value="1" min="0.2" max="2.2" step="0.003921"></label>
+
+    </p>
+    <p>
+        <label><input type="checkbox" id="contrast"><span>Contrast:</span> </label>
+        <br>
+        <label>Value: <input type="range" id="contrast-value" value="0" min="-1" max="1" step="0.003921"></label>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="saturation"><span>Saturation:</span></label>
+        <br>
+        <label>Value: <input type="range" id="saturation-value" value="0" min="-1" max="1" step="0.003921"></label>
+    </p>
+    <p>
+        <label><input type="checkbox" id="hue"><span>Hue:</span> </label>
+        <br>
+        <label>Value: <input type="range" id="hue-value" value="0" min="-2" max="2" step="0.002"></label>
+    </p>
+    <p>
+        <label> <input type="checkbox" id="noise"><span>Noise:</span></label>
+        <br>
+        <label>Value: <input type="range" id="noise-value" value="100" min="0" max="1000"></label>
+    </p>
+    <p>
+        <label><input type="checkbox" id="pixelate"><span>Pixelate</span> </label>
+        <br>
+        <label>Value: <input type="range" id="pixelate-value" value="4" min="2" max="20"></label>
+    </p>
+    <p>
+        <label><input type="checkbox" id="blur"><span>Blur:</span> </label>
+        <br>
+        <label>Value: <input type="range" id="blur-value" value="0.1" min="0" max="1" step="0.01"></label>
+    </p>
+    <p>
+        <label><input type="checkbox" id="sharpen"><span>Sharpen:</span> </label>
+    </p>
+    <p>
+        <label><input type="checkbox" id="emboss"><span>Emboss:</span> </label>
+    </p>
+    <p>
+        <label><input type="checkbox" id="blend"><span>Blend Color:</span> </label>
+        <br>
+        <label>Mode:</label>
+        <select id="blend-mode" name="blend-mode">
+            <option selected="" value="add">Add</option>
+            <option value="diff">Diff</option>
+            <option value="subtract">Subtract</option>
+            <option value="multiply">Multiply</option>
+            <option value="screen">Screen</option>
+            <option value="lighten">Lighten</option>
+            <option value="darken">Darken</option>
+            <option value="overlay">Overlay</option>
+            <option value="exclusion">Exclusion</option>
+            <option value="tint">Tint</option>
+        </select>
+        <br>
+        <label>Color: <input type="color" id="blend-color" value="#00f900"></label><br>
+        <label>Alpha: <input type="range" id="blend-alpha" min="0" max="1" value="1" step="0.01"></label><br>
+    </p>
+    <label> <input type="checkbox" id="blend-image"><span>Blend Image:</span></label>
+    <br>
+    <label>Mode:</label>
+    <select id="blend-image-mode" name="blend-image-mode">
+        <option selected="" value="multiply">Multiply</option>
+        <option value="mask">Mask</option>
+    </select>
+    <br>
+    <label>Alpha: <input type="range" id="blend-image-alpha" min="0" max="1" value="1" step="0.01"></label><br>
+</div> -->
