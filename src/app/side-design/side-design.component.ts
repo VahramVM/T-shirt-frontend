@@ -56,7 +56,7 @@ export class SideDesignComponent implements OnInit, AfterViewInit {
   }
 
   public changeSize() {
-    this.canvas.changeSize();
+    // this.canvas.changeSize();
   }
 
   public addText() {
@@ -152,7 +152,7 @@ export class SideDesignComponent implements OnInit, AfterViewInit {
   }
 
   public setLineHeight() {
-    this.canvas.setLineHeight();
+    // this.canvas.setLineHeight();
   }
 
   public setCharSpacing() {

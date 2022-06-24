@@ -94,10 +94,10 @@ export class Material {
 
   } 
 
-  static reload() {
-    // $(window).resize(function(){location.reload();});
+  // static reload() {
+  //   $(window).resize(function(){location.reload();});
 
-  }
+  // }
 
   static selectOpt() {
     document.addEventListener('DOMContentLoaded', function() {

@@ -1,8 +1,7 @@
-import { Component, OnInit, AfterViewInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
-import { EditorPicComponent } from 'src/app/editor-pic/editor-pic.component';
+import { Component, OnInit, AfterViewInit, ViewEncapsulation, ViewChild, ElementRef, HostListener, NgModule, OnChanges, SimpleChanges, Input } from '@angular/core';
+import { EditorPicComponent } from '../../../editor-pic/editor-pic.component';
 import { Material } from '../../classes/material.service';
 
-// import { Caman } from 'caman'
 
 import { Router } from '@angular/router';
 import { AuthServices } from '../servises/services';
@@ -14,6 +13,7 @@ import { FontService } from '../servises/fonts.service';
 
 import { SlidesOutputData, OwlOptions, } from 'ngx-owl-carousel-o';
 
+declare const $: any;
 
 @Component({
   selector: 'app-site-layout',
@@ -22,6 +22,8 @@ import { SlidesOutputData, OwlOptions, } from 'ngx-owl-carousel-o';
   encapsulation: ViewEncapsulation.None
 
 })
+
+@HostListener('window:load') 
 
 
 
@@ -32,11 +34,10 @@ export class SiteLayoutComponent implements AfterViewInit {
   @ViewChild('coord') coord: ElementRef;
   @ViewChild('owlElement') owlElement: ElementRef;
 
-
-
   title = 'EditorPic';
 
   isOpen = false;
+  isOpenDraw = false;
   selectColor = '';
   select = false;
   isClicked = false;
@@ -74,7 +75,9 @@ export class SiteLayoutComponent implements AfterViewInit {
   toggle: boolean = false;
   public imageCoordy;
   public imageCoordx;
-  public scaleX
+  public imgWith;
+  public imgHeigt;
+  public scaleX;
 
 
 
@@ -85,17 +88,16 @@ export class SiteLayoutComponent implements AfterViewInit {
   public products: Products[] = [];
   public productsColor: ProductsColor[] = [];
   public categories = [];
-
-  public index = 0;
-
-  public firstImage = 0;
-
-  public colorFilter;
-
-  public productType;
-
   public arrColor = [];
 
+  public index = 0;
+  public firstImage = 0;
+  public colorFilter;
+  public productType;
+  public firstBackCanvasImage;
+  public firstImageCarousel = '';
+  public canvasHtmlWidth = window.innerWidth - 0.68 * window.innerWidth;
+  public canvasHtmlHeight = this.canvasHtmlWidth * 1.233;
 
   // public marvelHeroes =  this.productsColor.filter((hero) => {
   //   return hero.hex == this.productsColor[this.index].hex;
@@ -141,7 +143,6 @@ export class SiteLayoutComponent implements AfterViewInit {
   // ]
 
 
-
   // colors = [
   //   { hex: '#ffffff', name: 'pink' },
   //   { hex: '#b4a24b', name: 'pino' },
@@ -179,6 +180,11 @@ export class SiteLayoutComponent implements AfterViewInit {
 
   }
 
+  modelChangeFn() {
+    this.setCharSpacing();
+    
+  }
+
   getPassedData(data: SlidesOutputData) {
 
 
@@ -192,11 +198,43 @@ export class SiteLayoutComponent implements AfterViewInit {
     index = 0;
 
 
-    // $('.owl-carousel').owlCarousel().on('changed.owl.carousel', function (event) {
+    // $('.owlCarousel').on('changed.owlCarousel', (event) => {
     //   var current = event.item.index;
     //   var src = $(event.target).find(".owl-item").eq(current).find("img").attr('src');
     //   $('.divv').text(src)
     // });
+  }
+
+
+
+  onload() {
+    console.log('onload');
+
+
+  }
+
+  
+
+  onResize(event) {
+
+    var checkWidth = $(window).width();
+    if (checkWidth >= 800) {
+      console.log(500, 'ok');
+
+      $('#myCarousel').trigger('refresh.owl.carousel');
+
+
+    } 
+    this.canvasHtmlWidth = window.innerWidth - 0.68 * window.innerWidth;
+    this.canvasHtmlHeight = this.canvasHtmlWidth * 1.233;
+
+  }
+
+  Resize() {
+    console.log('resize');
+
+    return this.customOptions
+
   }
 
 
@@ -229,9 +267,9 @@ export class SiteLayoutComponent implements AfterViewInit {
 
       400: {
 
-        items: 1,
-        margin: 110,
-        stagePadding: 110,
+        items: 3,
+        margin: 10,
+        stagePadding: 50,
 
       },
 
@@ -251,9 +289,30 @@ export class SiteLayoutComponent implements AfterViewInit {
   }
 
 
+
   funk() {
-    this.firstImage = 2;
-    console.log(this.firstImage);
+
+    //   if ( $(window).width() < 768 ) {
+    //     var owlActive = owl.owlCarousel(owlOptions);
+    // } else {
+    //     owl.addClass('off');
+    // }
+
+    // $(window).resize(function() {
+    //     if ( $(window).width() < 768 ) {
+    //         if ( $('.owl-carousel').hasClass('off') ) {
+    //             var owlActive = owl.owlCarousel(owlOptions);
+    //             owl.removeClass('off');
+    //         }
+    //     } else {
+    //         if ( !$('.owl-carousel').hasClass('off') ) {
+    //             owl.addClass('off').trigger('destroy.owl.carousel');
+    //             owl.find('.owl-stage-outer').children(':eq(0)').unwrap();
+    //         }
+    //     }
+    // });
+    //   this.firstImage = 2;
+    //   console.log(this.firstImage);
 
   }
 
@@ -292,7 +351,7 @@ export class SiteLayoutComponent implements AfterViewInit {
   ngOnInit(): void {
 
     // console.log(this.marvelHeroes);
-
+    
     const arrr = this.images
 
     // this.catecoriesService.fetch().subscribe(
@@ -307,6 +366,7 @@ export class SiteLayoutComponent implements AfterViewInit {
       (res: Images[]) => {
         this.images = res;
         console.log(this.images);
+        this.firstImageCarousel = res[0].imageSrc
 
         const addresses = res; // Some array I got from async call
 
@@ -329,7 +389,8 @@ export class SiteLayoutComponent implements AfterViewInit {
     this.produtsService.fetch().subscribe(
       (res: Products[]) => {
         this.products = res;
-        console.log(res);
+        this.firstBackCanvasImage = res[1].type
+        console.log(res[1].type);
       }
     );
 
@@ -359,6 +420,7 @@ export class SiteLayoutComponent implements AfterViewInit {
   sendMail() {
 
     this.canvas.rasterize()
+    console.log(this.canvas.reqImage1);
 
     let image = {
       image: this.canvas.reqImage,
@@ -370,7 +432,6 @@ export class SiteLayoutComponent implements AfterViewInit {
       let res: any = data;
       console.log('all is ok');
     }
-    console.log('i am here!!!');
   }
 
   valueChanged(e) {
@@ -434,6 +495,8 @@ export class SiteLayoutComponent implements AfterViewInit {
 
   }
 
+  
+
 
   public selectPicture() {
 
@@ -496,13 +559,12 @@ export class SiteLayoutComponent implements AfterViewInit {
 
   public confirmClear() {
     this.canvas.confirmClear();
-    console.log(this.images);
-    console.log(this.length);
+
   }
 
-  public changeSize() {
-    this.canvas.changeSize();
-  }
+  // public changeSize() {
+  //   // this.canvas.changeSize();
+  // }
 
   public addText() {
     this.canvas.addText();
@@ -559,6 +621,10 @@ export class SiteLayoutComponent implements AfterViewInit {
     this.canvas.setCanvasFill();
   }
 
+  public drawFill() {
+    this.canvas.drawFill();
+  }
+
   public setCanvasImage() {
 
 
@@ -577,7 +643,8 @@ export class SiteLayoutComponent implements AfterViewInit {
 
   }
 
-  public productsType() {
+  public productsTypeColor() {
+    this.canvas.productsTypeColor()
   }
 
   public setId() {
@@ -586,6 +653,8 @@ export class SiteLayoutComponent implements AfterViewInit {
 
   public setDistance() {
     this.canvas.setDistance();
+    console.log('distance');
+    
   }
 
   public setOpacity() {
@@ -612,8 +681,15 @@ export class SiteLayoutComponent implements AfterViewInit {
     this.canvas.setFontStyle();
   }
 
-  public hasTextDecoration(value) {
-    this.canvas.hasTextDecoration(value);
+  // public hasTextDecoration(value) {
+  //   this.canvas.hasTextDecoration(value);
+  //   console.log(value);
+
+  // }
+
+  public canvasDrawing(value) {
+    
+    this.canvas.canvasDrawing(value);
   }
 
   public setTextDecoration(value) {
@@ -625,7 +701,7 @@ export class SiteLayoutComponent implements AfterViewInit {
   }
 
   public setLineHeight() {
-    this.canvas.setLineHeight();
+    // this.canvas.setLineHeight();
   }
 
   public setCharSpacing() {

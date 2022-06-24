@@ -40,8 +40,8 @@ export class EditorPicComponent implements AfterViewInit {
   public url: string | ArrayBuffer = '';
   public size: any = {
     // left: 350,
-    width: 430,
-    height: 530
+    width: this.siteLayout.canvasHtmlWidth / 3,
+    height: this.siteLayout.canvasHtmlHeight / 1.2
   };
 
   public json: any;

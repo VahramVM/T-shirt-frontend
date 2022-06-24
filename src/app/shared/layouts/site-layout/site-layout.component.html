@@ -73,11 +73,11 @@
                             <button type="button" class="colorButton" (click)="isOpen = !isOpen" cdkOverlayOrigin
                                 [style.background]="selectColor || 'none'">Color</button>
 
-                            <ng-template #display>
+                            <!-- <ng-template #display>
                                 Select color
-                            </ng-template>
+                            </ng-template> -->
 
-                            <div *ngIf="isOpen; else display">
+                            <div *ngIf="isOpen; ">
                                 <div class="colorBox" role="dialog" aria-label="Color picker">
                                     <div *ngFor="let color of productsColor" role="option"
                                         [style.background]="color.hex" [attr.aria-label]="color.name"
@@ -154,8 +154,7 @@
             style="padding-top: 35px; position: absolute;">
             <div class="btn-group" role="group" aria-label="...">
                 <button data-toggle="tooltip" data-placement="bottom" title="Delete element" type="button"
-                    class="btn btn-outline-danger remove" [disabled]="!canvas.selected || canvas.selected == 'group'"
-                    (click)="removeSelected(); ">
+                    class="btn btn-outline-danger remove" [disabled]="!canvas.selected" (click)="removeSelected(); ">
                     <i class="large material-icons" aria-hidden="true">delete</i>
                 </button>
                 <button data-toggle="tooltip" data-placement="bottom" title="Send to back" type="button"
@@ -179,6 +178,21 @@
                     <i class="large material-icons" aria-hidden="true">done_all</i>
                 </button>
 
+                
+                
+            
+            </div>
+
+            <div class="col s7 m3 l4 xl2 offset-s0 offset-m9 offset-l6 offset-xl0">
+                <button id="draw" type="button" class="btn btn-outline-primary"
+                    class="large material-icons" [(colorPicker)]="canvas.props.drawFill"
+                    (click)="canvasDrawing('draw'); canvas.defoultUpdate(); isCarouselOpen = false">draw
+                </button>
+
+                <button id="spray" type="button" class="btn btn-outline-primary"
+                    class="large material-icons" [(colorPicker)]="canvas.props.drawFill"
+                    (click)="canvasDrawing('spray'); canvas.defoultUpdate(); isCarouselOpen = false">draw
+                </button>
             </div>
 
 
@@ -187,9 +201,9 @@
                 <button type="button" class="colorButton" (click)="isOpen = !isOpen" cdkOverlayOrigin
                     [style.background]="selectColor || 'none'">Themes</button>
 
-                <ng-template #display>
+                <!-- <ng-template #display>
                     Select theme
-                </ng-template>
+                </ng-template> -->
 
                 <div *ngIf="isOpen;">
                     <div class="colorBox" role="dialog" aria-label="Color picker">
@@ -257,11 +271,11 @@
         <!-- /buttons for export image and clean canvas -->
 
         <!-- /T-shirt display box -->
+        
 
-        <br><br>
         <div #imagePath class="divv" style="display: none;"></div>
         <div class="col offset-s1 offset-m4 offset-l2 offset-xl2"
-            style="margin-top: 7px; position: absolute; z-index: 1;">
+            style="margin-top: 57px; position: absolute; z-index: 1;">
             <!-- || canvas.textEditor || canvas.figureEditor -->
             <button style="margin-right: 10px;" [disabled]="canvas.selected || canvas.canvasCount !== 0"
                 class="but btn #00e676 green accent-4 black-text"
@@ -272,8 +286,11 @@
             <div #coord style="margin-left: -40px; margin-top: 0px;"> {{imageCoordy}}sm</div>
             <div #coord style="margin-left: -40px; margin-top: 0px;"> {{imageCoordx}}sm</div>
 
+            <div #coord style="margin-left: -40px; margin-top: 0px;"> {{imgWith}}sm</div>
+            <div #coord style="margin-left: -40px; margin-top: 0px;"> {{imgHeigt}}sm</div>
 
-            
+
+
 
 
             <!-- <button [disabled]="!canvas.selected || canvas.selected == 'rect'" class="removePicBut btn #f44336 red lighten-1 black-text"
@@ -284,12 +301,12 @@
 
         <div *ngIf="isCarouselOpen == false">
             <div class="col xl2 offset-s3 offset-m4 offset-l2 offset-xl2"
-                style="margin-top: 500px; position: absolute; z-index: 10;">
-                <input type="range" [(ngModel)]="canvas.props.opacity" (change)="setOpacity()"
+                style="margin-top: 550px; position: absolute; z-index: 10;">
+                <input type="range" [(ngModel)]="canvas.props.opacity" (ngModelChange)="setOpacity()"
                     [disabled]="canvas.canvasCount == 0">
             </div>
             <label class="col offset-s1 offset-m4 offset-l3 offset-xl1"
-                style="margin-top: 490px; position: absolute; cursor:pointer; z-index: 10;">
+                style="margin-top: 540px; position: absolute; cursor:pointer; z-index: 10;">
                 <input id="shadowSVG" type="checkbox" (change)="shadowSVG = !shadowSVG" class="filled-in"
                     [disabled]="canvas.canvasCount == 0" />
                 <i class="fa fa-cloud" style="font-size:40px; color:#009688;text-shadow:12px 8px 4px #4d4a4a;"></i>
@@ -304,10 +321,8 @@
             </div>  
             </owl-carousel>   -->
 
-        <div class="canvas col s12 m6 l3 xl4 offset-s1 offset-m3 offset-l2 offset-xl2" style="margin-top: -90px;">
+        <div class="canvas col s12 m6 l3 xl4 offset-s1 offset-m3 offset-l2 offset-xl2" style="margin-top: -90px">
             <app-editor-pic #canvas></app-editor-pic>
-
-
         </div>
 
 
@@ -329,22 +344,26 @@
 
 
 
-        <div Load="myFunction()" [ngClass]="{'class1': toggle === true}" style="margin-top: -20px;"
+        <div (window:resize)="onResize($event)" Load="myFunction()" [ngClass]="{'class1': toggle === true}"
+            style="margin-top: -20px;"
             class="owlCarousel owl-theme selectPic col s12 m12 l8 xl8 offset-s0 offset-m0 offset-l0 offset-xl0">
             <owl-carousel-o id="myCarousel" #owlElement [options]="customOptions" (translated)="getPassedData($event)">
-
+                <ng-template carouselSlide id="image.id">
+                    <!-- <div style="width: 70%; height: auto; margin-left: 18%">
+                        <img src="assets/img/Trafaret3.png">
+                    </div> -->
+                </ng-template>
                 <ng-container *ngFor="let image of images">
-                    <ng-template dotContent="content" carouselSlide [id]="image.id">
-                        <img [src]="image.imageSrc" style="width: 70%; margin-left: 18%;" [alt]="image.alt"
-                            [title]="image.title">
+
+                    <ng-template carouselSlide [id]="image.id">
+                        <div style="width: 70%; height: auto; margin-left: 18%">
+                            <img [src]="image.imageSrc">
+                        </div>
                     </ng-template>
                 </ng-container>
-
             </owl-carousel-o>
         </div>
 
-
-        
 
 
 
@@ -414,8 +433,7 @@
                         <div>
                             <div class="" role="dialog" aria-label="Color picker">
                                 <div class="card-panel hoverable" *ngFor="let color of arrColor" role="option"
-                                    [style.background]="color" 
-                                    [attr.aria-selected]="color == selectColor"
+                                    [style.background]="color" [attr.aria-selected]="color == selectColor"
                                     (click)="canvas.props.canvasFill = color; setCanvasFill()"
                                     (colorPickerChange)="setCanvasFill()">
 
@@ -444,10 +462,11 @@
                                 </div> -->
 
 
-                                
-                                <div class="card" >
+
+                                <div class="card">
                                     <div class="card-content">
-                                        <img style="width: 40%;" class="activator" [src]="products[index]==undefined?canvas.props.canvasImage: products[index].type1">
+                                        <img style="width: 40%;" class="activator"
+                                            [src]="products[index]==undefined?canvas.props.canvasImage: products[index].type1">
                                     </div>
                                     <div class="card-tabs">
                                         <ul class="tabs tabs-fixed-width">
@@ -474,8 +493,9 @@
 
 
 
-                                <div class="card-panel hoverable" id="show" *ngFor="let imageProduct of products; let i = index" 
-                                    (click)="canvas.props.canvasImage = imageProduct.type; setCanvasImage(); index = i; productsType()"
+                                <div class="card-panel hoverable" id="show"
+                                    *ngFor="let imageProduct of products; let i = index"
+                                    (click)="canvas.props.canvasImage = imageProduct.type; setCanvasImage(); index = i; productsTypeColor()"
                                     (colorPickerChange)="setCanvasFill()">
                                     <img style="height: 230%; margin: -60% 0% 10% -35%;" class="activator"
                                         [src]="imageProduct.type1">
@@ -562,10 +582,10 @@
                     <div class="col s12 offset-s0" style="padding-top: 5px;">
                         <div class="col s2">Distance</div>
                         <div class="col s8">
-                            <input type="range" id="hue-value" [(ngModel)]="removeColorValue" (change)="setDistance()"
+                            <input type="range" id="hue-value"  [(ngModel)]="canvas.props.distance" (ngModelChange)="setDistance()"
                                 value="0" min="0" max="1" step="0.02">
                         </div>
-                        <div>{{removeColorValue}}</div>
+                        <div>{{canvas.props.distance}}</div>
                     </div>
                     <div class="col s12 offset-s0" style="padding-top: 0px;">
                         <div class="col s2">Saturation</div>
@@ -653,7 +673,7 @@
                                 <div class="col s12 offset-s0" style="padding-top: 0px;">
                                     <div class="col s2">Opacity</div>
                                     <div class="col s8">
-                                        <input type="range" [(ngModel)]="canvas.props.opacity" (change)="setOpacity()">
+                                        <input type="range" [(ngModel)]="canvas.props.opacity" (ngModelChange)="setOpacity()">
                                     </div>
                                     <div>{{canvas.props.opacity}}</div>
                                 </div>
@@ -685,7 +705,7 @@
 
                             <div class="col s2">Opacity</div>
                             <div class="col s8">
-                                <input type="range" [(ngModel)]="canvas.props.opacity" (change)="setOpacity()">
+                                <input type="range" [(ngModel)]="canvas.props.opacity" (ngModelChange)="setOpacity()">
                             </div>
                             <div>{{canvas.props.opacity}}</div>
 
@@ -712,14 +732,28 @@
 
                     <div class="row">
 
-                        <div class="input-field col s8" style="margin-top: 20px;">
-                            <i id="addText"
-                                (click)="addText();  expression = true; toggle = true; activatebutton = false"
-                                style="cursor: pointer;" class="material-icons prefix">add_box</i>
-                            <input id="icon_prefix2" type="text" class="materialize-textarea"
-                                [(ngModel)]="canvas.textString">
-                            <!-- <input type="text" class="form-control" [(ngModel)]="canvas.textString"> -->
-                            <label for="icon_prefix2">Input text</label>
+                        <div  style="margin-top: 20px; float:left">
+                            <div class="input-field col s3" style="margin-top: 5px">
+                            <button data-toggle="tooltip" data-placement="bottom" title="Done" type="button" 
+                                class="btn btn-outline-primary" [disabled]=" canvas.props.inputDisabled === 'inputDisabled' &&  canvas.props.textCurved === 2 && canvas.intCountText !== 0 " 
+                                (click)="canvas.discardActiveObj(); addText(); expression = true; toggle = true; activatebutton = false">
+                                <i class="large material-icons" aria-hidden="true">done_all</i>
+                            </button>
+                            </div>
+                            <!-- <div [attr.disabled]="canvas.textString === '' ">
+                            <i  id="addText" 
+                                (click)="canvas.discardActiveObj(); addText(); expression = true; toggle = true; activatebutton = false"
+                                style="cursor: pointer;" class="material-icons prefix">add_box
+                            </i>
+                           </div> -->
+                            <div class="input-field col s8" style="margin-top: 0px">
+                                <input id="icon_prefix2" type="text"  class="materialize-textarea"
+                                    [(ngModel)]="canvas.textString" (click)="canvas.discardActiveObj()"
+                                    [disabled]=" canvas.props.inputDisabled === 'inputDisabled' &&  canvas.props.textCurved === 2 && canvas.intCountText !== 0 "
+                                    >
+                                <!-- <input type="text" class="form-control" [(ngModel)]="canvas.textString"> -->
+                                <label for="icon_prefix2">Input text</label>
+                            </div>
                         </div>
                         <label class="col s3" style="margin-top: 20px; cursor: pointer;">
                             <input id="shadowText" type="checkbox" (change)="shadowText = !shadowText"
@@ -853,7 +887,7 @@
                                 <div class="col s2">Opasity</div>
                                 <div class="col s8">
                                     <input [attr.disabled]="!canvas.textEditor ? '' : null" type="range"
-                                        [(ngModel)]="canvas.props.opacity" (change)="setOpacity()">
+                                        [(ngModel)]="canvas.props.opacity" (ngModelChange)="setOpacity()">
                                 </div>
                                 <div>{{canvas.props.opacity}}</div>
                             </div>
@@ -863,21 +897,43 @@
                                 <div class="col s2">Char Spacing</div>
                                 <div class="col s8">
                                     <input [attr.disabled]="!canvas.textEditor ? '' : null" type="range"
-                                        [(ngModel)]="canvas.props.charSpacing" (change)="setCharSpacing()" step="10"
-                                        min="-200" max="800">
+                                    (ngModelChange)="setCharSpacing()"   [(ngModel)]="canvas.props.charSpacing"  step="10"
+                                        min="-200" max="300">
                                 </div>
                                 <div>{{canvas.props.charSpacing}}</div>
                             </div>
 
                             <div class="col s12 offset-s0" style="padding-top: 20px;">
 
+                                <div class="col s2">Arc</div>
+                                <div class="col s8">
+                                    <form action="#">
+                                        <div style="float:left">
+                                          <label>
+                                            <input  (change)="canvas.props.textCurved = 1; " (click)="canvas.reRender()" name="group1" type="radio" checked />
+                                            <span>Red</span>
+                                          </label>
+                                          <label>
+                                            <input [disabled] = "canvas.intCountText > 1 && canvas.intCountText !== 0 "  (change)="canvas.props.textCurved = 2" (click)="canvas.reRender1()"  name="group1" type="radio" />
+                                            <span>Yellow</span>
+                                          </label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div>{{canvas.props.diametr}}</div>
+                            </div>
+                            
+                            
+
+                            <div *ngIf="canvas.props.textCurved !== 1; " class="col s12 offset-s0" style="padding-top: 20px;">
+
                                 <div class="col s2">Line Height</div>
                                 <div class="col s8">
                                     <input [attr.disabled]="!canvas.textEditor ? '' : null" type="range"
-                                        [(ngModel)]="canvas.props.lineHeight" (change)="setLineHeight()" step="0.05"
-                                        min="0" max="5">
+                                        [(ngModel)]="canvas.props.diametr" (ngModelChange)= "canvas.addText()" step="3"
+                                        min="80" max="300" >
                                 </div>
-                                <div>{{canvas.props.lineHeight}}</div>
+                                <div>{{canvas.props.diametr}}</div>
                             </div>
 
                             <div class="col s12 offset-s0" style="padding-top: 20px;">
@@ -885,8 +941,8 @@
                                 <div class="col s2">Font Size</div>
                                 <div class="col s8">
                                     <input [attr.disabled]="!canvas.textEditor ? '' : null" type="range"
-                                        [(ngModel)]="canvas.props.fontSize" (change)="setFontSize()" step="1" min="1"
-                                        max="120">
+                                        [(ngModel)]="canvas.props.fontSize" (ngModelChange)="setFontSize()" step="1" min="1"
+                                        max="170">
                                 </div>
                                 <div>{{canvas.props.fontSize}}</div>
                             </div>

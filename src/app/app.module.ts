@@ -23,6 +23,7 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
 // import { NgbModule } from '@ng-bootstrap/ng-bootstrap';  
 
 // import { OverlayModule } from '@angular/cdk/overlay';
+// import { SwiperModule } from 'swiper/angular';
 
 
 
@@ -46,7 +47,8 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
     ColorPickerModule,
     EditorPicModule,
     BrowserAnimationsModule,
-    CarouselModule
+    CarouselModule,
+    // SwiperModule
 
     // OwlModule
     // NgbModule

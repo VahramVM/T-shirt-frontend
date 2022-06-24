@@ -1,4 +1,9 @@
 
+.responsive {
+  width: 10%;
+  height: auto;
+}
+
 .Content_Preview  {
    top: 10px;    
    left: 480px;
@@ -166,6 +171,8 @@ div.colorBox div:hover {
 .images-item-upload:hover {
   opacity: 0.7;
 }
+
+
 
 .custom-item {
   /* border-bottom: 2px solid #f3f3f3; */

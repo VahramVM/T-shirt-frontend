@@ -1,6 +1,7 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, Input, HostListener, ChangeDetectorRef } from '@angular/core';
 import 'fabric';
-import { max } from 'rxjs/operators';
+
+// var svgToMiniDataURI = require('mini-svg-data-uri');
 // import 'jquery';
 
 import { SiteLayoutComponent } from '../shared/layouts/site-layout/site-layout.component'
@@ -9,25 +10,32 @@ import { SiteLayoutComponent } from '../shared/layouts/site-layout/site-layout.c
 
 declare var Caman: any;
 declare const fabric: any;
-declare const $: any
+declare const $: any;
 
 @Component({
   selector: 'app-editor-pic',
   templateUrl: './editor-pic.component.html',
   styleUrls: ['./editor-pic.component.css']
 })
+
+// @HostListener('window:resize', ['$event'])
+
+
 export class EditorPicComponent implements AfterViewInit {
   @ViewChild('htmlCanvas') htmlCanvas: ElementRef;
-
+  // @HostListener('window:resize', ['$event'])
   private canvas: fabric.Canvas;
+
+
   public props = {
+
     canvasFill: '#flffhf',
-    canvasImage: 'assets/img/Trafaret3.png',
+    drawFill: 'green',
+    canvasImage: 'assets/img/Trafaret3.1.png',
     id: null,
     opacity: null,
     fill: null,
     fontSize: null,
-    lineHeight: null,
     charSpacing: null,
     fontWeight: null,
     fontStyle: null,
@@ -35,18 +43,39 @@ export class EditorPicComponent implements AfterViewInit {
     fontFamily: null,
     distance: null,
     TextDecoration: '',
+    diametr: 300,
+    curvedTextLeft: null,
+    curvedTextTop: null,
+    textCurved: 1,
+    inputDisabled: null,
+    textStraight: null,
   };
 
-  private clamp(num: number, min: number, max: number) {
-    return Math.min(Math.max(num, min), max);
-  };
-  public textString: string;
+  public canvasHtml
+  public textString: string = '';
   public url: string | ArrayBuffer = '';
-  public size: any = {
-    // left: 350,
-    width: 430,
-    height: 530
-  };
+
+
+
+  onResize(event) {
+    // console.log(window.innerWidth);
+
+    this.canvas.setWidth(this.siteLayout.canvasHtmlWidth);
+    this.canvas.setHeight(this.siteLayout.canvasHtmlHeight);
+    this.setCanvasImage()
+    this.canvas.renderAll()
+  }
+
+
+
+  // public sizeCanvas: { width: number, height: number } = {
+  //   // left: 350,
+  //   width:  430, 
+  //   height: 530
+  // };
+
+
+
 
   public json: any;
   private globalEditor = false;
@@ -79,9 +108,18 @@ export class EditorPicComponent implements AfterViewInit {
   public _setScalingProperties
 
   public linkk = false;
+  public drawObject = null;
 
   public objWidthLimit = 170;
   public objHeightLimit = 170;
+
+  public test = null;
+  public path = null;
+  public svg_text = null;
+  public intCountText = null;
+
+
+  public imageFilter = null;
 
 
   // public checked = false;
@@ -132,7 +170,7 @@ export class EditorPicComponent implements AfterViewInit {
     $('.owl-theme').on('changed.owl-carousel', (event) => {
       var current = event.item.index;
       this.id = $(event.target).find(".owl-item").eq(current).find("img").attr('id');
-      console.log(this.id);
+      // console.log(this.id);
 
     })
   }
@@ -142,20 +180,25 @@ export class EditorPicComponent implements AfterViewInit {
   }
 
 
-  ngAfterViewInit(): void {
 
+  ngAfterViewInit(): void {
     // setup front side canvas
     this.canvas = new fabric.Canvas(this.htmlCanvas.nativeElement, {
       hoverCursor: 'pointer',
       selection: true,
-      selectionBorderColor: 'blue'
+      selectionBorderColor: 'blue',
+      preserveObjectStacking: true
     });
-
 
 
     this.canvas.on({
 
+      'after:render': (e) => {
+        this.canvas.calcOffset();
+        // this.addText();
+        // console.log('ofsett', this.canvas.calcOffset().backgroundColor);
 
+      },
 
       'object:moving': (e) => {
 
@@ -164,6 +207,7 @@ export class EditorPicComponent implements AfterViewInit {
         var imageCoordy = matrix[5];
         this.siteLayout.imageCoordy = Math.floor(imageCoordy);
         this.siteLayout.imageCoordx = Math.floor(imageCoordx);
+
 
         var obj = e.target;
         if (obj.height > obj.canvas.height || obj.width > obj.canvas.width) {
@@ -191,10 +235,6 @@ export class EditorPicComponent implements AfterViewInit {
 
       },
 
-
-
-
-
       'object:scaling': (e) => {
 
         let obj = e.target;
@@ -217,7 +257,7 @@ export class EditorPicComponent implements AfterViewInit {
         // this.top = obj.top;
         // this.left = obj.left;
 
-        console.log(obj.minScaleLimit, obj.left);
+        // console.log(obj.minScaleLimit, obj.left);
 
 
         let matrix = e.target.calcTransformMatrix();
@@ -225,6 +265,12 @@ export class EditorPicComponent implements AfterViewInit {
         var imageCoordy = matrix[5];
         this.siteLayout.imageCoordy = Math.floor(imageCoordy);
         this.siteLayout.imageCoordx = Math.floor(imageCoordx);
+
+
+        let imgWith = obj.width * obj.scaleX;
+        let imgHeight = obj.height * obj.scaleY;
+        this.siteLayout.imgWith = Math.floor(imgWith);
+        this.siteLayout.imgHeigt = Math.floor(imgHeight);
 
         // console.log(imageCoordy, imageCoordx, obj.getBoundingRect().left);
 
@@ -238,10 +284,8 @@ export class EditorPicComponent implements AfterViewInit {
         }
 
 
-
-
         if (imageCoordx > 252) {
-          console.log(this.canvas.getActiveObject().minScaleLimit, 'activeObject');
+          // console.log(this.canvas.getActiveObject().minScaleLimit, 'activeObject');
           // imageCoordx = 10;
           obj.oCoords.tr.x = 252 - e.target.width * e.target.scaleX + 60;
           this.canvas.getActiveObject().left = this.canvas.getActiveObject().getBoundingRect().left + this.canvas.getActiveObject().cornerSize;
@@ -259,10 +303,13 @@ export class EditorPicComponent implements AfterViewInit {
           obj.top = obj.getBoundingRect().top + obj.cornerSize;
         }
 
+
         this.canvas.getActiveObject().left = this.canvas.getActiveObject().getBoundingRect().left + this.canvas.getActiveObject().cornerSize;
         this.canvas.getActiveObject().top = this.canvas.getActiveObject().getBoundingRect().top + this.canvas.getActiveObject().cornerSize;
-        obj.minScaleLimit = 0.08;
-        console.log('General', obj.minScaleLimit);
+
+        //minimum imagr size
+        obj.minScaleLimit = 0.02;
+        // console.log('General', obj.minScaleLimit);
 
 
 
@@ -353,92 +400,21 @@ export class EditorPicComponent implements AfterViewInit {
 
       'object:modified': (e) => {
 
-        let matrix = e.target.calcTransformMatrix();
-        var imageCoordx = matrix[4];
-        var imageCoordy = matrix[5];
-        this.siteLayout.imageCoordy = Math.floor(imageCoordy);
-        this.siteLayout.imageCoordx = Math.floor(imageCoordx);
-      },
-      'object:selected': (e) => {
-
-        this.canvas._activeObject.angle
-
-
         let obj = e.target;
 
-
-        if (obj.height > obj.canvas.height || obj.width > obj.canvas.width) {
-          obj.originY;
-          obj.originX;
-        }
-        obj.setCoords();
-
-        // top-left  corner
-        if (obj.getBoundingRect().top - (obj.cornerSize + 100) < 0 ||
-          obj.getBoundingRect().left - (obj.cornerSize + 100) < 0
-        ) {
-          obj.top = Math.max(obj.top, obj.top - obj.getBoundingRect().top + (obj.cornerSize + 100));
-          obj.left = Math.max(obj.left, obj.left - obj.getBoundingRect().left + (obj.cornerSize + 100));
-        }
-
-        // e.target.bringToFront()
-        const selectedObject = e.target;
-
         let matrix = e.target.calcTransformMatrix();
+
         var imageCoordx = matrix[4];
         var imageCoordy = matrix[5];
         this.siteLayout.imageCoordy = Math.floor(imageCoordy);
         this.siteLayout.imageCoordx = Math.floor(imageCoordx);
 
-        this.selected = selectedObject.type;
-        selectedObject.hasRotatingPoint = true;
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = '#FF7F50';
-
-
-        this.resetPanels();
-        this.getOpacity();
-        this.getDistance();
-        this.canvas.renderAll();
-
-
-        if (selectedObject.type !== 'group' && selectedObject) {
-
-          this.getId();
-          this.getOpacity();
-          this.getDistance();
-
-          switch (selectedObject.type) {
-            case 'rect':
-            case 'circle':
-            case 'triangle':
-              this.figureEditor = true;
-              this.getFill();
-              break;
-            case 'i-text':
-              this.textEditor = true;
-              // this.getLineHeight();
-              // this.getCharSpacing();
-              this.getBold();
-              this.getFill();
-              this.getTextDecoration();
-              this.getTextAlign();
-              this.getFontFamily();
-              this.bringToFront()
-              // this.sendToBack()
-              this.getLineHeight();
-              this.getCharSpacing();
-              this.getFontSize();
-              break;
-            case 'image':
-              // this.imageEditor = true;
-              this.getOpacity();
-              this.getDistance();
-              break;
-          }
-        }
       },
-      'selection:updated': (e) => {
+
+
+      'selection:created': (e) => {
+        console.log('create');
+        let obj = e.target
 
         let matrix = e.target.calcTransformMatrix();
         var imageCoordx = matrix[4];
@@ -446,11 +422,16 @@ export class EditorPicComponent implements AfterViewInit {
         this.siteLayout.imageCoordy = Math.floor(imageCoordy);
         this.siteLayout.imageCoordx = Math.floor(imageCoordx);
 
-        const selectedObject = e.target;
-        this.selected = selectedObject.type;
-        selectedObject.hasRotatingPoint = true;
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = '#FF7F50';
+        let imgWith = obj.width * obj.scaleX;
+        let imgHeight = obj.height * obj.scaleY;
+        this.siteLayout.imgWith = Math.floor(imgWith);
+        this.siteLayout.imgHeigt = Math.floor(imgHeight);
+
+
+        this.selected = obj.type;
+        obj.hasRotatingPoint = true;
+        obj.transparentCorners = false;
+        obj.cornerColor = '#FF7F50';
         // e.target.bringToFront()
         // this.canvas.getActiveObject()
         this.canvas.renderAll()
@@ -460,13 +441,13 @@ export class EditorPicComponent implements AfterViewInit {
         this.getDistance();
 
 
-        if (selectedObject.type !== 'group' && selectedObject) {
+        if (obj.type !== 'group' && obj) {
 
           this.getId();
           this.getOpacity();
           this.getDistance();
 
-          switch (selectedObject.type) {
+          switch (obj.type) {
             case 'rect':
             case 'circle':
             case 'triangle':
@@ -484,7 +465,7 @@ export class EditorPicComponent implements AfterViewInit {
               this.getFontFamily();
               this.bringToFront()
               // this.sendToBack()
-              this.getLineHeight();
+              // this.getLineHeight();
               this.getCharSpacing();
               this.getFontSize();
               break;
@@ -495,154 +476,225 @@ export class EditorPicComponent implements AfterViewInit {
           }
         }
       },
+
+      'selection:updated': (e) => {
+        console.log('selection:updated');
+        let obj = e.target
+
+        let matrix = e.target.calcTransformMatrix();
+        var imageCoordx = matrix[4];
+        var imageCoordy = matrix[5];
+        this.siteLayout.imageCoordy = Math.floor(imageCoordy);
+        this.siteLayout.imageCoordx = Math.floor(imageCoordx);
+
+        let imgWith = obj.width * obj.scaleX;
+        let imgHeight = obj.height * obj.scaleY;
+        this.siteLayout.imgWith = Math.floor(imgWith);
+        this.siteLayout.imgHeigt = Math.floor(imgHeight);
+
+
+        this.selected = obj.type;
+        obj.hasRotatingPoint = true;
+        obj.transparentCorners = false;
+        obj.cornerColor = '#FF7F50';
+        // e.target.bringToFront()
+        // this.canvas.getActiveObject()
+        this.canvas.renderAll()
+        this.resetPanels();
+
+        this.getOpacity();
+        this.getDistance();
+
+
+        if (obj.type !== 'group' && obj) {
+
+          this.getId();
+          this.getOpacity();
+          this.getDistance();
+
+          switch (obj.type) {
+            case 'rect':
+            case 'circle':
+            case 'triangle':
+              this.figureEditor = true;
+              this.getFill();
+              break;
+            case 'i-text':
+              this.textEditor = true;
+              // this.getLineHeight();
+              // this.getCharSpacing();
+              this.getBold();
+              this.getFill();
+              this.getTextDecoration();
+              this.getTextAlign();
+              this.getFontFamily();
+              this.bringToFront()
+              // this.sendToBack()
+              // this.getLineHeight();
+              this.getCharSpacing();
+              this.getFontSize();
+
+              break;
+            case 'image':
+              this.getOpacity();
+              this.getDistance();
+
+              break;
+          }
+        }
+      },
+
       'selection:cleared': (e) => {
+
+        let obj = e.target
         // console.log('cleared');
         this.selected = null;
         this.resetPanels();
-        console.log('clear');
+        // console.log('clear');
+        this.siteLayout.imageCoordx = null;
+        this.siteLayout.imageCoordy = null;
+        this.siteLayout.imgWith = null;
+        this.siteLayout.imgHeigt = null;
 
 
+      },
 
+      // 'before:path:created': (e) => {
+      //   var path = new fabric.Path('M 88 320 A 196 50 0 0 1 280 319', {
+      //     strokeWidth: 1,
+      //     absolutePositioned: true
+      //   })
+      //   var pathInfo = fabric.util.getPathSegmentsInfo(path.path);
+      //   path.segmentsInfo = pathInfo;
+      //   var pathLength = pathInfo[pathInfo.length - 1].length;
+      //   var text = 'This is a demo ';
+      //   var fontSize = 3.5 * pathLength / text.length;
+      //   const text1 = new fabric.Text(text, { fontSize: fontSize, path: path, top: path.top, left: path.left });
+
+      //   text1.width = 115;
+      //   text1.height = 65;
+      //   this.canvas.add(text1);
+
+
+      // },
+
+      'path:created': (e) => {
+        this.canvasCount += 1;
+
+
+        this.canvas.isDrawingMode = false;
+        // this.canvas.on('mouse:up', () => this.canvas.setActiveObject());
+        console.log(this.canvas.item(this.canvasCount - 1));
+
+        this.canvas.getObjects().indexOf(e.target)
+        // this.canvas.setActiveObject(this.canvas.item(this.canvasCount- 1));
+        this.selectItemAfterAdded(this.canvas.item(this.canvasCount - 1))
       }
+
     });
 
-    this.canvas.setWidth(this.size.width);
-    this.canvas.setHeight(this.size.height);
 
+    this.canvas.setWidth(this.siteLayout.canvasHtmlWidth);
+    this.canvas.setHeight(this.siteLayout.canvasHtmlHeight);
+    this.canvas.renderAll()
     // get references to the html canvas element & its context
     this.canvas.on('mouse:down', (e) => {
       const canvasElement: any = document.getElementById('canvas');
     });
 
-  }
 
+
+
+
+    this.canvas.on('mouse:over', () => {
+
+      let color = this.props.drawFill;
+
+      this.canvas.freeDrawingBrush.color = color;
+
+      // alert("mouse up!");
+      // this.canvas.add(refRect);
+      // isMouseDown = false;
+      // freeDrawing=false; // **Disables line drawing
+    });
+
+  }
 
   /*------------------------Block elements------------------------*/
 
   // Block "Size"
 
-  changeSize() {
-    this.canvas.setWidth(this.size.width);
-    this.canvas.setHeight(this.size.height);
+  // changeSize() {
+  //   this.canvas.setWidth(this.siteLayout.canvasHtml);
+  //   this.canvas.setHeight(500);
+  //   this.canvas.renderAll()
 
-  }
+  // }
 
   // Block "Add text"
 
-  addText() {
+
+  resizeEbiten(iframe, parentId, aspectRatio) {
+    let parent = document.getElementById(parentId);
+    let w = parent.clientWidth;
+    iframe.width = w;
+    iframe.height = w * aspectRatio;
+    iframe.contentWindow.addEventListener('resize', () => {
+      let w = parent.clientWidth;
+      iframe.width = w;
+      iframe.height = w * aspectRatio;
+    });
+  }
 
 
-    console.log('I am text');
+  canvasDrawing(target) {
 
-
-    $(".but").on('click', () => {
-      console.log('lolo')
-    })
-    this.canvas.selection
 
     let numLeft = this.left;
     let numTop = this.top;
 
-    function addDistancePoint(m, n) {
-      var point = '<img src="../assets/img/green-crosshair-png-4.png" class="distance" style="position:absolute; top:' + (m - 13.1) + 'px; left:' + (n - 18) + 'px; cursor:crosshair; width:35px; height:35px;"/>';
-      $(".canvas-container").append(point);
-    }
-
-    function addArrowUp(o, p) {
-      var arrow = '<img src="../assets/img/output-onlinepngtools-up.png" class="distance" style="position:absolute; top:' + p + 'px; left:' + (o - 5) + 'px; cursor:crosshair; width:10px; height:40px;"/>';
-      $(".canvas-container").append(arrow);
-    }
-
-    function addArrow(o, p) {
-      var arrow = '<img src="../assets/img/green-arrow-clipart-2.png" class="distance" style="position:absolute; top:' + o + 'px; left:' + p + 'px; cursor:crosshair; width:40px; height:10px;"/>';
-      $(".canvas-container").append(arrow);
-    }
+    console.log(this.canvasCount);
+    console.log(this.props.drawFill);
 
     function addDeleteBtn(x, y) {
+
       $(".deleteBtn").remove();
-
-      $(".distance").remove();
       var btnLeft = x - numLeft;
-      var btnTop = y + numTop + 1;
-      var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px; left:' + btnLeft + 'px; cursor:pointer; width:25px; height:25px;"/>';
+      var btnTop = y + numTop;
+      var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
       $(".canvas-container").append(deleteBtn);
-
     }
+
 
 
     this.canvas.on('object:modified', function (e) {
-
       addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
-
-      $(".distance").remove();
-      var matrix = e.target.calcTransformMatrix();
-      var imageCoordx = matrix[4];
-      var imageCoordy = matrix[5];
-      addDistancePoint(imageCoordy, imageCoordx);
-      addArrow(imageCoordy, 2)
-
-      $(".distanceY").remove();
-      var matrix = e.target.calcTransformMatrix();
-      var imageCoordx = matrix[4]
-      var imageCoordy = matrix[5]
-      addDistancePoint(imageCoordy, imageCoordx);
-      addArrowUp(imageCoordx, 2)
+      // console.log(e.target.oCoords.tr.x, e.target.oCoords.tr.y);
     });
 
     this.canvas.on('selection:updated', function (e) {
       // console.log('updated');
       addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
-      $(".distance").remove();
-      var matrix = e.target.calcTransformMatrix();
-      var imageCoordx = matrix[4]
-      var imageCoordy = matrix[5]
-      addDistancePoint(imageCoordy, imageCoordx);
-      addArrow(imageCoordy, 2);
-
-      $(".distanceY").remove();
-      var matrix = e.target.calcTransformMatrix();
-      var imageCoordx = matrix[4]
-      var imageCoordy = matrix[5]
-      addDistancePoint(imageCoordy, imageCoordx);
-      addArrowUp(imageCoordx, 2)
     });
 
     this.canvas.on('object:added', function (e) {
+      $(".deleteBtn").remove();
       // console.log('added');
       addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
-
-      $(".distance").remove();
-      var matrix = e.target.calcTransformMatrix();
-      var imageCoordx = matrix[4]
-      var imageCoordy = matrix[5]
-      addDistancePoint(imageCoordy, imageCoordx);
-      addArrow(imageCoordy, 2);
-
-      $(".distanceY").remove();
-      var matrix = e.target.calcTransformMatrix();
-      var imageCoordx = matrix[4]
-      var imageCoordy = matrix[5]
-      addDistancePoint(imageCoordy, imageCoordx);
-      addArrowUp(imageCoordx, 2)
     });
 
     this.canvas.on('object:selected', function (e) {
+      $(".deleteBtn").remove();
       // console.log('selected');
       addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
 
-      $(".distance").remove();
-      var matrix = e.target.calcTransformMatrix();
-      var imageCoordx = matrix[4]
-      var imageCoordy = matrix[5]
-      addDistancePoint(imageCoordy, imageCoordx);
-      addArrow(imageCoordy, 2);
 
-      $(".distanceY").remove();
-      var matrix = e.target.calcTransformMatrix();
-      var imageCoordx = matrix[4]
-      var imageCoordy = matrix[5]
-      addDistancePoint(imageCoordy, imageCoordx);
-      addArrowUp(imageCoordx, 2)
+    });
+
+    this.canvas.on('object:selected', function (e) {
+      $(".deleteBtn").remove();
+      // console.log('selected');
+      addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
 
     });
 
@@ -650,67 +702,48 @@ export class EditorPicComponent implements AfterViewInit {
       $(".deleteBtn").remove();
       // console.log('removed');
       addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
-
-      $(".distance").remove();
-      var matrix = e.target.calcTransformMatrix();
-      var imageCoordx = matrix[4]
-      var imageCoordy = matrix[5]
-      addDistancePoint(imageCoordy, imageCoordx);
-
     });
 
     this.canvas.on('before:selection:cleared', function (e) {
-      // console.log('deselected');
       $(".deleteBtn").remove();
-      $(".distance").remove();
+      // console.log('deselected');
     });
-
 
     this.canvas.on('object:scaling', function (e) {
-
-      let obj = e.target
-
-      // obj.minScaleLimit = 0.45;
-
-      // console.log('Text', obj.minScaleLimit);
-
-
       $(".deleteBtn").remove();
-      $(".distance").remove();
-    });
+      let obj = e.target
+      obj.minScaleLimit = 0.02;
 
+    });
     this.canvas.on('object:moving', function (e) {
       $(".deleteBtn").remove();
-      $(".distance").remove();
     });
     this.canvas.on('object:rotating', function (e) {
       $(".deleteBtn").remove();
-      $(".distance").remove();
     });
 
+
     $(document).on('click', ".deleteBtn", (event) => {
-      this.siteLayout.activatebutton = true;
 
       event.stopImmediatePropagation()
       this.canvasCount -= 1;
 
       console.log(this.canvasCount);
       if (this.canvasCount === 0) {
-        this.siteLayout.firstImage = 0;
+        // this.siteLayout.isOpasity=true;
         $('.owl-nav').show();
         $(".canvas").css("z-index", 0);
-        this.siteLayout.toggle = false;
         this.disableBtn = false;
+        this.siteLayout.toggle = false;
+        console.log('delete---');
 
       }
-
-
       const activeObject = this.canvas.getActiveObject();
       const activeGroup = this.canvas.getActiveObjects();
       if (activeObject) {
         this.canvas.remove(activeObject);
         $(".deleteBtn").remove();
-        $(".distance").remove();
+
         // this.textString = '';
       } else if (activeGroup) {
         this.canvas.discardActiveObject();
@@ -723,64 +756,497 @@ export class EditorPicComponent implements AfterViewInit {
 
 
 
-    if (this.textString) {
-      this.canvasCount += 1;
-      console.log(this.canvasCount);
+    switch (target) {
+
+      case "select":
+        this.canvas.isDrawingMode = false;
+
+        break;
+      case "erase":
+        this.canvas.freeDrawingBrush = new fabric.EraserBrush(this.canvas);
+        this.canvas.freeDrawingBrush.width = 10;
+        this.canvas.isDrawingMode = true;
+        break;
+      case "undo":
+        this.canvas.freeDrawingBrush = new fabric.EraserBrush(this.canvas);
+        this.canvas.freeDrawingBrush.width = 10;
+        this.canvas.isDrawingMode = true;
+        break;
+      case "draw":
+        let color = this.props.drawFill;
+        console.log(color);
+        this.siteLayout.toggle = true;
+        this.canvas.freeDrawingBrush = new fabric.PencilBrush(this.canvas);
+        this.drawObject = this.canvas.freeDrawingBrush;
+        this.canvas.freeDrawingBrush.color = color;
+        this.canvas.freeDrawingBrush.width = 4;
+        this.canvas.isDrawingMode = true;
+        this.canvas.renderAll();
+        this.selectItemAfterAdded(this.canvas.item(0))
+        break;
+      case "spray":
+        let colorSpray = this.props.drawFill;
+        this.siteLayout.toggle = true;
+        this.canvas.freeDrawingBrush = new fabric.SprayBrush(this.canvas);
+        this.canvas.freeDrawingBrush.color = colorSpray;
+        this.canvas.freeDrawingBrush.width = 15;
+        this.canvas.isDrawingMode = true;
+        // this.canvas.setActiveObject(Object[0]);
+        this.selectItemAfterAdded(this.canvas.item(0))
+
+        break;
+      default:
+        break;
+    }
+  }
 
 
-      const text = new fabric.IText(this.textString, {
 
-        left: 170,
-        top: 115,
-        fontFamily: 'helvetica',
-        color: "rgba(34, 34, 1, 0.3)",
-        angle: 0,
-        fill: '#000000',
-        // scaleX: 0.8,
-        // scaleY: 0.8,
-        fontWeight: '',
-        // fontSize: 80,
-        hasRotatingPoint: true,
-        strokeWidth: 10,
-        strokeMiterLimit: 15,
-        cornerSize: 11,
-        padding: 10,
+  addText() {
 
+    // console.log(this.props.textCurved);
+
+    console.log(this.canvasCount);
+
+
+    if (this.props.diametr < 299) {
+
+      console.log('<280');
+      this.props.inputDisabled = 'inputDisabled';
+
+      this.canvas.remove(this.canvas.getActiveObject())
+
+      let numLeft = this.left;
+      let numTop = this.top;
+
+      this.canvas.on('before:selection:cleared', function (e) {
+        // console.log('deselected');
+        $(".deleteBtn").remove();
+        $(".distance").remove();
+      });
+
+
+      this.canvas.on('object:scaling', function (e) {
+
+        let obj = e.target
+
+        // obj.minScaleLimit = 0.45;
+
+        // console.log('Text', obj.minScaleLimit);
+
+
+        $(".deleteBtn").remove();
+        $(".distance").remove();
+      });
+
+      this.canvas.on('object:moving', function (e) {
+        $(".deleteBtn").remove();
+        $(".distance").remove();
+      });
+      this.canvas.on('object:rotating', function (e) {
+        $(".deleteBtn").remove();
+        $(".distance").remove();
+      });
+
+      $(document).on('click', ".deleteBtn", (event) => {
+        this.siteLayout.activatebutton = true;
+
+        event.stopImmediatePropagation()
+        this.canvasCount -= 1;
+        console.log(this.canvasCount);
+
+        // console.log(this.canvasCount);
+        if (this.canvasCount === 0) {
+          this.siteLayout.firstImage = 0;
+          $('.owl-nav').show();
+          $(".canvas").css("z-index", 0);
+          this.siteLayout.toggle = false;
+          this.disableBtn = false;
+
+        }
+
+
+        const activeObject = this.canvas.getActiveObject();
+        const activeGroup = this.canvas.getActiveObjects();
+        if (activeObject) {
+
+          this.canvas.remove(activeObject);
+          $(".deleteBtn").remove();
+          $(".distance").remove();
+          // this.textString = '';
+        } else if (activeGroup) {
+          this.canvas.discardActiveObject();
+          const self = this;
+          activeGroup.forEach((object) => {
+            self.canvas.remove(object);
+          });
+        }
       });
 
 
 
-      $('#shadowText').on('click', () => {
-        if (!this.siteLayout.shadowText) {
-          text.shadow = null;
+      const path = new fabric.Path(`'M 90 425 A ${this.props.diametr} ${this.props.diametr} 0 0 1 271 420 '`, {
+        strokeWidth: 1,
+        absolutePositioned: true,
+        fill: false,
+      })
 
-        } else if (this.siteLayout.shadowText) {
+      // const path = new fabric.Path(`'M 90 425 A ${this.props.diametr} ${this.props.diametr} 0 0 1 271 420 '`, {
+      //   strokeWidth: 1,
+      //   absolutePositioned: true,
+      //   fill: false,
+      // })
 
-          text.setShadow(this.shadowTEXT);
-          text.shadow = new fabric.Shadow(this.shadowTEXT);
-          // text.set('shadow', new fabric.Shadow(this.shadowTEXT));
-          console.log('text');
+      // const pathText = this.props.path
+
+
+      var pathInfo = fabric.util.getPathSegmentsInfo(path.path);
+      path.segmentsInfo = pathInfo;
+      let textPathLength = pathInfo[pathInfo.length - 1].length;
+      let k = this.textString.length;
+      let fontSize = 1.9 * textPathLength / this.textString.length;
+      this.props.fontSize = fontSize;
+
+      if (this.textString) {
+        // this.canvasCount += 1;
+        const text = new fabric.IText(this.textString, {
+          fontFamily: this.props.fontFamily || 'helvetica',
+          fontSize: fontSize,
+          path: path,
+          // top: path.top,
+          // left: path.left,
+          // originX: 'center',
+          // originY: 'center',
+          // left: 170,
+          // top: 115,
+          // fontSize: 30,
+          // color: "rgba(34, 34, 1, 0.3)",
+          // angle: 0,
+          fill: this.props.fill || '#000000',
+          scaleX: 0.8,
+          scaleY: 0.8,
+          // fontSize: 80,
+          hasRotatingPoint: true,
+          // strokeWidth: 10,
+          // strokeMiterLimit: 15,
+          // width: 50,
+          cornerSize: this.canvas.width / 40,
+          padding: 0,
+          centeredRotation: true,
+          // charSpacing: 50,
+          // pathStartOffset: 80,
+          // centerTransform: true,
+          // textAlign: 'center',
+          // pathSide: 'right',
+          // strokeDashOffset: 30, 
+          // originX: 'center',
+          // originY: 'center',
+        },
+          this.path = path,
+
+        );
+
+
+        $('#shadowText').on('click', () => {
+          if (!this.siteLayout.shadowText) {
+            text.shadow = null;
+
+          } else if (this.siteLayout.shadowText) {
+
+            // text.setShadow(this.shadowTEXT) old version;
+
+            // text.set('shadow', new fabric.Shadow(this.shadowTEXT));
+            text.shadow = new fabric.Shadow(this.shadowTEXT);
+            // text.set('shadow', new fabric.Shadow(this.shadowTEXT));
+            // console.log('text');
+
+          }
+
+          this.canvas.renderAll();
+
+        }),
+
+          this.extend(text, this.randomId());
+
+
+
+        // text.charSpacing = pathLength;
+
+        // this.canvas.on('object:modified', function (e) {
+
+
+
+        //   console.log(e.target, e.target.oCoords.mb.y);
+        //   // this.props.curvedTextLeft = e.target.oCoords.mb.x;
+        //   // this.props.curvedTextTop = e.target.oCoords.mb.y;
+
+        // });
+
+        // this.canvas.setActiveObject(text)
+        console.log(this.canvas.getActiveObject());
+
+
+        this.canvas.add(text);
+
+        this.canvas.renderAll();
+        // this.canvas.add(path);
+        console.log(this.canvas.toSVG());
+
+        // console.log(this.canvas.toSVG().toString().replace("<defs>", '').replace("</defs>", str));
+        // text.left = this.props.curvedTextLeft;
+        // text.top = this.props.curvedTextTop;
+        this.canvas.centerObjectH(text);
+        text.top = this.canvas.height / 3;
+        this.selectItemAfterAdded(text);
+        // this.textString = '';
+        console.log(this.canvasCount);
+
+      }
+
+    } else {
+
+      this.props.inputDisabled = 'inputDisabled';
+      this.canvas.remove(this.canvas.getActiveObject())
+
+      if (this.props.diametr === 300) {
+        this.intCountText += 1;
+        this.canvasCount += 1;
+        console.log(this.canvasCount);
+      }
+
+      console.log('>280');
+
+
+      let numLeft = this.left;
+      let numTop = this.top;
+
+      this.canvas.on('before:selection:cleared', function (e) {
+        // console.log('deselected');
+        $(".deleteBtn").remove();
+        $(".distance").remove();
+      });
+
+
+      this.canvas.on('object:scaling', function (e) {
+
+        let obj = e.target
+
+        // obj.minScaleLimit = 0.45;
+
+        // console.log('Text', obj.minScaleLimit);
+
+
+        $(".deleteBtn").remove();
+        $(".distance").remove();
+      });
+
+      this.canvas.on('object:moving', function (e) {
+        $(".deleteBtn").remove();
+        $(".distance").remove();
+      });
+      this.canvas.on('object:rotating', function (e) {
+        $(".deleteBtn").remove();
+        $(".distance").remove();
+      });
+
+      $(document).on('click', ".deleteBtn", (event) => {
+        this.siteLayout.activatebutton = true;
+
+        event.stopImmediatePropagation()
+        this.canvasCount -= 1;
+        console.log(this.canvasCount);
+
+        // console.log(this.canvasCount);
+        if (this.canvasCount === 0) {
+          this.siteLayout.firstImage = 0;
+          $('.owl-nav').show();
+          $(".canvas").css("z-index", 0);
+          this.siteLayout.toggle = false;
+          this.disableBtn = false;
 
         }
 
+
+        const activeObject = this.canvas.getActiveObject();
+        const activeGroup = this.canvas.getActiveObjects();
+        if (activeObject) {
+
+          this.canvas.remove(activeObject);
+          $(".deleteBtn").remove();
+          $(".distance").remove();
+          // this.textString = '';
+        } else if (activeGroup) {
+          this.canvas.discardActiveObject();
+          const self = this;
+          activeGroup.forEach((object) => {
+            self.canvas.remove(object);
+          });
+        }
+      });
+
+      const path = new fabric.Path(`'M 69 435 A ${this.props.diametr} ${this.props.diametr} 0 0 1 271 420 '`, {
+        strokeWidth: 1,
+        absolutePositioned: true,
+        fill: false,
+      })
+
+      // const pathText = this.props.path
+
+
+      var pathInfo = fabric.util.getPathSegmentsInfo(path.path);
+      path.segmentsInfo = pathInfo;
+      let textPathLength = pathInfo[pathInfo.length - 1].length;
+      // let k = this.textString.length;
+      let fontSize = 1.9 * this.props.diametr / this.textString.length;
+      this.props.fontSize = fontSize;
+
+      if (this.textString) {
+        // this.canvasCount += 1;
+        const text = new fabric.IText(this.textString, {
+          fontFamily: 'helvetica',
+          fontSize: fontSize,
+          // path: path,
+          // top: path.top,
+          // left: path.left,
+          // originX: 'center',
+          // originY: 'center',
+          // left: 170,
+          // top: 115,
+          // fontSize: 30,
+          // color: "rgba(34, 34, 1, 0.3)",
+          // angle: 0,
+          fill: '#000000',
+          scaleX: 0.5,
+          scaleY: 0.5,
+          // fontSize: 80,
+          hasRotatingPoint: true,
+          // strokeWidth: 10,
+          // strokeMiterLimit: 15,
+          // width: 50,
+          cornerSize: this.canvas.width / 40,
+          padding: 0,
+          centeredRotation: true,
+          // charSpacing: 50,
+          // pathStartOffset: 80,
+          // centerTransform: true,
+          // textAlign: 'center',
+          // pathSide: 'right',
+          // strokeDashOffset: 30, 
+          // originX: 'center',
+          // originY: 'center',
+        },
+          // this.path = path,
+        );
+
+        this.props.textStraight = text
+
+        $('#shadowText').on('click', () => {
+          if (!this.siteLayout.shadowText) {
+            text.shadow = null;
+
+          } else if (this.siteLayout.shadowText) {
+
+            // text.setShadow(this.shadowTEXT) old version;
+
+            // text.set('shadow', new fabric.Shadow(this.shadowTEXT));
+            text.shadow = new fabric.Shadow(this.shadowTEXT);
+            // text.set('shadow', new fabric.Shadow(this.shadowTEXT));
+            // console.log('text');
+
+          }
+
+          this.canvas.renderAll();
+
+        }),
+
+          this.extend(text, this.randomId());
+
+
+
+        // text.charSpacing = pathLength;
+
+
+        this.canvas.add(text);
+
         this.canvas.renderAll();
+        // this.canvas.add(path);
 
-      }),
+        // console.log(this.canvas.toSVG().toString().replace("<defs>", '').replace("</defs>", str));
 
-        this.extend(text, this.randomId());
-      this.canvas.add(text);
-      this.selectItemAfterAdded(text);
-      this.textString = '';
+        this.canvas.centerObjectH(text);
+        text.top = this.canvas.height / 3;
+        this.selectItemAfterAdded(text);
+        // this.textString = '';
+        console.log(this.canvasCount);
+      }
     }
+
+    // this.canvas.remove(...this.canvas.getObjects())
+
+
+    // console.log(this.canvas.toSVG());
+    // console.log(this.props.fontSize);
+
+    // this.canvas.add(text1);
   }
+
+  discardActiveObj() {
+    this.props.diametr = 300;
+    this.canvas.discardActiveObject().renderAll()
+  }
+
+  reRender() {
+
+    this.canvas.getObjects().filter((o) => {
+      if (o.get('type') === 'i-text') {
+        return this.canvas.setActiveObject(o);
+      }
+    });
+
+    if (this.canvasCount !== 0) {
+
+      // this.selectItemAfterAdded(this.props.textStraight);
+      this.canvas.remove(this.canvas.getActiveObject());
+      this.canvas.add(this.props.textStraight);
+      this.canvas.renderAll();
+    }
+
+  }
+
+  reRender1() {
+
+    this.canvas.getObjects().filter((o) => {
+      if (o.get('type') === 'i-text') {
+        return this.canvas.setActiveObject(o);
+      }
+    });
+
+    // if (this.canvasCount !== 0) {
+
+    //   // this.selectItemAfterAdded(this.props.textStraight);
+    //   this.canvas.remove(this.canvas.getActiveObject());
+    //   this.canvas.add(this.props.textStraight);
+    //   this.canvas.renderAll();
+    // }
+
+  }
+
+
 
   // Block "Add images"
 
   getImgPolaroid(event: any) {
 
+
+    // this.canvas.add(svg_image);
+    // this.canvas.renderAll();
+
+
+
     this.canvas.includeDefaultValues;
 
-    console.log(' I am image');
+
+    // console.log(' I am image');
 
     // let matrix = this.canvas.getActiveObject().calcTransformMatrix();
 
@@ -995,7 +1461,6 @@ export class EditorPicComponent implements AfterViewInit {
       const activeObject = this.canvas.getActiveObject();
       const activeGroup = this.canvas.getActiveObjects();
       this.canvasCount -= 1;
-      console.log(this.canvasCount);
       if (this.canvasCount === 0) {
         this.siteLayout.firstImage = 0;
         $('#shadowSVG').prop('checked', false);
@@ -1024,57 +1489,66 @@ export class EditorPicComponent implements AfterViewInit {
       }
     });
 
-
-
-
     this.canvasCount += 1;
-    console.log(this.canvasCount);
+    // console.log(this.canvasCount);
     const el = event;
-    console.log(el);
+    // console.log(el);
 
-    fabric.loadSVGFromURL(el, (objects, options) => {
-      const image = fabric.util.groupSVGElements(objects, options);
+
+    fabric.Image.fromURL(el, (image) => {
+      // const image = fabric.util.groupSVGElements(objects, options);
+      console.log(this.canvas.getWidth());
 
       image.set({
+
+        // multiplier: 0.5,
+        // originX: 'center',
+        // originY: 'center',
         // shadow: this.shadow,
         // strokeWidth: 3,
         // stroke: '#000',
-        left: 140,
-        top: 150,
+        left: 130,
+        // top: 50,
         angle: 0,
-        padding: 10,
-        cornerSize: 11,
+        padding: 0,
+        cornerSize: this.canvas.width / 40,
         hasRotatingPoint: true,
-        originX: 'left',
+        top: this.canvas.height / 3.7
+        // originX: 'left',
         // width: image.width * image.scaleX -80,
         // height: image.height * image.scaleY - 80
-        // originY: 'center'
+        // originY:s 'center'
 
       });
       // value.shadow.affectStroke = false;
-      image.scaleToWidth(130);
-      image.scaleToHeight(130);
+      // image.panToActiveObject()
+      image.scaleToWidth(this.canvas.width / 3);
+      image.scaleToHeight(this.canvas.width / 3);
       this.extend(image, this.randomId());
 
 
-      // image.filters.push(new fabric.Image.filters.ColorMatrix({
-      //   matrix: [1, 0, 0, 0, 0,
-      //     0, 1, 0, 0, 0,
-      //     0, 0, 1, 0, 0,
-      //     0, 0, 0, 1, 1]
-      // }));
+      image.filters.push(new fabric.Image.filters.ColorMatrix({
+        matrix: [1, 0, 0, 0, 0,
+          0, 1, 0, 0, 0,
+          0, 0, 1, 0, 0,
+          0, 0, 1, 1, 0]
+      }));
 
 
 
+      image.applyFilters();
       this.canvas.add(image);
+      // this.canvas.centerObject(image);
+      this.canvas.centerObjectH(image);
+      image.top = this.canvas.height / 3.7;
       this.canvas.renderAll();
 
       $('#hue-value').on('change', () => {
-        console.log(this.siteLayout.removeColorValue);
+        // console.log(this.siteLayout.removeColorValue);
         image.filters = [];
         if (this.filterName == 'blackWhite') {
           image.filters.push(new fabric.Image.filters.BlackWhite());
-        } else if (this.filterName == 'vintage') {
+        } else if (this.filterName == 'vintage' && this.canvas.getActiveObject()) {
           image.filters.push(new fabric.Image.filters.Vintage());
         } else if (this.filterName == 'sepia') {
 
@@ -1086,15 +1560,18 @@ export class EditorPicComponent implements AfterViewInit {
             matrix: [1, 0, 0, 0, 0,
               0, 1, 0, 0, 0,
               0, 0, 1, 0, 0,
-              0, 0, 0, 1, 0]
+              0, 0, 1, 1, 0]
           }));
-          console.log('ooooooooooooooooo');
+          // console.log('ooooooooooooooooo');
 
         }
         image.filters.push(new fabric.Image.filters.RemoveColor({
-          distance: this.siteLayout.removeColorValue
+          distance: this.props.distance,
+
         }
         ));
+        console.log(this.props.distance);
+        this.imageFilter = image;
         image.applyFilters();
         this.canvas.renderAll();
       });
@@ -1145,7 +1622,7 @@ export class EditorPicComponent implements AfterViewInit {
         this.canvas.renderAll();
       })
 
-      console.log(image);
+      // console.log(image);
 
 
       $('#shadowSVG').on('change', () => {
@@ -1156,7 +1633,7 @@ export class EditorPicComponent implements AfterViewInit {
         } else if (this.siteLayout.shadowSVG) {
 
           image.setShadow(this.shadow);
-          console.log(image);
+          // console.log(image);
 
           // image.shadow = new fabric.Shadow(this.shadow);
 
@@ -1210,7 +1687,7 @@ export class EditorPicComponent implements AfterViewInit {
 
           image.filters.push(new fabric.Image.filters.Sepia());
           image.applyFilters();
-          console.log(image);
+          // console.log(image);
           //.filters[0].matrix[0]
           this.canvas.renderAll();
         }),
@@ -1227,7 +1704,7 @@ export class EditorPicComponent implements AfterViewInit {
 
           image.filters.push(new fabric.Image.filters.Invert());
           image.applyFilters();
-          console.log(image);
+          // console.log(image);
           //.filters[0].matrix[0]
           this.canvas.renderAll();
         }),
@@ -1242,32 +1719,32 @@ export class EditorPicComponent implements AfterViewInit {
 
           image.filters = [];
 
-          if (this.id == "svg") {
-            console.log(this.id);
-            image.filters = [];
+          // if (this.id == "svg") {
+          //   console.log("svg");
+          //   image.filters = [];
 
-            image.filters.push(new fabric.Image.filters.ColorMatrix({
-              matrix: [1, 0, 0, 0, 0,
-                0, 1, 0, 0, 0,
-                0, 0, 1, 0, 0,
-                0, 0, 0, 1, 0]
-            }));
-            image.applyFilters();
-            this.canvas.renderAll();
-          }
-          else if (this.id == "svgPhoto") {
-            console.log(this.id);
-            image.filters = [];
+          //   image.filters.push(new fabric.Image.filters.ColorMatrix({
+          //     matrix: [1, 0, 0, 0, 0,
+          //       0, 1, 0, 0, 0,
+          //       0, 0, 1, 0, 0,
+          //       0, 0, 1, 1, 0]
+          //   }));
+          //   image.applyFilters();
+          //   this.canvas.renderAll();
+          // }
+          // else if (this.id == "svgPhoto") {
+          //   console.log("svgPhoto");
+          //   image.filters = [];
 
-            image.filters.push(new fabric.Image.filters.ColorMatrix({
-              matrix: [1, 0, 0, 0, 0,
-                0, 1, 0, 0, 0,
-                0, 0, 1, 0, 0,
-                0, 0, 0, 1, 1]
-            }));
-            image.applyFilters();
-            this.canvas.renderAll();
-          }
+          //   image.filters.push(new fabric.Image.filters.ColorMatrix({
+          //     matrix: [1, 0, 0, 0, 0,
+          //       0, 1, 0, 0, 0,
+          //       0, 0, 1, 0, 0,
+          //       0, 0, 1, 1, 0]
+          //   }));
+          //   image.applyFilters();
+          //   this.canvas.renderAll();
+          // }
 
 
           image.applyFilters();
@@ -1277,6 +1754,8 @@ export class EditorPicComponent implements AfterViewInit {
         this.selectItemAfterAdded(image);
     });
   }
+
+
 
 
 
@@ -1319,10 +1798,16 @@ export class EditorPicComponent implements AfterViewInit {
     });
 
     this.canvas.on('object:selected', function (e) {
+      this.onObjectSelected(e)
+
+
       $(".deleteBtn").remove();
       // console.log('selected');
       addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
+
     });
+
+    // this.canvas.on('object:selected', this.onObjectSelected(e));
 
     this.canvas.on('object:removed', function (e) {
       $(".deleteBtn").remove();
@@ -1338,7 +1823,7 @@ export class EditorPicComponent implements AfterViewInit {
     this.canvas.on('object:scaling', function (e) {
       let obj = e.target
 
-      obj.minScaleLimit = 0.08;
+      obj.minScaleLimit = 0.02;
 
       $(".deleteBtn").remove();
 
@@ -1358,7 +1843,7 @@ export class EditorPicComponent implements AfterViewInit {
       const activeObject = this.canvas.getActiveObject();
       const activeGroup = this.canvas.getActiveObjects();
       this.canvasCount -= 1;
-      console.log(this.canvasCount);
+      // console.log(this.canvasCount);
       if (this.canvasCount === 0) {
         $('#shadow').prop('checked', false);
         this.siteLayout.shadow = false;
@@ -1387,21 +1872,25 @@ export class EditorPicComponent implements AfterViewInit {
 
     if (url) {
       this.canvasCount += 1;
+      console.log(url);
 
-      console.log(this.canvasCount);
+      // console.log(this.canvasCount);
       fabric.Image.fromURL(url, (image1) => {
 
 
         image1.set({
-          left: 110,
-          top: 50,
+          // originX: 'center',
+          // originY: 'center',
+          // left: 110,
+          // top: 50,
+          quality: 1,
           angle: 0,
-          padding: 10,
-          cornerSize: 11,
+          padding: 0,
+          cornerSize: this.canvas.width / 40,
           hasRotatingPoint: true
         });
-        image1.scaleToWidth(160);
-        image1.scaleToHeight(160);
+        image1.scaleToWidth(this.canvas.width / 3);
+        image1.scaleToHeight(this.canvas.width / 3);
         this.extend(image1, this.randomId());
         image1.filters.push(new fabric.Image.filters.ColorMatrix({
           matrix: [1, 0, 0, 0, 0,
@@ -1409,12 +1898,16 @@ export class EditorPicComponent implements AfterViewInit {
             0, 0, 1, 0, 0,
             0, 0, 0, 1, 0]
         }));
+
+
         this.canvas.add(image1);
+        this.canvas.centerObjectH(image1);
+        image1.top = this.canvas.height / 2.7;
         image1.applyFilters();
         this.canvas.renderAll();
 
         $('#hue-value').on('change', () => {
-          console.log(this.siteLayout.removeColorValue);
+          // console.log(this.siteLayout.removeColorValue);
           image1.filters = [];
           if (this.filterName == 'blackWhite') {
             image1.filters.push(new fabric.Image.filters.BlackWhite());
@@ -1433,7 +1926,7 @@ export class EditorPicComponent implements AfterViewInit {
             }));
           }
           image1.filters.push(new fabric.Image.filters.RemoveColor({
-            distance: this.siteLayout.removeColorValue
+            distance: this.props.distance
           }
           ));
           image1.applyFilters();
@@ -1493,7 +1986,7 @@ export class EditorPicComponent implements AfterViewInit {
           } else if (this.siteLayout.shadow) {
 
             image1.setShadow(this.shadowPNJ);
-            console.log('mmmm');
+            // console.log('mmmm');
 
           }
           // this.canvas.toDataURL({
@@ -1547,7 +2040,7 @@ export class EditorPicComponent implements AfterViewInit {
 
             image1.filters.push(new fabric.Image.filters.Sepia());
             image1.applyFilters();
-            console.log(image1);
+            // console.log(image1);
             //.filters[0].matrix[0]
             this.canvas.renderAll();
           }),
@@ -1564,7 +2057,7 @@ export class EditorPicComponent implements AfterViewInit {
 
             image1.filters.push(new fabric.Image.filters.Invert());
             image1.applyFilters();
-            console.log(image1);
+            // console.log(image1);
             //.filters[0].matrix[0]
             this.canvas.renderAll();
           }),
@@ -1613,11 +2106,12 @@ export class EditorPicComponent implements AfterViewInit {
   // Block "Add figure"
 
   addFigure(figure) {
+
     let numLeft = this.left;
     let numTop = this.top;
 
     this.canvasCount += 1;
-    console.log(this.canvasCount);
+    // console.log(this.canvasCount);
 
     function addDeleteBtn(x, y) {
 
@@ -1667,7 +2161,7 @@ export class EditorPicComponent implements AfterViewInit {
     this.canvas.on('object:scaling', function (e) {
       $(".deleteBtn").remove();
       let obj = e.target
-      obj.minScaleLimit = 0.25;
+      obj.minScaleLimit = 0.02;
 
     });
     this.canvas.on('object:moving', function (e) {
@@ -1683,7 +2177,7 @@ export class EditorPicComponent implements AfterViewInit {
       event.stopImmediatePropagation()
       this.canvasCount -= 1;
 
-      console.log(this.canvasCount);
+      // console.log(this.canvasCount);
       if (this.canvasCount === 0) {
         this.siteLayout.firstImage = 0;
         // this.siteLayout.isOpasity=true;
@@ -1715,7 +2209,7 @@ export class EditorPicComponent implements AfterViewInit {
       case 'rectangle':
         add = new fabric.Rect({
           cornerSize: 11,
-          padding: 30,
+          padding: 0,
           width: 200,
           height: 100,
           left: 20,
@@ -1727,7 +2221,7 @@ export class EditorPicComponent implements AfterViewInit {
       case 'square':
         add = new fabric.Rect({
           cornerSize: 11,
-          padding: 10,
+          padding: 0,
           width: 100, height: 100, left: 20, top: 20, angle: 0,
           fill: '#4caf50'
         });
@@ -1735,7 +2229,7 @@ export class EditorPicComponent implements AfterViewInit {
       case 'triangle':
         add = new fabric.Triangle({
           cornerSize: 11,
-          padding: 10,
+          padding: 0,
           width: 100, height: 100, left: 20, top: 20, fill: '#2196f3'
 
         });
@@ -1745,13 +2239,13 @@ export class EditorPicComponent implements AfterViewInit {
       case 'circle':
         add = new fabric.Circle({
           cornerSize: 11,
-          padding: 10,
+          padding: 0,
           radius: 50, left: 20, top: 20, fill: '#ff5722'
         });
         break;
     }
     $('#shadow').on('click', () => {
-      console.log('figure');
+      // console.log('figure');
 
       const obj = this.canvas.getActiveObject()
       if (!this.siteLayout.shadow) {
@@ -1796,6 +2290,13 @@ export class EditorPicComponent implements AfterViewInit {
     // }
   }
 
+  drawFill() {
+    // if (!this.props.canvasImage) {
+    // this.canvas.backgroundColor = this.props.canvasFill;
+    this.canvas.renderAll();
+    // }
+  }
+
   extend(obj, id) {
     obj.toObject = ((toObject) => {
       return function () {
@@ -1806,22 +2307,27 @@ export class EditorPicComponent implements AfterViewInit {
     })(obj.toObject);
   }
 
-  setCanvasImage() {
+  productsTypeColor() {
     this.canvas.backgroundColor = this.siteLayout.arrColor[0]
+  }
+
+  setCanvasImage() {
 
     const image = this.props.canvasImage;
     this.canvas.setBackgroundImage(image,
       this.canvas.renderAll.bind(this.canvas), {
       opacity: 1,
-      angle: 0,
+      angle: 20,
       left: 0,
       top: 0,
       originX: 'left',
       originY: 'top',
-      scaleX: 0.85,
-      scaleY: 0.85,
-      width: this.size.width + 76,
-      height: this.size.height + 93
+      crossOrigin: 'anonymous',
+
+      scaleX: this.canvas.width / 360,
+      scaleY: this.canvas.height / 460,
+      // width: this.siteLayout.canvasHtmlWidth,
+      // height: this.siteLayout.canvasHtmlHeight + 93
       // crossOrigin: 'anonymous'
       // this.canvas.setBackgroundImage(img);
       // this.canvas.requestRenderAll();
@@ -1845,10 +2351,10 @@ export class EditorPicComponent implements AfterViewInit {
     }
   }
 
+
   setActiveStyle(styleName, value: string | number, object: fabric.IText) {
     object = object || this.canvas.getActiveObject() as fabric.IText;
     if (!object) { return; }
-
     if (object.setSelectionStyles && object.isEditing) {
       const style = {};
       style[styleName] = value;
@@ -1931,33 +2437,33 @@ export class EditorPicComponent implements AfterViewInit {
         case 'rect':
           clone = new fabric.Rect(activeObject.toObject());
           this.canvasCount += 1;
-          console.log(this.canvasCount);
+          // console.log(this.canvasCount);
           break;
         case 'circle':
           clone = new fabric.Circle(activeObject.toObject());
           this.canvasCount += 1;
-          console.log(this.canvasCount);
+          // console.log(this.canvasCount);
           break;
         case 'triangle':
           clone = new fabric.Triangle(activeObject.toObject());
           this.canvasCount += 1;
-          console.log(this.canvasCount);
+          // console.log(this.canvasCount);
           break;
         case 'i-text':
           clone = new fabric.IText('', activeObject.toObject());
           this.canvasCount += 1;
-          console.log(this.canvasCount);
+          // console.log(this.canvasCount);
           this.canvas.getActiveObject();
 
           break;
         case 'image':
           clone = fabric.util.object.clone(activeObject);
           this.canvasCount += 1;
-          console.log(this.canvasCount);
+          // console.log(this.canvasCount);
           break;
       }
       if (clone) {
-        clone.set({ left: 20, top: 20 });
+        clone.set({ left: 80, top: 80 });
         this.canvas.add(clone);
         this.selectItemAfterAdded(clone);
         this.defoultUpdate()
@@ -1969,6 +2475,9 @@ export class EditorPicComponent implements AfterViewInit {
 
   getId() {
     this.props.id = this.canvas.getActiveObject().toObject().id;
+    this.canvas.toSVG();
+    console.log(this.canvas);
+
   }
 
   setId() {
@@ -1986,6 +2495,8 @@ export class EditorPicComponent implements AfterViewInit {
 
   getDistance() {
     this.props.distance = this.getActiveStyle('distance', null) * 10;
+    console.log('getDistance');
+
   }
 
   setDistance() {
@@ -2008,28 +2519,25 @@ export class EditorPicComponent implements AfterViewInit {
     this.setActiveStyle('fill', this.props.fill, null);
   }
 
-  getLineHeight() {
-    this.props.lineHeight = this.getActiveStyle('lineHeight', null);
-  }
-
-  setLineHeight() {
-    this.setActiveStyle('lineHeight', parseFloat(this.props.lineHeight), null);
-  }
-
   getCharSpacing() {
     this.props.charSpacing = this.getActiveStyle('charSpacing', null);
   }
 
   setCharSpacing() {
+
     this.setActiveStyle('charSpacing', this.props.charSpacing, null);
   }
 
   getFontSize() {
     this.props.fontSize = this.getActiveStyle('fontSize', null);
+    console.log('getFontSize');
+
   }
 
   setFontSize() {
     this.setActiveStyle('fontSize', parseInt(this.props.fontSize, 10), null);
+    console.log('setFontSize');
+
   }
 
   getBold() {
@@ -2091,9 +2599,17 @@ export class EditorPicComponent implements AfterViewInit {
 
   removeSelected() {
 
+
+    this.props.diametr = 300;
     this.canvasCount -= 1;
     const activeObject = this.canvas.getActiveObject();
     const activeGroup = this.canvas.getActiveObjects();
+
+    if (this.canvas.getActiveObject().type === 'i-text') {
+      this.intCountText -= 1;
+      console.log(this.intCountText);
+
+    }
 
     if (this.canvasCount === 0) {
       this.siteLayout.firstImage = 0;
@@ -2124,16 +2640,17 @@ export class EditorPicComponent implements AfterViewInit {
     const activeObject = this.canvas.getActiveObject();
     const activeGroup = this.canvas.getActiveObjects();
 
+
     if (activeObject) {
       activeObject.bringToFront();
-      this.canvas.renderAll()
+      // this.canvas.renderAll()
       // this.cleanSelect();
       // activeObject.opacity = 1;
     } else if (activeGroup) {
       this.canvas.discardActiveObject();
       activeGroup.forEach((object) => {
         object.bringToFront();
-        this.canvas.renderAll()
+        // this.canvas.renderAll()
       });
     }
   }
@@ -2153,6 +2670,7 @@ export class EditorPicComponent implements AfterViewInit {
       activeGroup.forEach((object) => {
         object.sendToBack();
         this.canvas.renderAll()
+
       });
     }
   }
@@ -2190,11 +2708,14 @@ export class EditorPicComponent implements AfterViewInit {
 
   rasterize() {
     const image = new Image(360, 460);
+    // this.canvas.toSVG();
+    // const w = window.open('');
+    // w.document.write(this.canvas.toSVG());
 
     image.src = this.canvas.toDataURL({ format: 'png', multiplier: 4 });
     // this.setCanvasImage();
 
-    this.canvas.renderAll();
+
     var txt;
     var r = confirm("Press a button!");
     if (r == true) {
@@ -2205,63 +2726,102 @@ export class EditorPicComponent implements AfterViewInit {
       return
     }
     alert(txt);
+
     // const w = window.open();
     // w.document.write( image.outerHTML );
     this.reqImage = image.src;
-    const json = JSON.stringify(this.canvas);
+
+    this.canvas.renderAll();
+
     const lastColor = this.props.canvasFill;
 
 
-    localStorage.setItem('Canvas', json);
 
-    // const w = window.open('');
-    // `<img style="margin-left:300px; top:-280px"  height="1000px" src="assets/img/Trafaret3.png" br> myFunction() { alert('ok')}  <button onclick="myFunction()">Print</button>`
-    // console.log(this.canvas.toDataURL());
-    this.saveCanvasToJSON();
+
+    // this.saveCanvasToJSON();
 
     this.canvas.backgroundImage = null;
     this.canvas.backgroundColor = null;
-    ;
-    console.log('I am here');
 
-    // this.canvas.renderAll();
-    const image1 = new Image();
-    image1.src = this.canvas.toDataURL({ format: 'png', multiplier: 4 });
-    this.reqImage1 = image1.src;
 
-    this.canvas.backgroundColor = JSON.parse(localStorage.getItem('Canvas')).background
 
-    // this.canvas.backgroundColor = ;
 
-    // this.loadCanvasFromJSON();
+    this.canvas.renderAll();
+    this.canvas.backgroundImage = null;
+
+    // this.canvas.remove(...this.canvas.getObjects())
+
+    // console.log(this.canvas.toSVG());
+    let svgUrll
+
+    switch (this.props.textCurved) {
+      case 1:
+        svgUrll = this.canvas.toSVG();
+
+        break;
+
+      case 2:
+        svgUrll = this.canvas.toSVG().toString().replace(/<tspan/g, "<textPath xlink:href='#urve'><tspan").replace(/tspan>/g, "tspan></textPath>").replace(/tspan x="/g, 'tspan x="0*').replace("</defs>", `</defs> ${this.path.toSVG()}`).replace('style="stroke', 'id = "urve" style="stroke').replace("</defs>", `</defs> ${this.path.toSVG()}`).replace('style="stroke', 'id = "urve1" style="stroke');
+
+        break;
+    }
+
+    // if (this.props.textCurved === 1) {
+    //   svgUrll = this.canvas.toSVG();
+    // } else if () {
+
+    //   svgUrll = this.canvas.toSVG().toString().replace(/<tspan/i, "<textPath xlink:href='#urve'><tspan").replace(/tspan>/i, "tspan></textPath>").replace(/tspan x="/i, 'tspan x="0*').replace("</defs>", `</defs> ${this.path.toSVG()}`).replace('style="stroke', 'id = "urve" style="stroke').replace("</defs>", `</defs> ${this.path.toSVG()}`).replace('style="stroke', 'id = "urve1" style="stroke');
+    // }
+
+
+    // var svgUrl = this.canvas.toSVG().toString().replace(/<tspan/i, "<textPath xlink:href='#urve'><tspan").replace(/tspan>/i, "tspan></textPath>").replace(/tspan x="/i, 'tspan x="0*').replace("</defs>", `</defs> ${this.path.toSVG()}`).replace('style="stroke', 'id = "urve" style="stroke').replace("</defs>", `</defs> ${this.path.toSVG()}`).replace('style="stroke', 'id = "urve1" style="stroke');
+
+
+    // var svgUrl = this.canvas.toSVG().replace("<defs>", '').replace("</defs>", this.test);
+
+    // console.log(svgUrl);
+    // console.log(svgUrl);
+
+
+
+    var svg_image = "data:image/svg+xml," + encodeURIComponent(svgUrll);
+
+
+
+    this.reqImage1 = svg_image;
+
+
+    //  this.canvas.getActiveObject().width;
+    //  this.canvas.getActiveObject().height;
+
+    // console.log(link.outerHTML);
+
+
+    this.loadCanvasFromJSON();
     this.setCanvasImage();
-    this.canvas.backgroundColor = lastColor;
+    // this.canvas.backgroundColor = lastColor;
 
     const CANVAS = localStorage.getItem('Canvas');
-    console.log(CANVAS, 'lololo');
 
-    // this.canvas.loadFromJSON(CANVAS, () => {
-
-    //   this.canvas.renderAll();
-    // });
-
-    // this.canvas.setBackgroundImage('assets/img/Trafaret3.png', 
-    // this.canvas.renderAll.bind(this.canvas), {
   }
 
   rasterizeSVG() {
 
-    const image = new Image();
+    const image = new Image(360, 460);
     // image.scaleToWidth(150);
     // image.scaleToHeight(150);
     const w = window.open('');
+
     // this.canvas.toSVG()
     w.document.write(this.canvas.toSVG());
 
     var svgBlob = new Blob([this.canvas.toSVG()], { type: "image/svg+xml;charset=utf-8" });
+    this.canvas.renderAll();
+
     var svgUrl = URL.createObjectURL(svgBlob);
     var link = document.createElement('a');
     link.href = svgUrl;
+
     link.download = image.outerHTML;
     document.body.appendChild(link);
     link.click();
@@ -2269,7 +2829,7 @@ export class EditorPicComponent implements AfterViewInit {
 
 
 
-    return 'data:image/svg+xml;utf8,' + encodeURIComponent(this.canvas.toSVG());
+    // return 'data:image/svg+xml;utf8,' + encodeURIComponent(this.canvas.toSVG());
 
     //stackowerflow
     // var svgData = $("#figureSvg")[0].outerHTML;
@@ -2287,8 +2847,8 @@ export class EditorPicComponent implements AfterViewInit {
   saveCanvasToJSON() {
     const json = JSON.stringify(this.canvas);
     // localStorage.setItem('Kanvas', json);
-    console.log('json');
-    console.log(json);
+    // console.log('json');
+    // console.log(json);
 
   }
 
@@ -2313,7 +2873,7 @@ export class EditorPicComponent implements AfterViewInit {
   }
 
   topp() {
-    console.log(this.canvas._activeObject.top);
+    // console.log(this.canvas._activeObject.top);
 
   }
 
