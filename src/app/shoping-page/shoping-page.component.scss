@@ -1,0 +1,11 @@
+[type=radio]:checked + div {
+    outline: 2px solid rgb(0, 0, 0);
+    background-color: #000;
+    color: #ffffff;
+  }
+
+  [type=radio]:disabled + div {
+    outline: 2px solid rgb(255, 223, 229);
+    background-color: rgb(255, 223, 229);
+    color: rgb(255, 116, 144);
+  }

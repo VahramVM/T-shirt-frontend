@@ -1,16 +1,26 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, Input, HostListener, ChangeDetectorRef } from '@angular/core';
 import 'fabric';
+import { Color } from 'fabric/fabric-impl';
+import { Width } from 'ngx-owl-carousel-o/lib/services/carousel.service';
+import { DataService } from '../shared/layouts/servises/data.service';
+import { OrderDatasService } from '../shared/layouts/servises/order-datas.service';
+import { Injectable } from '@angular/core'
 
 // var svgToMiniDataURI = require('mini-svg-data-uri');
 // import 'jquery';
 
 import { SiteLayoutComponent } from '../shared/layouts/site-layout/site-layout.component'
+import { SizeFormatComponent } from '../shared/layouts/site-layout/size-format/size-format.component';
 // import { SiteLayoutComponent } from '../ass'
 
 
 declare var Caman: any;
 declare const fabric: any;
 declare const $: any;
+
+@Injectable({
+  providedIn: 'root',
+})
 
 @Component({
   selector: 'app-editor-pic',
@@ -23,16 +33,16 @@ declare const $: any;
 
 export class EditorPicComponent implements AfterViewInit {
   @ViewChild('htmlCanvas') htmlCanvas: ElementRef;
+
   // @ViewChild('htmlCanvas') htmlCanvas1: ElementRef;
 
   // @HostListener('window:resize', ['$event'])
-  private canvas: fabric.Canvas;
+  public canvas: fabric.Canvas;
   // private canvas1: fabric.Canvas;
-
 
   public props = {
 
-    canvasFill: '#flffhf',
+    canvasFill: null,
     drawFill: 'green',
     canvasImage: 'assets/img/Trafaret3.1.png',
     id: null,
@@ -52,6 +62,7 @@ export class EditorPicComponent implements AfterViewInit {
     textCurved: 1,
     inputDisabled: null,
     textStraight: null,
+    brandName: '',
   };
 
   public canvasHtml;
@@ -66,6 +77,7 @@ export class EditorPicComponent implements AfterViewInit {
     // --!
     this.canvas.setWidth(this.siteLayout.canvasHtmlWidth);
     this.canvas.setHeight(this.siteLayout.canvasHtmlHeight);
+    // this.canvas.backgroundImage = null;
     this.setCanvasImage();
     this.canvas.renderAll();
 
@@ -127,8 +139,9 @@ export class EditorPicComponent implements AfterViewInit {
   public svg_text = null;
   public intCountText = null;
 
-
   public imageFilter = null;
+  public imgPadding = 0;
+
 
 
   // public checked = false;
@@ -171,7 +184,34 @@ export class EditorPicComponent implements AfterViewInit {
     affectStroke: false
   }
 
-  constructor(private siteLayout: SiteLayoutComponent, private element: ElementRef) {
+  public a: number;
+  public b: number;
+  public c: number;
+
+  constructor(private siteLayout: SiteLayoutComponent,
+    private element: ElementRef,
+    private dataService: DataService,
+    private orderDatas: OrderDatasService
+  ) {
+
+    this.a = dataService.formatTopKey;
+
+    this.dataService.formatTop.subscribe(
+      res => this.a = res
+    );
+
+    this.b = dataService.sizePrintKey;
+
+    this.dataService.formatA4Horizontal.subscribe(
+      res => this.b = res
+    );
+
+    this.c = dataService.formatWithHeight;
+
+    this.dataService.formatA4Vertical.subscribe(
+      res => this.c = res
+    );
+
 
   }
 
@@ -223,367 +263,294 @@ export class EditorPicComponent implements AfterViewInit {
 
 
 
-    function addArrowUp(o, p) {
-      var arrow = '<img src="../assets/img/output-onlinepngtools-up.png" class="distance" style="position:absolute; top:' + p + 'px; left:' + (o - 5) + 'px; cursor:crosshair; width:10px; height:40px;"/>';
-      $(".canvas-container").append(arrow);
-    }
 
-    function addArrow(o, p) {
-      var arrow = '<img src="../assets/img/green-arrow-clipart-2.png" class="distance" style="position:absolute; top:' + o + 'px; left:' + p + 'px; cursor:crosshair; width:40px; height:10px;"/>';
-      $(".canvas-container").append(arrow);
-    }
-
-    function addDeleteBtn(x, y) {
-
-      $(".deleteBtn").remove();
-      var btnLeft = x - numLeft;
-      var btnTop = y + numTop;
-      var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
-      $(".canvas-container").append(deleteBtn);
-    }
 
 
 
     this.canvas.on({
 
+
       'after:render': (e) => {
         this.canvas.calcOffset();
-        // this.canvas1.calcOffset();
-        
 
       },
 
       'object:moving': (e) => {
 
-        
-
+        let obj = e.target;
+        obj.setCoords();
+        obj.saveState();
         let matrix = e.target.calcTransformMatrix();
-        var imageCoordx = matrix[4];
-        var imageCoordy = matrix[5];
+        let imageCoordx = matrix[4];
+        let imageCoordy = matrix[5];
         this.siteLayout.imageCoordy = Math.floor(imageCoordy);
         this.siteLayout.imageCoordx = Math.floor(imageCoordx);
+        let moveSizeLimit = this.canvas.width / this.b;
+        let cornerSize = this.canvas.width / 40;
+        let sumLeft = obj.getBoundingRect().left;
+        let sumTop = obj.getBoundingRect().top;
+        let sumWidth = obj.getBoundingRect().width;
+        let sumHeight = obj.getBoundingRect().height;
+        let Delta = this.canvas.height - 2 * (moveSizeLimit + cornerSize) - (this.canvas.width - 2 * (moveSizeLimit + cornerSize)) * this.dataService.formatWithHeight;
 
-
-        var obj = e.target;
-        if (obj.height > obj.canvas.height || obj.width > obj.canvas.width) {
-          obj.originY;
-          obj.originX;
-        }
-        obj.setCoords();
+        // if (obj.height > obj.canvas.height || obj.width > obj.canvas.width) {
+        //   obj.originY;
+        //   obj.originX;
+        // }
 
         // top-left  corner
-        if (obj.getBoundingRect().top - (obj.cornerSize + 100) < 0 ||
-          obj.getBoundingRect().left - (obj.cornerSize + 100) < 0
+        console.log('fromEditor', this.dataService.sizePrintKey, this.b);
+
+
+        if (sumTop < cornerSize + moveSizeLimit - this.canvas.width * this.a || sumLeft < cornerSize + moveSizeLimit
         ) {
-          obj.top = Math.max(obj.top, obj.top - obj.getBoundingRect().top + (obj.cornerSize + 100));
-          obj.left = Math.max(obj.left, obj.left - obj.getBoundingRect().left + (obj.cornerSize + 100));
+
+          obj.top = Math.max(obj.top, obj.top - sumTop + cornerSize + moveSizeLimit - this.canvas.width * this.a);
+          obj.left = Math.max(obj.left, obj.left - sumLeft + (cornerSize + moveSizeLimit));
         }
 
         // bot-right corner
 
-        if (obj.getBoundingRect().top + obj.getBoundingRect().height + obj.cornerSize + 100 > obj.canvas.height ||
-          obj.getBoundingRect().left + obj.getBoundingRect().width + obj.cornerSize + 100 > obj.canvas.width) {
+        if (sumTop + sumHeight + Delta + cornerSize + moveSizeLimit + this.canvas.width * this.a > obj.canvas.height ||
+          sumLeft + sumWidth > obj.canvas.width - cornerSize - moveSizeLimit) {
 
-          obj.top = Math.min(obj.top, obj.canvas.height - obj.getBoundingRect().height + obj.top - obj.getBoundingRect().top - obj.cornerSize - 100);
-          obj.left = Math.min(obj.left, obj.canvas.width - obj.getBoundingRect().width + obj.left - obj.getBoundingRect().left - obj.cornerSize - 100);
+          obj.top = Math.min(obj.top, obj.canvas.height - sumHeight + obj.top - sumTop - cornerSize - moveSizeLimit - Delta - this.canvas.width * this.a);
+          obj.left = Math.min(obj.left, obj.canvas.width - sumWidth + obj.left - sumLeft - cornerSize - moveSizeLimit);
         }
 
         $(".deleteBtn").remove();
         $(".distance").remove();
+        $(".distanceY").remove();
+
+        // addDistancePoint(imageCoordy, imageCoordx);
+        this.addArrowUp(imageCoordx, 2)
+
+        // addDistancePoint(imageCoordy, imageCoordy);
+        this.addArrow(imageCoordy, 2);
+
+        // addDeleteBtn(obj.oCoords.mb.x, obj.oCoords.mb.y);
+        obj.setCoords();
+        obj.saveState();
+        this.canvas.renderAll()
 
       },
-
-
 
       'object:scaling': (e) => {
 
 
         let obj = e.target;
+        obj.setCoords();
+        obj.saveState();
+        let cornerSize = this.canvas.width / 40;
+        let moveSiseLimit = this.canvas.width / this.dataService.sizePrintKey;
+        let sumLeft = obj.getBoundingRect().left;
+        let sumTop = obj.getBoundingRect().top;
+        let sumWith = obj.getBoundingRect().width;
+        let sumHeight = obj.getBoundingRect().height;
+
+        let matrix = e.target.calcTransformMatrix();
+        let imageCoordx = matrix[4];
+        let imageCoordy = matrix[5];
+
+        let angle = Math.abs(((this.canvas.getActiveObject().angle) * Math.PI) / 180);
+        let activeObject = this.canvas.getActiveObject();
+        let nerqnadzic = Math.sqrt(Math.pow(activeObject.width, 2) + Math.pow(activeObject.height, 2));
+        let cos = Math.abs(Math.cos(angle));
+        let sin = Math.abs(Math.sin(angle));
+        let formatWidth = (this.canvas.width) - 2 * (moveSiseLimit + cornerSize);
+        let formatHeight = formatWidth * this.dataService.formatWithHeight;
+        let moveSizeLimit = this.canvas.width / this.dataService.sizePrintKey;
+        let Delta = this.canvas.height - 2 * (moveSizeLimit + cornerSize) - (this.canvas.width - 2 * (moveSizeLimit + cornerSize)) * this.dataService.formatWithHeight;
 
 
-        // let obj = e.target;
-        let boundingRect = obj.getBoundingRect(true);
-        console.log(boundingRect.left, boundingRect.top, boundingRect.width);
-        
-        if (boundingRect.left < 150
-          || boundingRect.top < 150
-          || boundingRect.left + boundingRect.width > this.canvas.getWidth() - 50
-          || boundingRect.top + boundingRect.height > this.canvas.getHeight()) {
-            // matrix[4] = 150;
-            // matrix[5] = 150;
-          // obj.transformMatrix = [ 1,0,0,1,0,5];
-          obj.top = 150;
-          obj.left = 150;
-          
-          // // obj.angle = 0;
-          // obj.scaleX = 1;
-          // obj.scaleY = 1;
-          obj.setCoords();
-          obj.saveState();
+
+        // top-left  corner
+        if (sumLeft < cornerSize + moveSiseLimit) {
+          obj.left = Math.max(obj.left, obj.left - sumLeft + (cornerSize + moveSiseLimit));
         }
-        // let obj = e.target;
-        // let boundingRect = obj.getBoundingRect(true);
-        // if (boundingRect.left < 80
-        //   || boundingRect.top < 80
-        //   || boundingRect.left + boundingRect.width > this.canvas.getWidth()
-        //   || boundingRect.top + boundingRect.height > this.canvas.getHeight()) {
-        //   obj.top = 150;
-        //   obj.left = 150;
-        //   // obj.angle = 0;
-        //   // obj.scaleX = 1;
-        //   // obj.scaleY = 1;
-        //   obj.setCoords();
-        //   obj.saveState();
-        // }
 
+        if (sumTop < cornerSize + moveSiseLimit - this.canvas.width * this.a) {
+          obj.top = Math.max(obj.top, obj.top - sumTop + cornerSize + moveSiseLimit - this.canvas.width * this.a);
+        }
+
+        //top right corner
+        if (sumLeft + sumWith + cornerSize + moveSiseLimit > obj.canvas.width) {
+          obj.left = Math.min(obj.left, obj.canvas.width - sumWith + obj.left - sumLeft - cornerSize - moveSiseLimit);
+        }
+
+        // bot right corner
+        if (sumTop + sumHeight + obj.cornerSize + moveSiseLimit + Delta + this.canvas.width * this.a > obj.canvas.width) {
+
+          obj.top = Math.min(obj.top, obj.canvas.height - sumHeight + obj.top - sumTop - obj.cornerSize - moveSiseLimit - Delta - this.canvas.width * this.a);
+        }
+
+        // With limit
+
+        if (sumWith > formatWidth) {
+          if (activeObject.angle === 0 || activeObject.angle === 180) {
+            this.canvas.getObjects().filter((o) => {
+              if (o.get('type') === 'i-text') {
+                activeObject.scaleX = formatWidth / (activeObject.width * 1.5);
+
+              } else {
+                activeObject.scaleX = formatWidth / activeObject.width;
+
+              }
+            })
+
+          } else {
+            this.canvas.getObjects().filter((o) => {
+              if (o.get('type') === 'i-text') {
+                activeObject.scaleX = formatWidth / (activeObject.width * 2);
+                activeObject.scaleY = formatWidth / (nerqnadzic * 2);
+
+              } else {
+                activeObject.scaleX = formatWidth / activeObject.width * 1.6;
+                activeObject.scaleY = formatWidth / nerqnadzic * 1.6;
+
+              }
+            })
+
+
+
+          }
+        }
+
+        if (sumHeight > formatHeight) {
+          if (activeObject.angle === 0) {
+            activeObject.scaleY = formatHeight / activeObject.height;
+
+          } else {
+            activeObject.scaleX = formatWidth / nerqnadzic;
+            activeObject.scaleY = formatWidth / nerqnadzic;
+          }
+        }
+
+
+        if (activeObject.width * activeObject.scaleX > formatWidth && activeObject.angle !== 0) {
+
+          activeObject.scaleX = formatWidth / nerqnadzic;
+          activeObject.scaleY = formatWidth / nerqnadzic;
+
+        }
+
+        if (activeObject.height * activeObject.scaleY > formatHeight && activeObject.angle !== 0) {
+          activeObject.scaleX = formatHeight / nerqnadzic;
+          activeObject.scaleY = formatHeight / nerqnadzic;
+
+        }
+
+
+        obj.minScaleLimit = 0.04;
 
         $(".deleteBtn").remove();
         $(".distance").remove();
+        $(".distanceY").remove();
 
-        // let maxScaleX = 0.17;
-        // let maxScaleY = 0.17;
-        // let minScaleX = 0.05;
-        // let minScaleY = 0.05;
+        // addDistancePoint(imageCoordy, imageCoordx);
+        this.addArrowUp(imageCoordx, 2)
 
-        // if(obj.scaleX > maxScaleX) {
-        //   obj.scaleX = maxScaleX;
-        //   obj.left = this.left;
-        //   obj.top = this.top;
-        // }
-        // if(obj.scaleY > maxScaleY) {
-        //   obj.scaleY = maxScaleY;
-        //   obj.left = this.left;
-        //   obj.top = this.top;
-        // }
-        // this.top = obj.top;
-        // this.left = obj.left;
+        // addDistancePoint(imageCoordy, imageCoordy);
+        this.addArrow(imageCoordy, 2);
 
-        // console.log(obj.minScaleLimit, obj.left);
+        // addDeleteBtn(obj.oCoords.mb.x, obj.oCoords.mb.y);
+        obj.setCoords();
+        obj.saveState();
+        this.canvas.renderAll()
 
-
-        let matrix = e.target.calcTransformMatrix();
-        var imageCoordx = matrix[4];
-        var imageCoordy = matrix[5];
-        this.siteLayout.imageCoordy = Math.floor(imageCoordy);
-        this.siteLayout.imageCoordx = Math.floor(imageCoordx);
-
-
-        let imgWith = obj.width * obj.scaleX;
-        let imgHeight = obj.height * obj.scaleY;
-        this.siteLayout.imgWith = Math.floor(imgWith);
-        this.siteLayout.imgHeigt = Math.floor(imgHeight);
-
-        // console.log(imageCoordy, imageCoordx, obj.getBoundingRect().left);
-
-
-        if (this.canvas.getActiveObject().width * this.canvas.getActiveObject().scaleX > this.objWidthLimit) {
-          this.canvas.getActiveObject().scaleX = this.objWidthLimit / this.canvas.getActiveObject().width;
-        }
-
-        if (this.canvas.getActiveObject().height * this.canvas.getActiveObject().scaleY > this.objHeightLimit) {
-          this.canvas.getActiveObject().scaleY = this.objHeightLimit / this.canvas.getActiveObject().height;
-        }
-
-
-        if (imageCoordx > 252) {
-          // console.log(this.canvas.getActiveObject().minScaleLimit, 'activeObject');
-          // imageCoordx = 10;
-          console.log(imageCoordx);
-
-          obj.oCoords.tr.x = 252 - e.target.width * e.target.scaleX + 60;
-          this.canvas.getActiveObject().left = this.canvas.getActiveObject().getBoundingRect().left + this.canvas.getActiveObject().cornerSize;
-          this.canvas.getActiveObject().top = this.canvas.getActiveObject().getBoundingRect().top + this.canvas.getActiveObject().cornerSize;
-        } else if (imageCoordx < 215) {
-          console.log('working', obj.oCoords.bl.x);
-
-          obj.oCoords.bl.x = 215;
-          console.log(imageCoordx);
-
-          this.canvas.getActiveObject().left = this.canvas.getActiveObject().getBoundingRect().left;
-          this.canvas.getActiveObject().top = this.canvas.getActiveObject().getBoundingRect().top - 30;
-
-        } else if (imageCoordy > 330) {
-          obj.oCoords.br.y = 330 - e.target.height * e.target.scaleY + 60;
-          obj.left = obj.getBoundingRect().left + obj.cornerSize;
-          obj.top = obj.getBoundingRect().top + obj.cornerSize;
-        }
-
-
-        this.canvas.getActiveObject().left = this.canvas.getActiveObject().getBoundingRect().left + this.canvas.getActiveObject().cornerSize;
-        this.canvas.getActiveObject().top = this.canvas.getActiveObject().getBoundingRect().top + this.canvas.getActiveObject().cornerSize;
-
-        //minimum imagr size
-        obj.minScaleLimit = 0.04;
-        // console.log('General', obj.minScaleLimit);
-
-
-
-        //   let obj = e.target;
-
-        //   obj.minScaleLimit = 0.08;
-
-        //   obj.strokeWidth = 0.5;
-
-
-        // let maxScaleX = 0.7;
-        // let maxScaleY = 0.7;
-        // let minScaleX = 0.05;
-        // let minScaleY = 0.05;
-
-        // var lastGoodTop, lastGoodLeft;
-
-        // console.log(obj.scaleX);
-
-
-        // if (obj.scaleX > maxScaleX) {
-
-        //   obj.scaleX = maxScaleX;
-        //   obj.left = obj.getBoundingRect().left + obj.cornerSize;
-        //   obj.top = obj.getBoundingRect().top + obj.cornerSize;
-
-        // }
-        // if (obj.scaleY > maxScaleY) {
-        //   obj.scaleY = maxScaleY;
-        //   obj.left = obj.getBoundingRect().left + obj.cornerSize;
-        //   obj.top = obj.getBoundingRect().top + obj.cornerSize;
-        // }
-
-        // obj.set({
-        //   width: width * scaleX,
-        //   height: height * scaleY,
-        //   scaleX: 0.5,
-        //   scaleY: 0.5
-        // });
-
-        // var maxScaleX = 2;
-        // var maxScaleY = 2;
-
-        // var scaleX = 100
-
-        // if (scaleX > maxScaleX) {
-        //   this.scaleX = maxScaleX;
-        //   this.left = this.lastGoodLeft;
-        //   this.top = this.lastGoodTop;
-        // }
-        // if (this.scaleY > maxScaleY) {
-        //   this.scaleY = maxScaleY;
-        //   this.left = this.lastGoodLeft;
-        //   this.top = this.lastGoodTop;
-        // }
-        // this.lastGoodTop = this.top;
-        // this.lastGoodLeft = this.left;
-
-        // var obj = e.target;
-        // if (obj.height > obj.canvas.height || obj.width > obj.canvas.width) {
-        //   obj.originY;
-        //   obj.originX;
-        // }
-        // obj.setCoords();
-
-        // // top-left  corner
-        // if (obj.getBoundingRect().top - (obj.cornerSize + 100) < 0 ||
-        //   obj.getBoundingRect().left - (obj.cornerSize + 100) < 0
-        // ) {
-        //   obj.height = 100;
-        //   obj.width = 100;
-        //   obj.left = Math.max(obj.left, obj.left - obj.getBoundingRect().left + (obj.cornerSize + 100));
-        // }
-
-        // // bot-right corner
-
-        // if (obj.getBoundingRect().top + obj.getBoundingRect().height + obj.cornerSize + 100 > obj.canvas.height ||
-        //   obj.getBoundingRect().left + obj.getBoundingRect().width + obj.cornerSize + 100 > obj.canvas.width) {
-
-        //   obj.top = Math.min(obj.top, obj.canvas.height - obj.getBoundingRect().height + obj.top - obj.getBoundingRect().top - obj.cornerSize - 100);
-        //   obj.left = Math.min(obj.left, obj.canvas.width - obj.getBoundingRect().width + obj.left - obj.getBoundingRect().left - obj.cornerSize - 100);
-        // }
 
       },
 
       'object:modified': (e) => {
-"heloo"
+
         let obj = e.target;
-        var matrix = e.target.calcTransformMatrix();
+        obj.setCoords();
+        obj.saveState();
+        let matrix = e.target.calcTransformMatrix();
         let boundingRect = obj.getBoundingRect(true);
-        console.log(boundingRect.left, boundingRect.top, boundingRect.width);
-        
-        if (boundingRect.left < 100
-          || boundingRect.top < 100
-          || boundingRect.left + boundingRect.width > this.canvas.getWidth() - 100
-          || boundingRect.top + boundingRect.height > this.canvas.getHeight()) {
-            // matrix[4] = 150;
-            // matrix[5] = 150;
-          // obj.transformMatrix = [ 1,0,0,1,0,5];
-          obj.top = 150;
-          obj.left = 150;
-          
-          // // obj.angle = 0;
-          // obj.scaleX = 1;
-          // obj.scaleY = 1;
-          obj.setCoords();
-          obj.saveState();
+        let imageCoordx = matrix[4];
+        let imageCoordy = matrix[5];
+        let moveSizeLimit = this.canvas.width / this.dataService.sizePrintKey;
+        let cornerSize = this.canvas.width / 40;
+        let sumLeft = obj.getBoundingRect().left;
+        let sumTop = obj.getBoundingRect().top;
+        let sumWidth = obj.getBoundingRect().width;
+        let sumHeight = obj.getBoundingRect().height;
+        let Delta = this.canvas.height - 2 * (moveSizeLimit + cornerSize) - (this.canvas.width - 2 * (moveSizeLimit + cornerSize)) * this.dataService.formatWithHeight;
+
+
+        // top-left  corner
+        if (sumLeft < (cornerSize + moveSizeLimit)) {
+          obj.left = Math.max(obj.left, obj.left - sumLeft + (cornerSize + moveSizeLimit));
+        }
+
+        if (sumTop < cornerSize + moveSizeLimit - this.canvas.width * this.a) {
+          obj.top = Math.max(obj.top, obj.top - sumTop + cornerSize + moveSizeLimit - this.canvas.width * this.a);
+        }
+
+        // bot-right corner
+        if (sumLeft + sumWidth + cornerSize + moveSizeLimit > obj.canvas.width) {
+          obj.left = Math.min(obj.left, obj.canvas.width - sumWidth + obj.left - sumLeft - cornerSize - moveSizeLimit);
+        }
+
+        if (sumTop + sumHeight + cornerSize + moveSizeLimit + Delta + this.canvas.width * this.a > obj.canvas.height) {
+          obj.top = Math.min(obj.top, obj.canvas.height - sumHeight + obj.top - sumTop - cornerSize - moveSizeLimit - Delta - this.canvas.width * this.a);
         }
 
 
-        
-
-        
-
-
-        // let obj = e.target;
-
-        var matrix = e.target.calcTransformMatrix();
-
-        var imageCoordx = matrix[4];
-        var imageCoordy = matrix[5];
         this.siteLayout.imageCoordy = Math.floor(imageCoordy);
         this.siteLayout.imageCoordx = Math.floor(imageCoordx);
-        console.log('object:modified', imageCoordx);
 
-        addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
 
         $(".distance").remove();
-        var imageCoordx = matrix[4]
-        var imageCoordy = matrix[5]
+
         // addDistancePoint(imageCoordy, imageCoordx);
-        addArrow(imageCoordy, 2)
+        this.addArrow(imageCoordy, 2)
 
         $(".distanceY").remove();
-        var matrix = e.target.calcTransformMatrix();
-        var imageCoordx = matrix[4]
-        var imageCoordy = matrix[5]
+
         // addDistancePoint(imageCoordy, imageCoordx);
-        addArrowUp(imageCoordx, 2);
+        this.addArrowUp(imageCoordx, 2);
 
-
-
+        this.addDeleteBtn(obj.oCoords.mb.x, obj.oCoords.mb.y);
+        obj.setCoords();
+        obj.saveState();
+        this.canvas.renderAll();
       },
 
       'selection:created': (e) => {
+        let obj = e.target;
+
+        // var mouse = this.canvas.getPointer(e.memo);
+        //  const x = mouse.x;
+        //  const y = mouse.y;  
+
+        //   e.target.set({
+        //     lockScalingX: true,
+        //     lockScalingY: true
+        // });
+        obj.setCoords();
+        obj.saveState();
+
 
         $(".deleteBtn").remove();
 
         // console.log('selected');
-        addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
+        this.addDeleteBtn(obj.oCoords.mb.x, obj.oCoords.mb.y);
 
         $(".distance").remove();
         let matrixx = e.target.calcTransformMatrix();
         let imageCoordxx = matrixx[4];
         let imageCoordyy = matrixx[5];
         // addDistancePoint(imageCoordyy, imageCoordxx);
-        addArrow(imageCoordyy, 2)
+        this.addArrow(imageCoordyy, 2)
 
         $(".distanceY").remove();
         let matrixxx = e.target.calcTransformMatrix();
         let imageCoordxxx = matrixxx[4]
         let imageCoordyyy = matrixxx[5]
         // addDistancePoint(imageCoordyyy, imageCoordxxx);
-        addArrowUp(imageCoordxxx, 2)
-
-
-
-        console.log('create');
-        let obj = e.target
+        this.addArrowUp(imageCoordxxx, 2)
 
         let matrix = e.target.calcTransformMatrix();
         var imageCoordx = matrix[4];
@@ -608,7 +575,8 @@ export class EditorPicComponent implements AfterViewInit {
 
         this.getOpacity();
         this.getDistance();
-
+        obj.setCoords();
+        obj.saveState();
 
         if (obj.type !== 'group' && obj) {
 
@@ -644,20 +612,31 @@ export class EditorPicComponent implements AfterViewInit {
               break;
           }
         }
+
+        // addDistancePoint(imageCoordy, imageCoordx);
+        this.addArrowUp(imageCoordx, 2)
+
+        // addDistancePoint(imageCoordy, imageCoordy);
+        this.addArrow(imageCoordy, 2);
+
+        // addDeleteBtn(obj.oCoords.mb.x, obj.oCoords.mb.y);
+        obj.setCoords();
+        obj.saveState();
+        this.canvas.renderAll();
       },
 
       'selection:updated': (e) => {
 
-        
+        let obj = e.target
 
-        addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
+        this.addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
 
         $(".distance").remove();
         let matrixx = e.target.calcTransformMatrix();
         var imageCoordx = matrixx[4]
         var imageCoordy = matrixx[5]
         // addDistancePoint(imageCoordy, imageCoordx);
-        addArrow(imageCoordy, 2);
+        this.addArrow(imageCoordy, 2);
 
         $(".distanceY").remove();
         let matrixxx = e.target.calcTransformMatrix();
@@ -665,12 +644,7 @@ export class EditorPicComponent implements AfterViewInit {
         var imageCoordy = matrixxx[5]
 
         // addDistancePoint(imageCoordy, imageCoordx);
-        addArrowUp(imageCoordx, 2)
-
-
-
-        console.log('selection:updated');
-        let obj = e.target
+        this.addArrowUp(imageCoordx, 2)
 
         let matrix = e.target.calcTransformMatrix();
         var imageCoordx = matrix[4];
@@ -690,7 +664,6 @@ export class EditorPicComponent implements AfterViewInit {
         obj.cornerColor = '#FF7F50';
         // e.target.bringToFront()
         // this.canvas.getActiveObject()
-        this.canvas.renderAll()
         this.resetPanels();
 
         this.getOpacity();
@@ -734,7 +707,20 @@ export class EditorPicComponent implements AfterViewInit {
           }
         }
 
+        $(".distance").remove();
 
+        // addDistancePoint(imageCoordy, imageCoordx);
+        this.addArrow(imageCoordy, 2)
+
+        $(".distanceY").remove();
+
+        // addDistancePoint(imageCoordy, imageCoordx);
+        this.addArrowUp(imageCoordx, 2);
+
+        this.addDeleteBtn(obj.oCoords.mb.x, obj.oCoords.mb.y);
+        obj.setCoords();
+        obj.saveState();
+        this.canvas.renderAll();
 
       },
 
@@ -758,13 +744,55 @@ export class EditorPicComponent implements AfterViewInit {
       },
 
       'object:rotating': (e) => {
-        $(".deleteBtn").remove();
+        const obj = e.target;
+        obj.setCoords();
+        obj.saveState();
+        let matrix = e.target.calcTransformMatrix();
+        const angle = Math.abs(((this.canvas.getActiveObject().angle) * Math.PI) / 180);
+        const sumWidth = obj.getBoundingRect().width;
+        const sumHeight = obj.getBoundingRect().width;
+        let imageCoordx = matrix[4];
+        let imageCoordy = matrix[5];
+        // const nerqnadzicc = Math.sqrt(Math.pow(this.canvas.getActiveObject().width, 2) + Math.pow(this.canvas.getActiveObject().height, 2))
+        const cos = Math.abs(Math.cos(angle));
+        const sin = Math.abs(Math.sin(angle));
+
+        const formatWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+        const formatHeight = formatWidth * this.c;
+
+        if (sumWidth > formatWidth) {
+
+          this.canvas.getActiveObject().scaleX = formatWidth / (this.canvas.getActiveObject().width / (cos * 0.8));
+          this.canvas.getActiveObject().scaleY = formatWidth / (this.canvas.getActiveObject().width / (cos * 0.8));
+
+        }
+
+        if (sumHeight > formatHeight) {
+          this.canvas.getActiveObject().scaleX = formatHeight / (this.canvas.getActiveObject().height / (cos * 0.65));
+          this.canvas.getActiveObject().scaleY = formatHeight / (this.canvas.getActiveObject().height / (cos * 0.65));
+        }
+
+
         $(".distance").remove();
+
+        // addDistancePoint(imageCoordy, imageCoordx);
+        this.addArrow(imageCoordy, 2)
+
+        $(".distanceY").remove();
+
+        // addDistancePoint(imageCoordy, imageCoordx);
+        this.addArrowUp(imageCoordx, 2);
+
+        this.addDeleteBtn(obj.oCoords.mb.x, obj.oCoords.mb.y);
+        obj.setCoords();
+        obj.saveState();
+        this.canvas.renderAll();
+
       },
 
       'path:created': (e) => {
 
-        
+
         this.canvasCount += 1;
 
         this.canvas.isDrawingMode = false;
@@ -777,27 +805,35 @@ export class EditorPicComponent implements AfterViewInit {
       },
 
       'object:added': (e) => {
-        console.log('object:added');
+        let obj = e.target;
+        var matrix = e.target.calcTransformMatrix();
+        let imageCoordx = matrix[4];
+        let imageCoordy = matrix[5];
 
-        
+        this.canvas.getObjects().filter((o) => {
+          if (o.get('type') === 'i-text') {
+            this.imgPadding = 2800 / this.props.diametr
+          }
+        })
 
         $(".deleteBtn").remove();
         // console.log('added');
-        addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
 
-        $(".distance").remove();
-        var matrix = e.target.calcTransformMatrix();
-        var imageCoordx = matrix[4]
-        var imageCoordy = matrix[5]
+
         // addDistancePoint(imageCoordy, imageCoordx);
-        addArrow(imageCoordy, 2);
+        this.addArrow(imageCoordy, 2)
 
         $(".distanceY").remove();
-        var matrix = e.target.calcTransformMatrix();
-        var imageCoordx = matrix[4]
-        var imageCoordy = matrix[5]
+
         // addDistancePoint(imageCoordy, imageCoordx);
-        addArrowUp(imageCoordx, 2)
+        this.addArrowUp(imageCoordx, 2);
+
+        this.addDeleteBtn(obj.oCoords.mb.x, obj.oCoords.mb.y);
+
+        obj.setCoords();
+        obj.saveState();
+        this.canvas.renderAll();
+
       },
 
       'before:selection:cleared': (e) => {
@@ -825,7 +861,7 @@ export class EditorPicComponent implements AfterViewInit {
 
     this.canvas.on('mouse:over', () => {
 
-      let color = this.props.drawFill;
+      const color = this.props.drawFill;
 
       this.canvas.freeDrawingBrush.color = color;
 
@@ -851,6 +887,27 @@ export class EditorPicComponent implements AfterViewInit {
   // Block "Add text"
 
 
+  addArrowUp(o, p) {
+    var arrow = '<img src="../assets/img/output-onlinepngtools-up.png" class="distance" style="position:absolute; top:' + p + 'px; left:' + (o - 5) + 'px; cursor:crosshair; width:10px; height:40px;"/>';
+    $(".canvas-container").append(arrow);
+  }
+
+  addArrow(o, p) {
+    var arrow = '<img src="../assets/img/green-arrow-clipart-2.png" class="distance" style="position:absolute; top:' + o + 'px; left:' + p + 'px; cursor:crosshair; width:40px; height:10px;"/>';
+    $(".canvas-container").append(arrow);
+  }
+
+  addDeleteBtn(x, y) {
+
+    $(".deleteBtn").remove();
+    var btnLeft = x - this.left;
+    var btnTop = y + this.top;
+    var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
+    $(".canvas-container").append(deleteBtn);
+
+  }
+
+
   resizeEbiten(iframe, parentId, aspectRatio) {
     let parent = document.getElementById(parentId);
     let w = parent.clientWidth;
@@ -862,6 +919,7 @@ export class EditorPicComponent implements AfterViewInit {
       iframe.height = w * aspectRatio;
     });
   }
+
 
 
   canvasDrawing(target) {
@@ -1024,11 +1082,11 @@ export class EditorPicComponent implements AfterViewInit {
           scaleY: 0.8,
           // fontSize: 80,
           hasRotatingPoint: true,
-          // strokeWidth: 10,
+          // strokeWidth: 30,
           // strokeMiterLimit: 15,
           // width: 50,
           cornerSize: this.canvas.width / 40,
-          padding: 0,
+          padding: this.imgPadding,
           centeredRotation: true,
           // charSpacing: 50,
           // pathStartOffset: 80,
@@ -1169,7 +1227,7 @@ export class EditorPicComponent implements AfterViewInit {
           // strokeMiterLimit: 15,
           // width: 50,
           cornerSize: this.canvas.width / 40,
-          padding: 0,
+          padding: this.imgPadding,
           centeredRotation: true,
           // charSpacing: 50,
           // pathStartOffset: 80,
@@ -1294,6 +1352,7 @@ export class EditorPicComponent implements AfterViewInit {
       const activeGroup = this.canvas.getActiveObjects();
       this.canvasCount -= 1;
 
+
       if (this.canvasCount === 0) {
         this.siteLayout.firstImage = 0;
         $('#shadowSVG').prop('checked', false);
@@ -1328,7 +1387,8 @@ export class EditorPicComponent implements AfterViewInit {
 
     fabric.Image.fromURL(el, (image) => {
       // const image = fabric.util.groupSVGElements(objects, options);
-      console.log(this.canvas.getWidth());
+      const imageWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+      const imageHeight = imageWidth * this.c;
 
       image.set({
 
@@ -1344,17 +1404,17 @@ export class EditorPicComponent implements AfterViewInit {
         padding: 0,
         cornerSize: this.canvas.width / 40,
         hasRotatingPoint: true,
-        top: this.canvas.height / 3.7
+        // top: this.canvas.height / 3.7,
         // originX: 'left',
-        // width: image.width * image.scaleX -80,
-        // height: image.height * image.scaleY - 80
+        // width: 100,
+        // height: 100 
         // originY:s 'center'
 
       });
       // value.shadow.affectStroke = false;
       // image.panToActiveObject()
-      image.scaleToWidth(this.canvas.width / 3);
-      image.scaleToHeight(this.canvas.width / 3);
+      image.scaleToWidth(imageWidth / this.scaleKey);
+      image.scaleToHeight(imageHeight / this.scaleKey);
       this.extend(image, this.randomId());
 
 
@@ -1371,7 +1431,8 @@ export class EditorPicComponent implements AfterViewInit {
       this.canvas.add(image);
       // this.canvas.centerObject(image);
       this.canvas.centerObjectH(image);
-      image.top = this.canvas.height / 3.7;
+      image.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a ;
+      
       this.canvas.renderAll();
 
       $('#hue-value').on('change', () => {
@@ -1401,11 +1462,24 @@ export class EditorPicComponent implements AfterViewInit {
 
         }
         ));
+
         console.log(this.props.distance);
         this.imageFilter = image;
         image.applyFilters();
         this.canvas.renderAll();
+
+
+
       });
+
+      // $(document).on('click', ".but", (event) => {
+      //   image.left += 10;
+      //   image.setCoords();
+      //   image.saveState();
+      //   this.canvas.renderAll();
+      // }),
+
+
 
 
       $('#saturation').on('change', () => {
@@ -1584,6 +1658,17 @@ export class EditorPicComponent implements AfterViewInit {
 
         this.selectItemAfterAdded(image);
     });
+
+    // event.target.left = 100;
+    // event.target.top = 100;
+
+    // event.target.setCoords({'left' : 50});
+    console.log(this.canvas.getActiveObject());
+    // event.target.saveState();
+
+    // this.canvas.renderAll();
+
+    // event.target.setCoords()
   }
 
 
@@ -1993,6 +2078,83 @@ export class EditorPicComponent implements AfterViewInit {
   }
 
   /*Canvas*/
+  public scaleKey: number = 2.3;
+
+
+  public moveWithFormat(scaleKey, scaleBlock) {
+    console.log(this.a, this.b, this.c);
+
+    this.scaleKey = scaleKey;
+
+    if (this.canvasCount !== 0) {
+
+      this.canvasCount = 1;
+      this.canvas.discardActiveObject().renderAll();
+      var sel = new fabric.Group(this.canvas.getObjects(), {
+        canvas: this.canvas
+      })
+      this.canvas.remove(...this.canvas.getObjects());
+
+      this.canvas.add(sel);
+      const formatWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+      const formatHeight = formatWidth * this.c;
+      
+      if (scaleBlock) {
+      
+        sel.scaleToWidth(formatWidth / scaleKey);
+        sel.scaleToHeight(formatHeight / scaleKey);
+      } 
+
+      // this.canvas.centerObjectH(sel);
+      // sel.top = this.canvas.height / 3.7;
+      this.canvas.setActiveObject(sel);
+      let matrix = sel.calcTransformMatrix();
+      let imageCoordx = matrix[4];
+      let imageCoordy = matrix[5];
+
+      this.canvas.centerObjectH(sel);
+      let top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a;
+      sel.top = top;
+      console.log('momos', scaleBlock);
+      
+      
+
+      // this.canvas.centerObjectH(sel);
+      sel.set({ cornerSize: this.canvas.width / 40 });
+      // sel.minScaleLimit()
+      sel.setCoords();
+      sel.saveState();
+      this.canvas.renderAll();
+      // this.canvas.getActiveObject().left += 10;
+      // this.canvas.getActiveObject().setCoords();
+      // this.canvas.getActiveObject().saveState();
+      // this.canvas.renderAll();
+
+      $(".deleteBtn").remove();
+      $(".distance").remove();
+      $(".distanceY").remove();
+      // console.log('added');
+
+
+      // addDistancePoint(imageCoordy, imageCoordx);
+      this.addArrow(imageCoordy, 2)
+
+      $(".distanceY").remove();
+
+      // addDistancePoint(imageCoordy, imageCoordx);
+      this.addArrowUp(imageCoordx, 2);
+
+      this.addDeleteBtn(sel.oCoords.mb.x, sel.oCoords.mb.y);
+
+      sel.setCoords();
+      sel.saveState();
+      this.canvas.renderAll();
+    }
+
+
+  }
+
+
 
   cleanSelect() {
 
@@ -2043,6 +2205,11 @@ export class EditorPicComponent implements AfterViewInit {
     this.canvas.backgroundColor = this.props.canvasFill;
     this.canvas.renderAll();
 
+    const inputProductColor = this.siteLayout.inputColor.nativeElement;
+    inputProductColor.style.backgroundColor = this.props.canvasFill;
+    inputProductColor.value = this.props.canvasFill;
+    // this.siteLayout.IMG.nativeElement.innerHTML.backgroundColor = this.props.canvasFill;
+
     // this.canvas1.backgroundColor = this.props.canvasFill;
     // this.canvas1.renderAll();
 
@@ -2069,10 +2236,40 @@ export class EditorPicComponent implements AfterViewInit {
   }
 
   productsTypeColor() {
-    this.canvas.backgroundColor = this.siteLayout.arrColor[0];
-    // this.canvas1.backgroundColor = this.siteLayout.arrColor[0]
+
+
+    if (this.siteLayout.allColors === true) {
+
+      this.props.canvasFill = this.siteLayout.arrColor[0];
+      this.canvas.backgroundColor = this.siteLayout.arrColor[0];
+
+    } else if (this.siteLayout.allColors === false) {
+
+      this.props.canvasFill = this.siteLayout.productBrandColors[0];
+      this.canvas.backgroundColor = this.siteLayout.productBrandColors[0];
+
+      // this.canvas.renderAll();
+    }
 
   }
+
+  // productsTypeSise() {
+
+
+  //   if (this.siteLayout.allColors === true) {
+
+  //     this.siteLayout.productBrandSizes = this.siteLayout.arrColor[0];
+  //     this.canvas.backgroundColor = this.siteLayout.arrColor[0];
+
+  //   } else if (this.siteLayout.allColors === false) {
+
+  //     this.props.canvasFill = this.siteLayout.productBrandColors[0];
+  //     this.canvas.backgroundColor = this.siteLayout.productBrandColors[0];
+
+  //     // this.canvas.renderAll();
+  //   }
+
+  // }
 
 
   setCanvasImage() {
@@ -2091,16 +2288,99 @@ export class EditorPicComponent implements AfterViewInit {
 
       scaleX: this.canvas.width / 360,
       scaleY: this.canvas.height / 460,
-      //   // //   // width: this.siteLayout.canvasHtmlWidth,
-      //   // //   // height: this.siteLayout.canvasHtmlHeight + 93
-      //   // //   // crossOrigin: 'anonymous'
-      //   // //   // this.canvas.setBackgroundImage(img);
-      //   // //   // this.canvas.requestRenderAll();
+      // width: this.siteLayout.canvasHtmlWidth,
+      // height: this.siteLayout.canvasHtmlHeight + 93
+      // crossOrigin: 'anonymous'
+      // this.canvas.setBackgroundImage(img);
+      // this.canvas.requestRenderAll();
 
     });
-    console.log(this.canvas.toSVG());
+
+
+    // const square = new fabric.Rect({
+
+    //   width: this.canvas.width - 2 * (this.canvas.width / 4.37 + this.canvas.width / 40),
+    //   height: this.canvas.height - 2 * (this.canvas.width / 4.37 + this.canvas.width / 40),
+    //   left: this.canvas.width / 40 + this.canvas.width / 4.37,
+    //   top: this.canvas.width / 40 + this.canvas.width / 4.37,
+    //   // borderColor: '#000',
+    //   // fill: '#000',
+    //   // Color: '#000',
+    //   hasControls: false,
+    //   lockMovementX: true,
+    //   lockMovementY: true,
+    //   // strokeWidth: 5,
+    //   strokeDashArray: [7],
+    //   stroke: '#474747',
+    //   strokeWidth: 2,
+    //   fill: 'rgba(0,0,0,0)',
+    //   selectable: false,
+    //   evented: false,
+
+    // });
+
+    // this.canvas.add(square);
+    // // this.canvasCount -=1;
+    // // this.canvas.renderAll();
+    // // this.canvas.setActiveObject(square);
 
   }
+
+
+
+  // sizeFormat() {
+
+  //   // const image = this.props.canvasImage;
+  //   // this.canvas.setBackgroundImage(image,
+  //   //   this.canvas.renderAll.bind(this.canvas), {)
+  //   const square = new fabric.Rect({
+
+  //     width: this.canvas.width - 2 * (this.canvas.width / 4.37 + this.canvas.width / 40),
+  //     height: this.canvas.height - 2 * (this.canvas.width / 4.37 + this.canvas.width / 40),
+  //     left: this.canvas.width / 40 + this.canvas.width / 4.37,
+  //     top: this.canvas.width / 40 + this.canvas.width / 4.37,
+  //     // borderColor: '#000',
+  //     // fill: '#000',
+  //     // Color: '#000',
+  //     hasControls: false,
+  //     lockMovementX: true,
+  //     lockMovementY: true,
+  //     // strokeWidth: 5,
+  //     strokeDashArray: [7],
+  //     stroke: '#474747',
+  //     strokeWidth: 2,
+  //     fill: 'rgba(0,0,0,0)',
+  //     selectable: false,
+  //     evented: false,
+
+  //   });
+
+  //   this.canvas.add(square);
+  //    console.log(this.canvas.width / 40 + this.canvas.width / 4.37);
+
+
+  // this.canvas.add(square);
+
+
+  // if (checkWidth = 640) {
+  //   this.canvas.add(square);
+  //   return
+  // }
+
+  // if (checkWidth > 640 && checkWidth < 1007) {
+  //   this.canvas.add(square);
+  //   return
+  // }
+
+  // if (checkWidth > 1007) {
+  //   this.canvas.add(square);
+  //   return
+  // }
+
+  // this.canvasCount -=1;
+  // this.canvas.renderAll();
+  // this.canvas.setActiveObject(square); 
+  // }
 
   // setCanvasImage1() {
 
@@ -2395,6 +2675,7 @@ export class EditorPicComponent implements AfterViewInit {
 
 
   removeSelected() {
+    console.log(this.canvasCount);
 
     this.props.diametr = 300;
     if (this.canvas.getActiveObject().type === 'i-text') {
@@ -2403,11 +2684,12 @@ export class EditorPicComponent implements AfterViewInit {
     }
 
     this.canvasCount -= 1;
+
     const activeObject = this.canvas.getActiveObject();
     const activeGroup = this.canvas.getActiveObjects();
+    // this.siteLayout.firstImage = 2;
 
     if (this.canvasCount === 0) {
-      this.siteLayout.firstImage = 0;
 
       $('#shadowSVG').prop('checked', false);
       this.siteLayout.shadowSVG = false;
@@ -2517,21 +2799,15 @@ export class EditorPicComponent implements AfterViewInit {
     image.src = this.canvas.toDataURL({ format: 'png', multiplier: 4 });
     // this.setCanvasImage();
 
-
-    var txt;
-    var r = confirm("Press a button!");
-    if (r == true) {
-      txt = "You pressed OK!";
-    } else {
-      txt = "You pressed Cancel!";
-      alert(txt);
-      return
-    }
-    alert(txt);
-
     // const w = window.open();
-    // w.document.write( image.outerHTML );
+    // w.document.write(
+    //   `<div style='margin-top: 100px'>${image.outerHTML}</div>` 
+    // // this.hello.nativeElement.innerHTML,
+
+    // );
+
     this.reqImage = image.src;
+    this.orderDatas.imageSrc = image.src;
 
     this.canvas.renderAll();
 
@@ -2543,7 +2819,7 @@ export class EditorPicComponent implements AfterViewInit {
     // this.saveCanvasToJSON();
 
     this.canvas.backgroundImage = null;
-    this.canvas.backgroundColor = null;
+    // this.canvas.backgroundColor = null;
 
 
 

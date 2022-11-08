@@ -1,57 +1,115 @@
-<!-- <nav>
-    <div class="nav-wrapper teal lighten-2">
-        <a routerLink='/' class="brand-logo right">Design</a>
-        <ul id="nav-mobile" class="hide-on-med-and-down center">
-            <li routerLinkActive="color"><a routerLink='/login'>LogOut</a></li>
-            <li routerLinkActive="color"><a routerLink='/register'>Registration</a></li>
-        </ul>
+
+<div class="full-width">
+    <div class="row">
+        <div class="toolNav1 col s12 m9 l8 xl8 offset-s0 offset-m0 offset-l0 offset-xl0" style="width: 67%;">
+            <nav style="height: 40px;">
+                <div class="nav-wrapper indigo lighten-4">
+                    <div class=" brand-logo right" style="margin-top: -8px;">
+                        Design
+                    </div>
+                    <div class=" brand-logo left" style="margin-top: -8px; cursor: pointer;" *ngIf="preview" (click)="redirectPreview()" >
+                        Preview
+                    </div>
+                    <a href="#" class="sidenav-trigger" data-target="mobile-links">
+                        <i class="material-icons">menu</i>
+                    </a>
+                    <!-- <ul id="nav-mobile" class="hide-on-med-and-down">
+                        <li routerLinkActive="color"><a routerLink='/login'>LogOut</a></li>
+                        <li routerLinkActive="color"><a routerLink='/register'>Registration</a></li>
+                    </ul> -->
+                </div>
+            </nav>
+
+        </div>
+
+        <div class="toolNav1 col s5 m3 l4 xl4 offset-s0 offset-m9 offset-l8 offset-xl8"
+            style="width: 34%; margin-left: 66%;">
+            <nav style="height: 40px;">
+                <div class="nav-wrapper #e8eaf6 indigo lighten-4">
+                    <div class="brand-logo left" style="margin-top: -8px;"> Your Style</div>
+                    <!-- <a href="#" class="right sidenav-trigger" data-target="mobile-links">
+                        <i class="material-icons">menu</i>
+                    </a> -->
+                </div>
+            </nav>
+
+        </div>
     </div>
-</nav>
+</div>
 
-<main>
-    <router-outlet></router-outlet>
-</main>
 
-<img src="assets/img/t_shirt_500.png" width="50" height="50" alt="oo">
+<router-outlet></router-outlet>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <img src="assets/img/t_shirt_500.png" width="50" height="50" alt="oo">
 
 
 
 <div id="fnc-ContentLeft" class="Content_Preview">
-    on-toggle="sideToggle()" 
+    on-toggle="sideToggle()"
     on-set-active-side="setActiveSide(side)"
     on-set-available-sides="updateSidesArea(sidesAreaData)"
 
     <div class="dt-Canvas_Wrapper" style="width: 600px; height: 600px">
 
-    <div class="imgBox">
-        <div class="imgBack">
-            <img class="imgFront" src="assets/img/Trafaret3.png" alt="oo">
-        </div>
-    </div>
+        <div class="imgBox">
+            <div class="imgBack">
+                <img class="imgFront" src="assets/img/Trafaret3.png" alt="oo">
+            </div>
+        </div> -->
 
-    <div class="divv"></div>
-    <div class="divv"></div>
+        <!-- <div class="divv"></div>
+    <div class="divv"></div> -->
 
-    <div onselect="onElementSelected" ondrag="onCanvasDragged" class="canvas-container"
-                            tabindex="1000" style="width: 600px; height: 600px; position: relative; user-select: none;">
-                            <canvas width="60" height="60" edit-enabled="editEnabled" side="side"
-                                drawing-area="side.drawingArea" class="lower-canvas"
-                                style="position: absolute; width: 60px; height: 60px; left: 0px; top: 0px; touch-action: none; user-select: none;"></canvas><canvas
-                                class="upper-canvas " width="600" height="600"
-                                style="position: absolute; width: 600px; height: 600px; left: 0px; top: 0px; touch-action: manipulation; user-select: none; cursor: grab;">
-                            </canvas>
-                        </div> -->
+        <!-- <div onselect="onElementSelected" ondrag="onCanvasDragged" class="canvas-container" tabindex="1000"
+            style="width: 600px; height: 600px; position: relative; user-select: none;">
+            <canvas width="60" height="60" edit-enabled="editEnabled" side="side" drawing-area="side.drawingArea"
+                class="lower-canvas"
+                style="position: absolute; width: 60px; height: 60px; left: 0px; top: 0px; touch-action: none; user-select: none;"></canvas><canvas
+                class="upper-canvas " width="600" height="600"
+                style="position: absolute; width: 600px; height: 600px; left: 0px; top: 0px; touch-action: manipulation; user-select: none; cursor: grab;">
+            </canvas>
+        </div> -->
 
-    <!-- [ngClass]="{'dt-SideContainer-touch': $root.touchDevices}"
+        <!-- [ngClass]="{'dt-SideContainer-touch': $root.touchDevices}"
     on-select="onElementSelected"
     on-selection-cleared="onSelectionCleared"
     on-delete="onElementDeleted"
     on-dragged="onCanvasDragged"
     on-canvas-modified="onCanvasModified"
-    on-canvas-done="onCanvasDone"
-
+    on-canvas-done="onCanvasDone" -->
+<!-- 
     </div>
 </div> --> 
-
-
-

@@ -1,0 +1,51 @@
+.box {
+  border: dashed 2px rgba(0, 0, 0, 0.411);
+}
+
+
+ .radio {
+  transform: translateY(-73%);
+}
+
+.radio:checked + img {
+  border: 2px solid rgb(0, 255, 34);
+
+}
+
+
+.imageBox1 {
+  background-color: rgb(255, 255, 255); 
+ // border: 2px solid black;
+ 
+ width: 30px;
+ height: 30px;
+ display: inline-block;
+ margin: 0px;
+ cursor: pointer;
+
+ // padding: 5px;
+ // border: 0px solid transparent;
+ border-radius: 5%;
+ // margin: -50px;
+ // top: -35px;
+}
+
+.imageBox1:hover {
+ transform: scale(1.1); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+
+.imageDiv  {
+  // transform: scale(1.5);
+  height: 40px;
+}
+
+.imageDiv:hover  {
+  // transform: scale(1.5);
+  background-color: #3d365abb;
+  margin-left: 5px;
+}
+
+.A4H {
+  pointer-events: none;
+}

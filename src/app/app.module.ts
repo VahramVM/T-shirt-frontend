@@ -18,6 +18,12 @@ import { SideDesignComponent } from './side-design/side-design.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CarouselModule } from 'ngx-owl-carousel-o';
+import { PipesPipe } from './shared/pipes.pipe';
+import { BackgroundDirective } from './shared/background.directive';
+import { SizeFormatComponent } from './shared/layouts/site-layout/size-format/size-format.component';
+import { ShopingPageComponent } from './shoping-page/shoping-page.component';
+// import { EditorPicComponent } from './editor-pic/editor-pic.component';
+// import {MatSelectModule} from '@angular/material/select';
 
 
 // import { NgbModule } from '@ng-bootstrap/ng-bootstrap';  
@@ -36,7 +42,10 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
     RegisterPageComponent,
     MainPageComponent,
     SideDesignComponent,
-
+    PipesPipe,
+    BackgroundDirective,
+    SizeFormatComponent,
+    ShopingPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,6 +57,8 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
     EditorPicModule,
     BrowserAnimationsModule,
     CarouselModule,
+
+
     // SwiperModule
 
     // OwlModule
@@ -56,7 +67,7 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
 
     // MatTooltipModule
   ],
-  providers: [],
+  providers: [EditorPicModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
