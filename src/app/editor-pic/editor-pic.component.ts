@@ -187,6 +187,8 @@ export class EditorPicComponent implements AfterViewInit {
   public a: number;
   public b: number;
   public c: number;
+  public d: number;
+
 
   constructor(private siteLayout: SiteLayoutComponent,
     private element: ElementRef,
@@ -212,6 +214,10 @@ export class EditorPicComponent implements AfterViewInit {
       res => this.c = res
     );
 
+    this.dataService.scaleKeyy.subscribe(
+      res => this.d = res
+    );
+
 
   }
 
@@ -225,7 +231,6 @@ export class EditorPicComponent implements AfterViewInit {
   }
 
   ngOnInit(): void {
-
   }
 
 
@@ -521,6 +526,8 @@ export class EditorPicComponent implements AfterViewInit {
       'selection:created': (e) => {
         let obj = e.target;
 
+        // this.dataService.canvasSelect = true;
+
         // var mouse = this.canvas.getPointer(e.memo);
         //  const x = mouse.x;
         //  const y = mouse.y;  
@@ -623,6 +630,27 @@ export class EditorPicComponent implements AfterViewInit {
         obj.setCoords();
         obj.saveState();
         this.canvas.renderAll();
+        
+        if (this.canvasCount !== 0) {
+          this.dataService.canvasSelect = true;
+        }
+      
+      },
+
+      // 'selection:created': (e) => {
+
+      //   if (this.canvasCount !== 0) {
+      //     this.dataService.canvasSelect = true;
+      //   }
+      // },
+
+      'before:selection:cleared': (e) => {
+        
+        if (this.canvasCount !== 0) {
+          this.dataService.canvasSelect = true;
+        }
+        $(".deleteBtn").remove();
+        $(".distance").remove();
       },
 
       'selection:updated': (e) => {
@@ -725,6 +753,8 @@ export class EditorPicComponent implements AfterViewInit {
       },
 
       'selection:cleared': (e) => {
+
+        this.dataService.canvasSelect = false;
 
         $(".deleteBtn").remove();
         $(".distance").remove();
@@ -836,11 +866,7 @@ export class EditorPicComponent implements AfterViewInit {
 
       },
 
-      'before:selection:cleared': (e) => {
-        $(".deleteBtn").remove();
-        $(".distance").remove();
-      },
-
+      
 
     });
 
@@ -1413,6 +1439,7 @@ export class EditorPicComponent implements AfterViewInit {
       });
       // value.shadow.affectStroke = false;
       // image.panToActiveObject()
+
       image.scaleToWidth(imageWidth / this.scaleKey);
       image.scaleToHeight(imageHeight / this.scaleKey);
       this.extend(image, this.randomId());
@@ -1431,8 +1458,8 @@ export class EditorPicComponent implements AfterViewInit {
       this.canvas.add(image);
       // this.canvas.centerObject(image);
       this.canvas.centerObjectH(image);
-      image.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a ;
-      
+      image.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a;
+
       this.canvas.renderAll();
 
       $('#hue-value').on('change', () => {
@@ -2082,9 +2109,9 @@ export class EditorPicComponent implements AfterViewInit {
 
 
   public moveWithFormat(scaleKey, scaleBlock) {
-    console.log(this.a, this.b, this.c);
+    console.log(this.a, this.b, this.c, 'scale', scaleBlock, this.d);
 
-    this.scaleKey = scaleKey;
+    this.scaleKey = this.d;
 
     if (this.canvasCount !== 0) {
 
@@ -2098,12 +2125,12 @@ export class EditorPicComponent implements AfterViewInit {
       this.canvas.add(sel);
       const formatWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
       const formatHeight = formatWidth * this.c;
-      
+
       if (scaleBlock) {
-      
+
         sel.scaleToWidth(formatWidth / scaleKey);
         sel.scaleToHeight(formatHeight / scaleKey);
-      } 
+      }
 
       // this.canvas.centerObjectH(sel);
       // sel.top = this.canvas.height / 3.7;
@@ -2116,8 +2143,8 @@ export class EditorPicComponent implements AfterViewInit {
       let top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a;
       sel.top = top;
       console.log('momos', scaleBlock);
-      
-      
+
+
 
       // this.canvas.centerObjectH(sel);
       sel.set({ cornerSize: this.canvas.width / 40 });

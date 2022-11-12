@@ -16,11 +16,11 @@ declare const fabric: any;
 export class SizeFormatComponent implements OnInit {
 
   // @Input() name: string;
-  @ViewChild ('canvas', { static: false }) canvas: EditorPicComponent;
+  // @ViewChild ('canvas', { static: false }) canvas: EditorPicComponent;
 
-  public sizePrintKey: number = this.dataService.sizePrintKey;
-  public formatWithHeight: number = this.dataService.formatWithHeight;
-  public positionTopKey: number = this.dataService.formatTopKey;
+  public sizePrintKey: number;
+  public formatWithHeight: number;
+  public positionTopKey: number;
 
 
   public canvasHtmlWidth: number;
@@ -34,11 +34,17 @@ export class SizeFormatComponent implements OnInit {
   public selectOpen: boolean = false;
   public counter: number = 0;
   public upDown: boolean = null;
-  public canv;
+  public canvasSelect: boolean = null;
+
+  public objectWidth: number;
+  public objectWidthHeight: number;
+
+  public scaleKey: number = 2.3;
+  public scaleBlock: boolean = false;
+  public formatValue: string;
 
 
   constructor(private dataService: DataService,
-    public canvass: EditorPicComponent,
     private siteLayout: SiteLayoutComponent) {
     this.canvasHtmlWidth = this.dataService.canvasHtmlWidth;
     this.canvasHtmlHeight = this.dataService.canvasHtmlHeight;
@@ -48,6 +54,12 @@ export class SizeFormatComponent implements OnInit {
     this.canvasSizeFormatHeight = this.dataService.canvasSizeFormatHeight;
     this.canvasSizeFormatLeft = this.dataService.canvasSizeFormatLeft;
 
+    this.sizePrintKey = this.dataService.sizePrintKey;
+    this.formatWithHeight = this.dataService.formatWithHeight;
+    this.positionTopKey = this.dataService.formatTopKey;
+
+    this.objectWidth = this.dataService.sizePrintKey;
+    this.objectWidthHeight = this.dataService.formatWithHeight;
 
     this.getUpdatedMessage();
 
@@ -56,21 +68,35 @@ export class SizeFormatComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.canv =  this.canvass;
+    this.dataService.canvasDivSelect.subscribe(
+      res => {
+        this.canvasSelect = res;
+        // console.log(res);
+
+        this.setFormatHeightTop();
+      }
+    );
     // this.canvas.setHeight(this.canvasHtmlHeight);
-    console.log(this.canvass);
-    
+    // this.canv = this.dataService.canvasSelect
   }
 
 
 
   private getUpdatedMessage() {
 
-    this.setFormatHeightTop();
 
     this.dataService.formatA4Horizontal.subscribe(
       res => {
         this.sizePrintKey = res;
+        // console.log(res);
+
+        this.setFormatHeightTop();
+      }
+    );
+
+    this.dataService.scaleKeyy.subscribe(
+      res => {
+        this.scaleKey = res;
         console.log(res);
 
         this.setFormatHeightTop();
@@ -80,7 +106,7 @@ export class SizeFormatComponent implements OnInit {
     this.dataService.formatA4Vertical.subscribe(
       res => {
         this.formatWithHeight = res;
-        console.log(res);
+        // console.log(res);
 
         this.setFormatHeightTop();
       }
@@ -89,68 +115,64 @@ export class SizeFormatComponent implements OnInit {
     this.dataService.formatTop.subscribe(
       res => {
         this.positionTopKey = res;
-        console.log(res);
+        // console.log(res);
 
         this.setFormatHeightTop();
       }
     );
-  }
 
-  public scaleKey: number = 2.3;
-  public scaleBlock: boolean = false;
-  public formatValue: string;
+    this.setFormatHeightTop();
+
+  }
 
 
   public changePosition() {
-
-    // b = false;
 
     this.siteLayout.moveWithFormat(this.scaleKey, this.scaleBlock);
 
   }
 
-  public objectWidth = this.dataService.sizePrintKey;
-  public objectWidthHeight = this.dataService.formatWithHeight;
+
 
 
   formatA4H() {
 
     this.counter = 0;
+    this.dataService.horVert = true;
 
     this.dataService.formatValue = this.formatValue;
     this.scaleBlock = true;
     this.changePosition();
+    this.obj.objectWidthHeight = this.objectWidthHeight = 1.414 / 2;
     this.dataService.formatSizeSwich();
-    
+    // this.scaleKey = this.dataService.scaleKey;
 
-    this.scaleKey = 1.3;
 
-    // this.obj.objectWidth = this.objectWidth = 4.3;
+    this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
     // this.obj.topUpDown = 0;
 
-    this.obj.objectWidthHeight = this.objectWidthHeight = 1.414 / 2;
 
-    
   }
 
 
   formatA4V() {
 
     this.counter = 0;
+    this.dataService.horVert = false;
+    // this.scaleKey = 2.3;
 
     this.dataService.formatValue = this.formatValue;
     this.scaleBlock = true;
     this.changePosition();
+    this.obj.objectWidthHeight = this.objectWidthHeight = 1.414;
     this.dataService.formatSizeSwich();
 
-    this.scaleKey = 2.3;
 
-    // this.obj.objectWidth = this.objectWidth = 3.295;
+    this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
     // this.obj.topUpDown = 0.07;
 
-    this.obj.objectWidthHeight = this.objectWidthHeight = 1.414;
 
-    
+
   }
 
 
@@ -165,7 +187,7 @@ export class SizeFormatComponent implements OnInit {
   }
 
   counterTop() {
-    
+
 
     this.obj.objectWidth = this.objectWidth;
     this.obj.objectWidthHeight = this.objectWidthHeight;
@@ -180,12 +202,9 @@ export class SizeFormatComponent implements OnInit {
 
   setformatScale() {
 
-    
-
-    this.dataService.sizePrintKey = this.obj.objectWidth;
+    // this.dataService.sizePrintKey = this.obj.objectWidth;
     this.dataService.formatWithHeight = this.obj.objectWidthHeight;
     this.dataService.formatTopKey = this.obj.topUpDown;
-
 
   }
 
@@ -221,11 +240,11 @@ export class SizeFormatComponent implements OnInit {
     let positionTopKey = this.canvasHtmlWidth * this.positionTopKey;
 
     this.canvasSizeFormatWidth = this.canvasHtmlWidth - 2 * (this.canvasHtmlWidth / this.sizePrintKey + this.canvasHtmlWidth / 40);
-    console.log(this.canvasSizeFormatWidth);
+    console.log('width', this.canvasSizeFormatWidth);
 
     this.canvasSizeFormatTop = this.canvasHtmlWidth / 40 + this.canvasHtmlWidth / this.sizePrintKey - positionTopKey;
     this.canvasSizeFormatHeight = this.canvasSizeFormatWidth * this.formatWithHeight;
-    console.log(this.canvasSizeFormatHeight);
+    console.log('height', this.canvasSizeFormatHeight);
 
     this.canvasSizeFormatLeft = this.canvasHtmlWidth / 40 + this.canvasHtmlWidth / this.sizePrintKey;
     this.canvasCenteredPosition = window.innerWidth / this.dataService.positionKey;

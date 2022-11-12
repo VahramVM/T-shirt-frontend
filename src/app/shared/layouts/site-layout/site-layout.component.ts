@@ -409,7 +409,6 @@ export class SiteLayoutComponent implements AfterViewInit {
 
 
   ngOnInit(): void {
-console.log(this.canvas);
 
     // this.getUpdatedMessage();
     const arrr = this.images;
@@ -690,6 +689,9 @@ console.log(this.canvas);
   sizeValuePass(a) {    
     this.dataService.sizeValue = a.toLowerCase();
     this.dataService.formatSizeSwich();
+    this.canvas.moveWithFormat(this.dataService.scaleKey, true);
+    // this.dataService.formatTopKey = 0.22;
+    
   }
 
   productBrandColor() {
