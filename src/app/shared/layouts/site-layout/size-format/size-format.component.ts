@@ -39,7 +39,7 @@ export class SizeFormatComponent implements OnInit {
   public objectWidth: number;
   public objectWidthHeight: number;
 
-  public scaleKey: number = 2.3;
+  public scaleKey: number ;
   public scaleBlock: boolean = false;
   public formatValue: string;
 
@@ -60,7 +60,8 @@ export class SizeFormatComponent implements OnInit {
 
     this.objectWidth = this.dataService.sizePrintKey;
     this.objectWidthHeight = this.dataService.formatWithHeight;
-
+    
+    this.scaleKey = this.dataService.scaleKey;
     this.getUpdatedMessage();
 
   };
@@ -145,10 +146,10 @@ export class SizeFormatComponent implements OnInit {
     this.changePosition();
     this.obj.objectWidthHeight = this.objectWidthHeight = 1.414 / 2;
     this.dataService.formatSizeSwich();
-    // this.scaleKey = this.dataService.scaleKey;
+    // this.sizePrintKey = 686 / ((686 - 297) / 2);
+    // this.dataService.scaleKey = this.canvasSizeFormatWidth / 145;
 
-
-    this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
+    // this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
     // this.obj.topUpDown = 0;
 
 
@@ -166,9 +167,12 @@ export class SizeFormatComponent implements OnInit {
     this.changePosition();
     this.obj.objectWidthHeight = this.objectWidthHeight = 1.414;
     this.dataService.formatSizeSwich();
+    // const cafficient = 1.0229;
+    // this.sizePrintKey = 686 * cafficient / ((686 - 210) / 2);
+    // this.dataService.scaleKey = this.canvasSizeFormatWidth / 55;
 
 
-    this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
+    // this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
     // this.obj.topUpDown = 0.07;
 
 

@@ -69,6 +69,7 @@ export class EditorPicComponent implements AfterViewInit {
   // public canvasHtml1;
   public textString: string = '';
   public url: string | ArrayBuffer = '';
+  public scaleKey: number;
 
 
 
@@ -196,6 +197,12 @@ export class EditorPicComponent implements AfterViewInit {
     private orderDatas: OrderDatasService
   ) {
 
+    
+    this.scaleKey =  this.dataService.scaleKey;
+    
+    console.log('scaleKey', this.dataService.scaleKey);
+    
+
     this.a = dataService.formatTopKey;
 
     this.dataService.formatTop.subscribe(
@@ -215,6 +222,7 @@ export class EditorPicComponent implements AfterViewInit {
     );
 
     this.dataService.scaleKeyy.subscribe(
+      
       res => this.d = res
     );
 
@@ -2105,11 +2113,10 @@ export class EditorPicComponent implements AfterViewInit {
   }
 
   /*Canvas*/
-  public scaleKey: number = 2.3;
 
 
   public moveWithFormat(scaleKey, scaleBlock) {
-    console.log(this.a, this.b, this.c, 'scale', scaleBlock, this.d);
+    console.log(this.a, this.b, this.c, 'scale', scaleBlock, this.d, scaleKey);
 
     this.scaleKey = this.d;
 

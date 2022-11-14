@@ -34,11 +34,13 @@ export class DataService {
 
   public scaleBlock: boolean = false;
 
-  public sizeValue: string = '';
-  public formatValue: string = '';
+  public sizeValue: string = 'm';
+  public formatValue: string = 'A4';
 
 
-  public horVert: boolean = false;
+  public horVert: boolean = true;
+
+  public scaleKeyForCanvas: number;
 
   // public scaleKeyyy: number = 2.3;
   // public scaleBlock: boolean;
@@ -146,8 +148,14 @@ export class DataService {
   // myService.setMyGago('gago');
 
   constructor() {
+
     this.initCalculations();
     this.initFromServer();
+    const  canvasSizeFormatWidth = this.canvasHtmlWidth - 2 * (this.canvasHtmlWidth / this.sizePrintKey + this.canvasHtmlWidth / 40);
+    this.sizePrintKey = 686 / ((686 - 297) / 2);
+    console.log('ewgwet', this.sizePrintKey);
+    
+    this.scaleKey = canvasSizeFormatWidth / 145;
   }
 
 
@@ -159,21 +167,20 @@ export class DataService {
   formatSizeSwich() {
 
     const cafficient = 1.0229;
+    console.log(' i am');
 
     if (this.sizeValue === 'xs' && this.formatValue === 'A4') {
-      console.log("HV");
 
       if (this.horVert) {
         this.sizePrintKey = 609 / ((609 - 297) / 2);
-        this.scaleKey = this.canvasSizeFormatWidth/ 185
+        this.scaleKey = this.canvasSizeFormatWidth/ 145
       } else {
         this.sizePrintKey = 609 * cafficient / ((609 - 210) / 2);
-        this.scaleKey = this.canvasSizeFormatWidth/ 95
+        this.scaleKey = this.canvasSizeFormatWidth/ 75;
       }
     }
 
     if (this.sizeValue === 's' && this.formatValue === 'A4') {
-      console.log("HV");
 
       if (this.horVert) {
         this.sizePrintKey = 648 / ((648 - 297) / 2);
@@ -183,14 +190,19 @@ export class DataService {
     }
 
     if (this.sizeValue === 'm' && this.formatValue === 'A4') {
-      console.log("HV");
+      console.log('this.sizePrintKey', this.sizePrintKey);
+      // this.scaleKey = this.canvasSizeFormatWidth/ 145;
 
       if (this.horVert) {
+        
         this.sizePrintKey = 686 / ((686 - 297) / 2);
-        this.scaleKey = this.canvasSizeFormatWidth/ 185
+        this.scaleKey = this.canvasSizeFormatWidth/ 145;
+
+        console.log('this.sizePrintKey', this.sizePrintKey);
+        
       } else {
         this.sizePrintKey = 686 * cafficient / ((686 - 210) / 2);
-        this.scaleKey = this.canvasSizeFormatWidth/ 95
+        this.scaleKey = this.canvasSizeFormatWidth/ 75;
       }
     }
   }
@@ -201,8 +213,9 @@ export class DataService {
   public initCalculations() {
 
 
-    this.sizePrintKey = 4.3;
-    this.formatWithHeight = 1.414;
+    this.sizePrintKey = 686 / ((686 - 297) / 2);
+    // this.scaleKey = this.canvasSizeFormatWidth/ 185
+    this.formatWithHeight = 0.707;
     this.formatTopKey = 0;
 
 

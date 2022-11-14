@@ -102,7 +102,7 @@ export class SiteLayoutComponent implements AfterViewInit {
     brendName: '',
     productColor: '',
     colorDefoult: '',
-    productSize: ''
+    productSize: 'M'
   }
 
 
@@ -139,7 +139,7 @@ export class SiteLayoutComponent implements AfterViewInit {
   public canvasHtmlWidth = this.dataService.canvasHtmlWidth;
   public canvasHtmlHeight = this.dataService.canvasHtmlHeight;
   public canvasCenteredPosition = this.dataService.canvasCenteredPosition;
-  
+
 
   // public marvelHeroes =  this.productsColor.filter((hero) => {
   //   return hero.hex == this.productsColor[this.index].hex;
@@ -682,16 +682,30 @@ export class SiteLayoutComponent implements AfterViewInit {
     this.order.orderDatas.productTypeName = this.orderDatas.productTypeName;
     this.order.orderDatas.brendName = this.orderDatas.brendName;
     this.order.orderDatas.productColor = this.orderDatas.productColor;
-    this.order.orderDatas.productSize = this.orderDatas.productSize
+    this.order.orderDatas.productSize = this.orderDatas.productSize;
 
   }
 
-  sizeValuePass(a) {    
+  sizeValuePass(a) {
     this.dataService.sizeValue = a.toLowerCase();
     this.dataService.formatSizeSwich();
+    // const cafficient = 1.0229;
+    // if (a === "M") {
+    //   this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+    // } else if (a === "XS") {
+    //   this.dataService.sizePrintKey = 609 / ((609 - 297) / 2);
+    // }
+
+    // if (this.dataService.horVert && a === "M") {
+    //   this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+    //   this.dataService.scaleKey = this.dataService.canvasSizeFormatWidth / 145;
+    // } else if (!this.dataService.horVert && a === "M") {
+    //   this.dataService.sizePrintKey = 686 * cafficient / ((686 - 210) / 2);
+    //   this.dataService.scaleKey = this.dataService.canvasSizeFormatWidth / 65;
+    // }
     this.canvas.moveWithFormat(this.dataService.scaleKey, true);
-    // this.dataService.formatTopKey = 0.22;
-    
+
+
   }
 
   productBrandColor() {

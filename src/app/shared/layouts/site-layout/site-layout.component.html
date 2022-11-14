@@ -505,7 +505,7 @@
                                         <label *ngFor="let size of productBrandSizes | keyvalue:ret; let i = index;"
                                             class="col s5 m3 l2 offset-s0 offset-m0 offset-l0">
                                             <input (click)="orderDatas.productSize = size.key; sizeValuePass(size.key)" [disabled]="size.value"
-                                                type="radio" name="test" value="big">
+                                                type="radio" name="test" value="big" [checked]="size.key === 'M'">
                                             <div style="font-size: 120%; text-align: center; width: 120%;">
                                                 <b> {{size.key}} </b>
                                             </div>

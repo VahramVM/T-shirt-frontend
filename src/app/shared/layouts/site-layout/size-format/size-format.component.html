@@ -49,7 +49,7 @@
                             for="">A4</p>
 
                         <label
-                            (click)="formatValue = 'A4'; objectWidth = 4.3; obj.topUpDown = 0.05; counterTop(); formatA4H();  setformatScale()"
+                            (click)="formatValue = 'A4'; obj.topUpDown = 0.03; counterTop(); formatA4H();  setformatScale()"
                             style="top: -80%; margin: 0; left: 8px; position: relative;">
                             <input type="radio" name="test1" value="big">
                             <img class="hoverable imageBox1"
@@ -59,7 +59,7 @@
 
 
                         <label
-                            (click)="formatValue = 'A4'; objectWidth = 3.295; obj.topUpDown = 0.12; counterTop(); formatA4V(); setformatScale(); "
+                            (click)="formatValue = 'A4'; obj.topUpDown = 0.1; counterTop(); formatA4V(); setformatScale(); "
                             style="top: -64%; margin: 0;  position: relative;">
                             <input type="radio" name="test1" value="big">
                             <img class="hoverable imageBox1" 
@@ -100,7 +100,7 @@
     </div>
 </div>
 
-<div *ngIf = "canvasSelect" (window:resize)="onResizeFormat()" class="box" style="border-spacing: 10px;" [ngStyle]="{ 
+<div (window:resize)="onResizeFormat()" class="box" style="border-spacing: 10px;" [ngStyle]="{ 
     width : canvasSizeFormatWidth + 'px', 
     height : canvasSizeFormatHeight + 'px',
     top : canvasSizeFormatTop + 'px',
