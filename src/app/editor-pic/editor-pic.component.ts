@@ -11,6 +11,9 @@ import { Injectable } from '@angular/core'
 
 import { SiteLayoutComponent } from '../shared/layouts/site-layout/site-layout.component'
 import { SizeFormatComponent } from '../shared/layouts/site-layout/size-format/size-format.component';
+import { ProdutsColorService } from '../shared/layouts/servises/productscolor.service';
+import { Products } from '../shared/interface';
+import { ProdutsService } from '../shared/layouts/servises/products.service';
 // import { SiteLayoutComponent } from '../ass'
 
 
@@ -74,7 +77,6 @@ export class EditorPicComponent implements AfterViewInit {
 
 
   onResize(event) {
-    // console.log(window.innerWidth);
     // --!
     this.canvas.setWidth(this.siteLayout.canvasHtmlWidth);
     this.canvas.setHeight(this.siteLayout.canvasHtmlHeight);
@@ -132,8 +134,8 @@ export class EditorPicComponent implements AfterViewInit {
   public linkk = false;
   public drawObject = null;
 
-  public objWidthLimit = 170;
-  public objHeightLimit = 170;
+  // public objWidthLimit = 170;
+  // public objHeightLimit = 170;
 
   public test = null;
   public path = null;
@@ -194,14 +196,19 @@ export class EditorPicComponent implements AfterViewInit {
   constructor(private siteLayout: SiteLayoutComponent,
     private element: ElementRef,
     private dataService: DataService,
-    private orderDatas: OrderDatasService
+    private orderDatas: OrderDatasService,
+    private productsService: ProdutsService
   ) {
 
-    
-    this.scaleKey =  this.dataService.scaleKey;
-    
-    console.log('scaleKey', this.dataService.scaleKey);
-    
+    this.productsService.fetch().subscribe(
+      (res: Products[]) => {
+        this.props.canvasImage = res[1].type;        
+      }
+    );
+
+    // this.props.canvasImage = this.productsService.;
+    this.scaleKey = this.dataService.scaleKey;
+
 
     this.a = dataService.formatTopKey;
 
@@ -222,7 +229,7 @@ export class EditorPicComponent implements AfterViewInit {
     );
 
     this.dataService.scaleKeyy.subscribe(
-      
+
       res => this.d = res
     );
 
@@ -239,12 +246,14 @@ export class EditorPicComponent implements AfterViewInit {
   }
 
   ngOnInit(): void {
+
   }
 
 
 
   ngAfterViewInit(): void {
     // setup front side canvas
+    // this.props.canvasImage = this.siteLayout.firstBackCanvasImage;
 
 
     // this.canvas1 = new fabric.Canvas(this.htmlCanvas.nativeElement);
@@ -638,11 +647,11 @@ export class EditorPicComponent implements AfterViewInit {
         obj.setCoords();
         obj.saveState();
         this.canvas.renderAll();
-        
+
         if (this.canvasCount !== 0) {
           this.dataService.canvasSelect = true;
         }
-      
+
       },
 
       // 'selection:created': (e) => {
@@ -653,7 +662,7 @@ export class EditorPicComponent implements AfterViewInit {
       // },
 
       'before:selection:cleared': (e) => {
-        
+
         if (this.canvasCount !== 0) {
           this.dataService.canvasSelect = true;
         }
@@ -874,7 +883,7 @@ export class EditorPicComponent implements AfterViewInit {
 
       },
 
-      
+
 
     });
 

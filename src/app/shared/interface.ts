@@ -32,7 +32,9 @@ export interface ProductsColor {
     name: string,
     hex: string,
     user?: string,
-    _id?: string
+    _id?: string,
+    linkeBrand: string,
+    src: string
 }
 
 export interface ProductBrand {

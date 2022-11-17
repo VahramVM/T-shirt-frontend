@@ -15,11 +15,11 @@ export class DataService {
   public scaleKeyy = new Subject<number>();
 
 
-  public widthKey: number = 0.68;
-  public heightKey: number = 1.233;
-  public positionKey: number = 5.75;
+  public widthKey: number = 0.7;
+  public heightKey: number = 1.23;
+  public positionKey: number = 5.45;
 
-  public widthHeight: number = 1.414;
+  // public widthHeight: number = 1.414;
 
   public canvasHtmlWidth: number;
   public canvasHtmlHeight: number;
@@ -34,7 +34,7 @@ export class DataService {
 
   public scaleBlock: boolean = false;
 
-  public sizeValue: string = 'm';
+  public sizeValue: string = 'M';
   public formatValue: string = 'A4';
 
 
@@ -119,7 +119,7 @@ export class DataService {
   }
 
 
-  
+
 
 
 
@@ -149,13 +149,14 @@ export class DataService {
 
   constructor() {
 
+    // this.sizePrintKey = 686 / ((686 - 297) / 2);
+    // this.formatWithHeight = 0.707;
+    // this.formatTopKey = 0;
+
     this.initCalculations();
     this.initFromServer();
-    const  canvasSizeFormatWidth = this.canvasHtmlWidth - 2 * (this.canvasHtmlWidth / this.sizePrintKey + this.canvasHtmlWidth / 40);
-    this.sizePrintKey = 686 / ((686 - 297) / 2);
-    console.log('ewgwet', this.sizePrintKey);
-    
-    this.scaleKey = canvasSizeFormatWidth / 145;
+    // this.formatSizeSwich()
+    // this.scaleKey = 1.5;
   }
 
 
@@ -167,20 +168,80 @@ export class DataService {
   formatSizeSwich() {
 
     const cafficient = 1.0229;
-    console.log(' i am');
 
-    if (this.sizeValue === 'xs' && this.formatValue === 'A4') {
+    // const realSizes = {XS: 609, S: 648, M: 686, L: 724, XL: 762, XXL: 800}
 
+    // for (let index = 0; index < 6; index++) {
+
+    //   if (this.sizeValue === 'XS' && this.formatValue === 'A3') {
+
+    //     this.sizePrintKey = Object.values(realSizes)[index] * cafficient / ((Object.values(realSizes)[index] - 297) / 2);
+    //     this.scaleKey = this.canvasSizeFormatWidth / 75;
+    //   }      
+    // }
+
+    if (this.sizeValue === 'XS' && this.formatValue === 'A3') {
+
+      this.sizePrintKey = 609 * cafficient / ((609 - 297) / 2);
+      this.scaleKey = 2.3;
+
+    }
+
+    if (this.sizeValue === 'S' && this.formatValue === 'A3') {
+
+      this.sizePrintKey = 648 * cafficient / ((648 - 297) / 2);
+      this.scaleKey = 2.3;
+
+    }
+
+    if (this.sizeValue === 'M' && this.formatValue === 'A3') {
+
+      this.sizePrintKey = 686 * cafficient / ((686 - 297) / 2);
+      this.scaleKey = 2.3;
+
+    }
+
+    if (this.sizeValue === 'L' && this.formatValue === 'A3') {
+
+      this.sizePrintKey = 724 * cafficient / ((724 - 297) / 2);
+      this.scaleKey = 2.3;
+
+    }
+
+    if (this.sizeValue === 'XL' && this.formatValue === 'A3') {
+
+      this.sizePrintKey = 762 * cafficient / ((762 - 297) / 2);
+      this.scaleKey = 2.3;
+
+    }
+
+    if (this.sizeValue === 'XXL' && this.formatValue === 'A3') {
+
+      this.sizePrintKey = 800 * cafficient / ((800 - 297) / 2);
+      this.scaleKey = this.canvasSizeFormatWidth / 75;
+
+    }
+
+
+
+
+
+
+
+
+    if (this.sizeValue === 'XS' && this.formatValue === 'A4') {
       if (this.horVert) {
+        console.log("A4 loook");
+
         this.sizePrintKey = 609 / ((609 - 297) / 2);
-        this.scaleKey = this.canvasSizeFormatWidth/ 145
+        this.scaleKey = 1.1;
       } else {
         this.sizePrintKey = 609 * cafficient / ((609 - 210) / 2);
-        this.scaleKey = this.canvasSizeFormatWidth/ 75;
+        this.scaleKey = 2.3;;
       }
     }
 
-    if (this.sizeValue === 's' && this.formatValue === 'A4') {
+    if (this.sizeValue === 'S' && this.formatValue === 'A4') {
 
       if (this.horVert) {
         this.sizePrintKey = 648 / ((648 - 297) / 2);
@@ -189,20 +250,14 @@ export class DataService {
       }
     }
 
-    if (this.sizeValue === 'm' && this.formatValue === 'A4') {
-      console.log('this.sizePrintKey', this.sizePrintKey);
-      // this.scaleKey = this.canvasSizeFormatWidth/ 145;
-
+    if (this.sizeValue === 'M' && this.formatValue === 'A4') {
       if (this.horVert) {
-        
-        this.sizePrintKey = 686 / ((686 - 297) / 2);
-        this.scaleKey = this.canvasSizeFormatWidth/ 145;
 
-        console.log('this.sizePrintKey', this.sizePrintKey);
-        
+        this.sizePrintKey = 686 / ((686 - 297) / 2);
+        this.scaleKey = 1.1;
       } else {
         this.sizePrintKey = 686 * cafficient / ((686 - 210) / 2);
-        this.scaleKey = this.canvasSizeFormatWidth/ 75;
+        this.scaleKey = 2.3;
       }
     }
   }
@@ -214,42 +269,22 @@ export class DataService {
 
 
     this.sizePrintKey = 686 / ((686 - 297) / 2);
-    // this.scaleKey = this.canvasSizeFormatWidth/ 185
     this.formatWithHeight = 0.707;
     this.formatTopKey = 0;
+    this.scaleKey = 1.1;
 
-
-    function calc(bigWidth, smallWidth) {
-      return bigWidth * 2 / (bigWidth - smallWidth)
-    }
-
-    // console.log('calculator', calc(547, 294));
-
-
+    
     this.canvasHtmlWidth = window.innerWidth - this.widthKey * window.innerWidth;
-
     this.canvasHtmlHeight = this.canvasHtmlWidth * this.heightKey;
-
 
     this.positionTopKey = this.canvasHtmlWidth * this.formatTopKey; // if wont to get up then it must be + in first, else get down -
     this.canvasSizeFormatWidth = this.canvasHtmlWidth - 2 * (this.canvasHtmlWidth / this.sizePrintKey + this.canvasHtmlWidth / 40);
-    // console.log('width', this.canvasSizeFormatWidth);
-
     this.canvasSizeFormatTop = this.canvasHtmlWidth / 40 + this.canvasHtmlWidth / this.sizePrintKey - this.positionTopKey;
     this.canvasSizeFormatHeight = this.canvasSizeFormatWidth * this.formatWithHeight;
-    // console.log('heihgt', this.canvasSizeFormatHeight);
-
     this.canvasSizeFormatLeft = this.canvasHtmlWidth / 40 + this.canvasHtmlWidth / this.sizePrintKey;
     this.canvasCenteredPosition = window.innerWidth / this.positionKey;
 
-    // this.canvasSizeFormatWidth = this.formatWidth = this.canvasHtmlWidth - 2 * (this.canvasHtmlWidth / this._sizePrintKey + this.canvasHtmlWidth / 40);
-    // this.canvasSizeFormatHeight = this.formatHeight = this.formatWidth * this.formatWithHeight;
 
-    // this.canvasSizeFormatTop = this.formatTop;
-    // this.canvasSizeFormatLeft = this.formatLeft;
-
-    // this.formatTop = this.canvasHtmlWidth / 40 + (this.canvasHtmlWidth / this._sizePrintKey);
-    // this.formatLeft = this.canvasHtmlWidth / 40 + (this.canvasHtmlWidth / this._sizePrintKey);
   }
 
   private initFromServer() {

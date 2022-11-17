@@ -10,12 +10,25 @@ providedIn: 'root'
 })
 
 export class ProdutsService {
+
+  public firstCanvasBackroundImage;
    
-    constructor (private http: HttpClient) {}
+    constructor (private http: HttpClient) {
+      this.fetch().subscribe(
+        (res: Products[]) => {
+          this.firstCanvasBackroundImage = res;
+          console.log(this.firstCanvasBackroundImage[1].type);
+          
+        }
+      )   
+    }
 
     fetch() {
       return this.http.get('http://localhost:5000/api/product').pipe(        
-        )   
+        )
      
     }
+
+    
+
 }

@@ -42,7 +42,7 @@
 
                             <div *ngIf="isOpen; ">
                                 <div class="colorBox" role="dialog" aria-label="Color picker">
-                                    <div *ngFor="let color of productsColor" role="option"
+                                    <div *ngFor="let color of productBrands" role="option"
                                         [style.background]="color.hex" [attr.aria-label]="color.name"
                                         [attr.aria-selected]="color.hex == selectColor"
                                         (click)="selectColor = color.hex; isOpen = false">
@@ -453,13 +453,13 @@
 
 
                         <div style="margin-top: 5%;" class="card">
-                            <div class="card-content" style="height: 120px; width: 100%;">
-                                <a
-                                    [href]="productBrands[indexBrand]===undefined ? productBrands[0].linkeBrand: productBrands[indexBrand].linkeBrand">
+                            <div  class="card-content" style="height: 120px; width: 100%;">
+                                <a 
+                                    [href]="indexBrand=== null ? productBrands[0].linkeBrand: productBrands[indexBrand].linkeBrand">
                                     <img style="width: 40%; height: auto;  display: flex;
                                     justify-content: center; margin-top: 0%;
                                     align-items: center;" class="activator"
-                                        [src]="productBrands[indexBrand]===undefined ? productBrands[0].src: productBrands[indexBrand].src">
+                                        [src]="indexBrand=== null ? productBrands[0].src: productBrands[indexBrand].src">
                                 </a>
                             </div>
                             <br>

@@ -213,11 +213,12 @@ export class SizeFormatComponent implements OnInit {
   }
 
 
-  onResizeFormat() {
+  onResize() {
 
+// console.log('resize', this.scaleKey);
 
     this.dataService.initCalculations();
-    this.siteLayout.moveWithFormat(this.scaleKey, this.scaleBlock);
+
     // this.counterTop();
 
     this.formatA4V();
@@ -234,6 +235,8 @@ export class SizeFormatComponent implements OnInit {
     this.canvasSizeFormatHeight = this.dataService.canvasSizeFormatHeight;
     this.canvasSizeFormatTop = this.dataService.canvasSizeFormatTop;
     this.canvasSizeFormatLeft = this.dataService.canvasSizeFormatLeft;
+
+    this.siteLayout.moveWithFormat(this.scaleKey, this.scaleBlock);
 
   }
 
