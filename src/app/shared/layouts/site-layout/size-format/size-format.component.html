@@ -4,11 +4,32 @@
         <div class="col s7 m3 l4 xl6 offset-s0 offset-m9 offset-l6 offset-xl0"
             style="top: -8.2%; position: absolute; z-index: 1;">
 
-            <button class="but btn-small #b0bec5 blue-grey lighten-3" style=" margin-left: 0px;  cursor: pointer;"
-                (click)="selectOpen = !selectOpen">
-                <i class="small material-icons">cloud</i>
+            <!-- <button class="btn-small #b0bec5 blue-grey lighten-3" style=" margin-left: 0px;  cursor: pointer" (click)="selectOpen = !selectOpen">
+                {{formatValue}}
+                <i class="small material-icons right" style="top: 0%; margin: 0; left: 8px; position: relative;">
+                    <img class="imageBox1" style="margin-right: 18%;  width: 25%; height: auto;"
+                    src="../assets/img/oie_aHdWpUcmnmvA.png"></i>
 
+                <label style="top: 0%; margin: 0; left: 8px; position: relative;">
+                    <img class="imageBox1 right"
+                        style=" margin-left: 35%; margin-right: 18%;  width: 25%; height: auto;"
+                        src="../assets/img/oie_aHdWpUcmnmvA.png">
+                </label>
+            </button> -->
+            <button class="btn-small #b0bec5 blue-grey lighten-3" style="cursor: pointer; width: 80px;"
+                (click)="selectOpen = !selectOpen">
+                <!-- <i class="small material-icons">{{formatValue}}</i> -->
+                <p style="top: 50%; float:left; margin: 0; margin-left: -8px;  font-size: large; font-family: Arial, Helvetica, sans-serif; color: #ffffff;"
+                    for="">{{formatValue}}</p>
+                <i style="margin-left: 10px;">
+                    <img [ngClass]="{horizontal : horVert, vertical : !horVert}"  style="margin-top: 3%; display: inline-block;
+                    margin: 0px;
+                    cursor: pointer;
+                    border-radius: 5%;"
+                        src="../assets/img/oie_aHdWpUcmnmvA.png">
+                </i>
             </button>
+
             <button class="but btn-small #b0bec5 blue-grey lighten-3" style=" margin-left: 0px;  cursor: pointer;"
                 (click)="upDown = true; counterTop(); setformatScale(); changePosition()">
                 <i class="small material-icons">cloud</i>
@@ -30,7 +51,7 @@
                         <p style="top: 50%; transform: translateY(-50%); margin: 0; left: 13px; position: relative; font-size: large; font-family: Arial, Helvetica, sans-serif; color: #ffffff;"
                             for="">A3</p>
 
-                        
+
 
                         <label
                             (click)="formatValue = 'A3'; obj.topUpDown = 0.05; counterTop(); formatA4V(); setformatScale(); "
@@ -62,8 +83,7 @@
                             (click)="formatValue = 'A4'; obj.topUpDown = 0.1; counterTop(); formatA4V(); setformatScale(); "
                             style="top: -64%; margin: 0;  position: relative;">
                             <input type="radio" name="test1" value="big">
-                            <img class="hoverable imageBox1" 
-                            style="  width: 18%; height: 90%; "
+                            <img class="hoverable imageBox1" style="  width: 18%; height: 90%; "
                                 src="../assets/img/oie_aHdWpUcmnmvA.png">
                         </label>
 
@@ -74,8 +94,8 @@
                     <div class="imageDiv" style="margin: -5px">
                         <p style="top: 50%; transform: translateY(-50%); margin: 0; left: 13px; position: relative; font-size: large; font-family: Arial, Helvetica, sans-serif; color: #ffffff;"
                             for="">A5</p>
-                        <label
-                            (click)="formatValue = 'A5'; obj.topUpDown = 0.1; counterTop(); formatA4H(); setformatScale(); "
+                        <label 
+                            (click)="formatValue = 'A5'; obj.topUpDown = 0.1; counterTop(); formatA4H(); setformatScale();"
                             style="top: -78%; margin: 0; left: 8px; position: relative;">
                             <input type="radio" name="test1" value="big">
                             <img class="hoverable imageBox1"
@@ -87,7 +107,7 @@
                             (click)="formatValue = 'A5'; obj.topUpDown = 0.15; counterTop(); formatA4V(); setformatScale(); "
                             style="top: -63%; margin: 0;  position: relative;">
                             <input type="radio" name="test1" value="big">
-                            <img class="hoverable imageBox1" style="  width: 18%; height: 90%; "
+                            <img class="hoverable imageBox1" style="width: 18%; height: 90%;"
                                 src="../assets/img/oie_aHdWpUcmnmvA.png">
                         </label>
 
@@ -109,4 +129,7 @@
     'pointer-events': 'none'
     }">
 </div>
+
+<div  *ngIf="true" style="margin-top: -100px; margin-left: -200px;">{{endPrise}}</div>
+
 <!-- *ngIf = "canvasSelect" -->

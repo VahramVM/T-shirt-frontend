@@ -16,9 +16,7 @@ export class ProdutsService {
     constructor (private http: HttpClient) {
       this.fetch().subscribe(
         (res: Products[]) => {
-          this.firstCanvasBackroundImage = res;
-          console.log(this.firstCanvasBackroundImage[1].type);
-          
+          this.firstCanvasBackroundImage = res;          
         }
       )   
     }

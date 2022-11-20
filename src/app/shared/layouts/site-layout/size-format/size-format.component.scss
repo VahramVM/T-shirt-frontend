@@ -17,8 +17,8 @@
   background-color: rgb(255, 255, 255); 
  // border: 2px solid black;
  
- width: 30px;
- height: 30px;
+ width: 25%;
+ height: auto;
  display: inline-block;
  margin: 0px;
  cursor: pointer;
@@ -28,6 +28,17 @@
  border-radius: 5%;
  // margin: -50px;
  // top: -35px;
+}
+
+.horizontal{
+  width: 45%; 
+  height: auto;
+}
+
+.vertical{
+  padding-top: 13%;
+  width: 29%; 
+  height: 80%;
 }
 
 .imageBox1:hover {

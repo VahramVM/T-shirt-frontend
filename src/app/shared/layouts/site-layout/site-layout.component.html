@@ -423,7 +423,8 @@
                                 allColors = true;
                                 orderDatas.productTypeName = imageProduct.name;
                                 orderDatas.productColor = '';
-                                setCanvasImage();  productsTypeColor();  index = i;"
+                                indexBrandType = i;
+                                setCanvasImage();  productsTypeColor();  index = i; "
                                 (colorPickerChange)="setCanvasFill()">
                                 <img class="productType" [src]="imageProduct.type1">
                                 <p style="margin-top: -40%; margin-left: -30%;">{{imageProduct.name}}</p>

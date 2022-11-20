@@ -39,10 +39,12 @@ export class SizeFormatComponent implements OnInit {
   public objectWidth: number;
   public objectWidthHeight: number;
 
-  public scaleKey: number ;
+  public scaleKey: number;
   public scaleBlock: boolean = false;
-  public formatValue: string;
+  public formatValue: string = 'A4';
+  public horVert: boolean = true;
 
+  public endPrise: number = 0;
 
   constructor(private dataService: DataService,
     private siteLayout: SiteLayoutComponent) {
@@ -60,7 +62,7 @@ export class SizeFormatComponent implements OnInit {
 
     this.objectWidth = this.dataService.sizePrintKey;
     this.objectWidthHeight = this.dataService.formatWithHeight;
-    
+
     this.scaleKey = this.dataService.scaleKey;
     this.getUpdatedMessage();
 
@@ -122,6 +124,15 @@ export class SizeFormatComponent implements OnInit {
       }
     );
 
+    this.dataService.endPriseValue.subscribe(
+      res => {
+        this.endPrise = res;
+        // console.log(res);
+
+        this.setFormatHeightTop();
+      }
+    );
+
     this.setFormatHeightTop();
 
   }
@@ -139,7 +150,7 @@ export class SizeFormatComponent implements OnInit {
   formatA4H() {
 
     this.counter = 0;
-    this.dataService.horVert = true;
+    this.dataService.horVert = this.horVert = true;
 
     this.dataService.formatValue = this.formatValue;
     this.scaleBlock = true;
@@ -159,7 +170,7 @@ export class SizeFormatComponent implements OnInit {
   formatA4V() {
 
     this.counter = 0;
-    this.dataService.horVert = false;
+    this.dataService.horVert = this.horVert = false;
     // this.scaleKey = 2.3;
 
     this.dataService.formatValue = this.formatValue;
@@ -209,13 +220,13 @@ export class SizeFormatComponent implements OnInit {
     // this.dataService.sizePrintKey = this.obj.objectWidth;
     this.dataService.formatWithHeight = this.obj.objectWidthHeight;
     this.dataService.formatTopKey = this.obj.topUpDown;
-
+    this.dataService.calcEndPrise();
   }
 
 
   onResize() {
 
-// console.log('resize', this.scaleKey);
+    console.log('resize', this.scaleKey);
 
     this.dataService.initCalculations();
 

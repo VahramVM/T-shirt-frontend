@@ -1,6 +1,8 @@
 import { Injectable, SimpleChanges } from '@angular/core';
 import { Subject } from 'rxjs'
+import { Products } from '../../interface';
 import { SizeFormatComponent } from '../site-layout/size-format/size-format.component';
+import { ProdutsService } from './products.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,7 @@ export class DataService {
   public formatTop = new Subject<number>();
   public canvasDivSelect = new Subject<boolean>();
   public scaleKeyy = new Subject<number>();
+  public endPriseValue = new Subject<number>();
 
 
   public widthKey: number = 0.7;
@@ -41,7 +44,9 @@ export class DataService {
   public horVert: boolean = true;
 
   public scaleKeyForCanvas: number;
-
+  public products: Products[] = [];
+  public indexBrandType: number = 0;
+  // public endPrise: number = 0;
   // public scaleKeyyy: number = 2.3;
   // public scaleBlock: boolean;
 
@@ -118,6 +123,17 @@ export class DataService {
     return this._scaleKey;
   }
 
+  private _endPrise;
+
+  public set endPrise(value: number) {
+    this._endPrise = value;
+    this.endPriseValue.next(value);
+  }
+
+  public get endPrise(): number {
+    return this._endPrise;
+  }
+
 
 
 
@@ -155,111 +171,149 @@ export class DataService {
 
     this.initCalculations();
     this.initFromServer();
-    // this.formatSizeSwich()
-    // this.scaleKey = 1.5;
   }
-
 
 
   ngOnInit(): void {
-
+    
   }
+
+  public formats = [{ format: 'A3', formatSize: 297, formatPrise: 500 }, { format: 'A4', formatSize: 297, formatPrise: 400 }, { format: 'A5', formatSize: 210, formatPrise: 300 }, { format: 'A6', formatSize: 148, formatPrise: 400 }];
+
 
   formatSizeSwich() {
 
+    
+    const realSize = this.products[this.indexBrandType].realSize;
     const cafficient = 1.0229;
 
-    // const realSizes = {XS: 609, S: 648, M: 686, L: 724, XL: 762, XXL: 800}
+    // const realSizes = { XS: 609, S: 648, M: 686, L: 724, XL: 762, XXL: 800 };
+    // const formats = ['A3', 'A4', 'A5'];
 
-    // for (let index = 0; index < 6; index++) {
 
-    //   if (this.sizeValue === 'XS' && this.formatValue === 'A3') {
+    for (let ind = 0; ind < this.formats.length; ind++) {
+      for (let i = 0; i < Object.keys(realSize).length; i++) {
 
-    //     this.sizePrintKey = Object.values(realSizes)[index] * cafficient / ((Object.values(realSizes)[index] - 297) / 2);
-    //     this.scaleKey = this.canvasSizeFormatWidth / 75;
-    //   }      
+        if (this.sizeValue === Object.keys(realSize)[i] && this.formatValue === this.formats[ind].format) {
+          if (this.horVert) {
+            this.sizePrintKey = Object.values(realSize)[i] / ((Object.values(realSize)[i] - this.formats[ind].formatSize) / 2);
+            this.scaleKey = 1.1;
+          } else {
+            if (this.formatValue === this.formats[0].format) {
+              this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind].formatSize) / 2);
+              this.scaleKey = 2.3;
+            } else {
+              this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind + 1].formatSize) / 2);
+              this.scaleKey = 2.3;
+            }
+          }
+        }
+      }
+    }
+
+  
+    // if (this.sizeValue === 'XS' && this.formatValue === 'A3') {
+
+    //   this.sizePrintKey = 609 * cafficient / ((609 - 297) / 2);
+    //   this.scaleKey = 2.3;
+
     // }
 
-    if (this.sizeValue === 'XS' && this.formatValue === 'A3') {
+    // if (this.sizeValue === 'S' && this.formatValue === 'A3') {
 
-      this.sizePrintKey = 609 * cafficient / ((609 - 297) / 2);
-      this.scaleKey = 2.3;
+    //   this.sizePrintKey = 648 * cafficient / ((648 - 297) / 2);
+    //   this.scaleKey = 2.3;
 
+    // }
+
+    // if (this.sizeValue === 'M' && this.formatValue === 'A3') {
+
+    //   this.sizePrintKey = 686 * cafficient / ((686 - 297) / 2);
+    //   this.scaleKey = 2.3;
+
+    // }
+
+    // if (this.sizeValue === 'L' && this.formatValue === 'A3') {
+
+    //   this.sizePrintKey = 724 * cafficient / ((724 - 297) / 2);
+    //   this.scaleKey = 2.3;
+
+    // }
+
+    // if (this.sizeValue === 'XL' && this.formatValue === 'A3') {
+
+    //   this.sizePrintKey = 762 * cafficient / ((762 - 297) / 2);
+    //   this.scaleKey = 2.3;
+
+    // }
+
+    // if (this.sizeValue === 'XXL' && this.formatValue === 'A3') {
+
+    //   this.sizePrintKey = 800 * cafficient / ((800 - 297) / 2);
+    //   this.scaleKey = this.canvasSizeFormatWidth / 75;
+
+    // }
+
+
+
+
+
+
+
+
+    // if (this.sizeValue === 'XS' && this.formatValue === 'A4') {
+    //   if (this.horVert) {
+    //     console.log("A4 loook");
+
+    //     this.sizePrintKey = 609 / ((609 - 297) / 2);
+    //     this.scaleKey = 1.1;
+    //   } else {
+    //     this.sizePrintKey = 609 * cafficient / ((609 - 210) / 2);
+    //     this.scaleKey = 2.3;
+    //   }
+    // }
+
+    // if (this.sizeValue === 'S' && this.formatValue === 'A4') {
+
+    //   if (this.horVert) {
+    //     this.sizePrintKey = 648 / ((648 - 297) / 2);
+    //   } else {
+    //     this.sizePrintKey = 648 * cafficient / ((648 - 210) / 2);
+    //   }
+    // }
+
+    // if (this.sizeValue === 'M' && this.formatValue === 'A4') {
+    //   if (this.horVert) {
+
+    //     this.sizePrintKey = 686 / ((686 - 297) / 2);
+    //     this.scaleKey = 1.1;
+    //   } else {
+    //     this.sizePrintKey = 686 * cafficient / ((686 - 210) / 2);
+    //     this.scaleKey = 2.3;
+    //   }
+    // }
+
+    // if (this.sizeValue === 'M' && this.formatValue === 'A5') {
+    //   if (this.horVert) {
+
+    //     this.sizePrintKey = 686 / ((686 - 210) / 2);
+    //     this.scaleKey = 1.1;
+    //   } else {
+    //     this.sizePrintKey = 686 * cafficient / ((686 - 148) / 2);
+    //     this.scaleKey = 2.3;
+    //   }
+    // }
+  }
+
+  calcEndPrise() {
+
+    for (let i = 0; i <this.formats.length; i++) {
+      if (this.formatValue === this.formats[i].format) {
+        this.endPrise = this.formats[i].formatPrise;
+        console.log(this.endPrise);   
+      }  
     }
-
-    if (this.sizeValue === 'S' && this.formatValue === 'A3') {
-
-      this.sizePrintKey = 648 * cafficient / ((648 - 297) / 2);
-      this.scaleKey = 2.3;
-
-    }
-
-    if (this.sizeValue === 'M' && this.formatValue === 'A3') {
-
-      this.sizePrintKey = 686 * cafficient / ((686 - 297) / 2);
-      this.scaleKey = 2.3;
-
-    }
-
-    if (this.sizeValue === 'L' && this.formatValue === 'A3') {
-
-      this.sizePrintKey = 724 * cafficient / ((724 - 297) / 2);
-      this.scaleKey = 2.3;
-
-    }
-
-    if (this.sizeValue === 'XL' && this.formatValue === 'A3') {
-
-      this.sizePrintKey = 762 * cafficient / ((762 - 297) / 2);
-      this.scaleKey = 2.3;
-
-    }
-
-    if (this.sizeValue === 'XXL' && this.formatValue === 'A3') {
-
-      this.sizePrintKey = 800 * cafficient / ((800 - 297) / 2);
-      this.scaleKey = this.canvasSizeFormatWidth / 75;
-
-    }
-
-
-
-
-
-
-
-
-    if (this.sizeValue === 'XS' && this.formatValue === 'A4') {
-      if (this.horVert) {
-        console.log("A4 loook");
-
-        this.sizePrintKey = 609 / ((609 - 297) / 2);
-        this.scaleKey = 1.1;
-      } else {
-        this.sizePrintKey = 609 * cafficient / ((609 - 210) / 2);
-        this.scaleKey = 2.3;;
-      }
-    }
-
-    if (this.sizeValue === 'S' && this.formatValue === 'A4') {
-
-      if (this.horVert) {
-        this.sizePrintKey = 648 / ((648 - 297) / 2);
-      } else {
-        this.sizePrintKey = 648 * cafficient / ((648 - 210) / 2);
-      }
-    }
-
-    if (this.sizeValue === 'M' && this.formatValue === 'A4') {
-      if (this.horVert) {
-
-        this.sizePrintKey = 686 / ((686 - 297) / 2);
-        this.scaleKey = 1.1;
-      } else {
-        this.sizePrintKey = 686 * cafficient / ((686 - 210) / 2);
-        this.scaleKey = 2.3;
-      }
-    }
+     
   }
 
   // public allLenght = A3Width +  (canvasWidth - 2* sleeveLenght * cos(45)) + chestWidth - A3
@@ -267,13 +321,14 @@ export class DataService {
 
   public initCalculations() {
 
+    this.endPrise = 0;
 
     this.sizePrintKey = 686 / ((686 - 297) / 2);
     this.formatWithHeight = 0.707;
     this.formatTopKey = 0;
     this.scaleKey = 1.1;
 
-    
+
     this.canvasHtmlWidth = window.innerWidth - this.widthKey * window.innerWidth;
     this.canvasHtmlHeight = this.canvasHtmlWidth * this.heightKey;
 

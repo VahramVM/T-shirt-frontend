@@ -18,7 +18,9 @@ export interface Products {
     user?: string,
     _id?: string,
     hex: any,
-    size: boolean [],
+    size: { XS: boolean, S: boolean, M: boolean, L: boolean, XL: boolean, XXL: boolean },
+    realSize: { XS: number, S: number, M: number, L: number, XL: number, XXL: number },
+
 }
 
 export interface Fonts {
