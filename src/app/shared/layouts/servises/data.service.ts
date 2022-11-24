@@ -183,7 +183,7 @@ export class DataService {
 
   formatSizeSwich() {
 
-    
+    this.endPrise = 0;
     const realSize = this.products[this.indexBrandType].realSize;
     const cafficient = 1.0229;
 
@@ -321,7 +321,6 @@ export class DataService {
 
   public initCalculations() {
 
-    this.endPrise = 0;
 
     this.sizePrintKey = 686 / ((686 - 297) / 2);
     this.formatWithHeight = 0.707;

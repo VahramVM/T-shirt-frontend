@@ -202,7 +202,7 @@ export class EditorPicComponent implements AfterViewInit {
 
     this.productsService.fetch().subscribe(
       (res: Products[]) => {
-        this.props.canvasImage = res[1].type;        
+        this.props.canvasImage = res[1].type;
       }
     );
 
@@ -321,7 +321,7 @@ export class EditorPicComponent implements AfterViewInit {
         // }
 
         // top-left  corner
-        console.log('fromEditor', this.dataService.sizePrintKey, this.b);
+        console.log('fromEditor', this.dataService.sizePrintKey, this.b, this.d);
 
 
         if (sumTop < cornerSize + moveSizeLimit - this.canvas.width * this.a || sumLeft < cornerSize + moveSizeLimit
@@ -361,6 +361,9 @@ export class EditorPicComponent implements AfterViewInit {
 
 
         let obj = e.target;
+        // this.dataService.scaleKey = obj.scaleX;
+        console.log(obj.scaleX, obj.scaleY);
+
         obj.setCoords();
         obj.saveState();
         let cornerSize = this.canvas.width / 40;
@@ -2126,6 +2129,7 @@ export class EditorPicComponent implements AfterViewInit {
 
   public moveWithFormat(scaleKey, scaleBlock) {
     console.log(this.a, this.b, this.c, 'scale', scaleBlock, this.d, scaleKey);
+    this.scaleKey = 0;
 
     this.scaleKey = this.d;
 
@@ -2134,20 +2138,62 @@ export class EditorPicComponent implements AfterViewInit {
       this.canvasCount = 1;
       this.canvas.discardActiveObject().renderAll();
       var sel = new fabric.Group(this.canvas.getObjects(), {
-        canvas: this.canvas
+        canvas: this.canvas,
+        // uniScaleTransform: true,
+
+        // uniformScaling : false
+
       })
       this.canvas.remove(...this.canvas.getObjects());
+
+
+      sel.setControlsVisibility({
+        ml: false, //top left
+        mr: false, //top right
+        mb: false, //bottom left
+        mt: false //bottom right
+      });
+      sel.lockScalingFlip = true;
+      // sel.uniformScaling = true;
+
+      
 
       this.canvas.add(sel);
       const formatWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
       const formatHeight = formatWidth * this.c;
 
       if (scaleBlock) {
+        if (this.dataService.horVert) {
 
-        sel.scaleToWidth(formatWidth / scaleKey);
-        sel.scaleToHeight(formatHeight / scaleKey);
+          // sel.uniScaleTransform = true;
+          // sel.lockUniScaling = true;
+          console.log(this.dataService.horVert, this.d, scaleKey);
+
+          sel.scaleToWidth(formatWidth * scaleKey / 1.3);
+          sel.scaleToHeight(formatHeight * scaleKey / 1.3);
+
+          
+        } else {
+          console.log(this.dataService.horVert, "kkkkkkkkk");
+
+          sel.scaleToWidth(formatWidth * scaleKey / 5.3);
+          sel.scaleToHeight(formatHeight * scaleKey / 5.3);
+          
+        }
+        // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+        console.log('editor', this.d);
+
+        // sel.Height = sel.width * this.c;
+        sel.setCoords();
+        sel.saveState();
+        this.canvas.renderAll();
       }
 
+
+
+      sel.minScaleLimit = 0.5;
+
+      // sel.lockScalingY = true;
       // this.canvas.centerObjectH(sel);
       // sel.top = this.canvas.height / 3.7;
       this.canvas.setActiveObject(sel);
@@ -2159,7 +2205,6 @@ export class EditorPicComponent implements AfterViewInit {
       let top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a;
       sel.top = top;
       console.log('momos', scaleBlock);
-
 
 
       // this.canvas.centerObjectH(sel);

@@ -671,7 +671,7 @@ export class SiteLayoutComponent implements AfterViewInit {
 
 
     this.canvas.setCanvasImage();
-    console.log('this.indexBrandType');
+    // console.log(this.indexBrandType);
     this.dataService.indexBrandType = this.indexBrandType;
     // this.productBrandColor();
   }
@@ -725,12 +725,12 @@ export class SiteLayoutComponent implements AfterViewInit {
     if (this.allColors === true) {
 
       this.order.orderDatas.colorDefoult = this.arrColor[0];
-      console.log(this.arrColor[0]);
+      // console.log(this.arrColor[0]);
 
     } else if (this.allColors === false) {
 
       this.order.orderDatas.colorDefoult = this.productBrandColors[0];
-      console.log(this.arrColor[0]);
+      // console.log(this.arrColor[0]);
 
       // this.canvas.renderAll();
     }
