@@ -113,7 +113,7 @@
 
         <!-- <div class="col ">Options</div> -->
         <div class="col s7 m3 l4 xl3 offset-s0 offset-m9 offset-l6 offset-xl0"
-            style="padding-top: 2%; position: absolute;">
+            style="padding-top: 1%; position: absolute;">
             <div class="btn-group" role="group" aria-label="...">
                 <!-- <button data-toggle="tooltip" data-placement="bottom" title="Delete element" type="button"
                     class="btn btn-outline-danger remove" [disabled]="!canvas.selected"
@@ -212,7 +212,7 @@
 
         <div #imagePath class="divv" style="display: none;"></div>
 
-        <div class="col offset-s1 offset-m4 offset-l3 offset-xl5"
+        <div class="col offset-s1 offset-m4 offset-l3 offset-xl6"
             style="margin-top: 2%; position: absolute; z-index: 1;">
             <!-- || canvas.textEditor || canvas.figureEditor -->
             <button ngclas data-toggle="tooltip"
@@ -324,7 +324,7 @@
 
 
         <div (window:resize)="onResize($event)" Load="myFunction()" [ngClass]="{'class1': toggle === true}"
-            style="margin-top: -1%; position: absolute; z-index: 0;"
+            style="margin-top: -4%; position: absolute; z-index: 0;"
             class="owlCarousel owl-theme selectPic col s12 m12 l8 xl8 offset-s0 offset-m0 offset-l0 offset-xl0">
             <owl-carousel-o id="myCarousel" #owlElement [options]="customOptions" (translated)="getPassedData($event)">
 
@@ -388,7 +388,7 @@
 
             <!-- Tabs box -->
 
-            <div style="background-color:rgb(228, 232, 243); height: 560px; overflow-y: scroll;" id="nav-mobile"
+            <div style="background-color:rgb(228, 232, 243); height: 580px; overflow-y: hidden; overflow-x: hidden;" id="nav-mobile"
                 class="center-align hide-on-med-and-down ">
                 <ul class="tabs tabs-fixed-width tab-demo z-depth-1"
                     style="height: 40px; background-color:rgb(255, 255, 255);">

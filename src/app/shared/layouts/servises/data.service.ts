@@ -18,9 +18,9 @@ export class DataService {
   public endPriseValue = new Subject<number>();
 
 
-  public widthKey: number = 0.7;
-  public heightKey: number = 1.23;
-  public positionKey: number = 5.45;
+  public widthKey: number = 0.67;
+  public heightKey: number = 1.26;
+  public positionKey: number = 5.9;
 
   // public widthHeight: number = 1.414;
 
@@ -122,7 +122,7 @@ export class DataService {
   public get scaleKey(): number {
     return this._scaleKey;
   }
-
+  
   private _endPrise;
 
   public set endPrise(value: number) {
@@ -211,56 +211,6 @@ export class DataService {
       }
     }
 
-  
-    // if (this.sizeValue === 'XS' && this.formatValue === 'A3') {
-
-    //   this.sizePrintKey = 609 * cafficient / ((609 - 297) / 2);
-    //   this.scaleKey = 2.3;
-
-    // }
-
-    // if (this.sizeValue === 'S' && this.formatValue === 'A3') {
-
-    //   this.sizePrintKey = 648 * cafficient / ((648 - 297) / 2);
-    //   this.scaleKey = 2.3;
-
-    // }
-
-    // if (this.sizeValue === 'M' && this.formatValue === 'A3') {
-
-    //   this.sizePrintKey = 686 * cafficient / ((686 - 297) / 2);
-    //   this.scaleKey = 2.3;
-
-    // }
-
-    // if (this.sizeValue === 'L' && this.formatValue === 'A3') {
-
-    //   this.sizePrintKey = 724 * cafficient / ((724 - 297) / 2);
-    //   this.scaleKey = 2.3;
-
-    // }
-
-    // if (this.sizeValue === 'XL' && this.formatValue === 'A3') {
-
-    //   this.sizePrintKey = 762 * cafficient / ((762 - 297) / 2);
-    //   this.scaleKey = 2.3;
-
-    // }
-
-    // if (this.sizeValue === 'XXL' && this.formatValue === 'A3') {
-
-    //   this.sizePrintKey = 800 * cafficient / ((800 - 297) / 2);
-    //   this.scaleKey = this.canvasSizeFormatWidth / 75;
-
-    // }
-
-
-
-
-
-
-
-
     // if (this.sizeValue === 'XS' && this.formatValue === 'A4') {
     //   if (this.horVert) {
     //     console.log("A4 loook");
@@ -326,7 +276,6 @@ export class DataService {
     this.formatWithHeight = 0.707;
     this.formatTopKey = 0;
     this.scaleKey = 1.1;
-
 
     this.canvasHtmlWidth = window.innerWidth - this.widthKey * window.innerWidth;
     this.canvasHtmlHeight = this.canvasHtmlWidth * this.heightKey;

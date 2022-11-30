@@ -149,7 +149,7 @@ export class SizeFormatComponent implements OnInit {
 
   formatA4H() {
 
-    this.counter = 0;
+    // this.counter = 0;
     this.dataService.horVert = this.horVert = true;
 
     this.dataService.formatValue = this.formatValue;
@@ -162,6 +162,7 @@ export class SizeFormatComponent implements OnInit {
 
     // this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
     // this.obj.topUpDown = 0;
+    this.scaleBlock = false;
 
 
   }
@@ -169,10 +170,9 @@ export class SizeFormatComponent implements OnInit {
 
   formatA4V() {
 
-    this.counter = 0;
+    // this.counter = 0;
     this.dataService.horVert = this.horVert = false;
     // this.scaleKey = 2.3;
-
     this.dataService.formatValue = this.formatValue;
     this.scaleBlock = true;
     this.changePosition();
@@ -185,24 +185,23 @@ export class SizeFormatComponent implements OnInit {
 
     // this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
     // this.obj.topUpDown = 0.07;
-
-
+    this.scaleBlock = false;
 
   }
 
 
   counterNum() {
+    // this.counter = 0;
 
     if (this.upDown) {
-      return this.counter = 0.05
+      return this.counter = 0.05;
     } else {
-      return this.counter = - 0.05
+      return this.counter = - 0.05;
     }
 
   }
 
   counterTop() {
-
 
     this.obj.objectWidth = this.objectWidth;
     this.obj.objectWidthHeight = this.objectWidthHeight;
@@ -212,7 +211,7 @@ export class SizeFormatComponent implements OnInit {
 
 
 
-  public obj = { objectWidth: null, objectWidthHeight: null, topUpDown: null }
+  public obj = { objectWidth: null, objectWidthHeight: null, topUpDown: 0 }
 
 
   setformatScale() {
@@ -225,8 +224,6 @@ export class SizeFormatComponent implements OnInit {
 
 
   onResize() {
-
-    console.log('resize', this.scaleKey);
 
     this.dataService.initCalculations();
 
@@ -247,7 +244,7 @@ export class SizeFormatComponent implements OnInit {
     this.canvasSizeFormatTop = this.dataService.canvasSizeFormatTop;
     this.canvasSizeFormatLeft = this.dataService.canvasSizeFormatLeft;
 
-    this.siteLayout.moveWithFormat(this.scaleKey, this.scaleBlock);
+    this.siteLayout.moveWithFormat(this.scaleKey, true);
 
   }
 

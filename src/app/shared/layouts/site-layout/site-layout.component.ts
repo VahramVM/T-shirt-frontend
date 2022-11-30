@@ -674,6 +674,7 @@ export class SiteLayoutComponent implements AfterViewInit {
     // console.log(this.indexBrandType);
     this.dataService.indexBrandType = this.indexBrandType;
     // this.productBrandColor();
+    
   }
 
   productOrderDatas() {

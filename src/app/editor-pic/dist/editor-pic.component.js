@@ -45,6 +45,7 @@ var EditorPicComponent = /** @class */ (function () {
         // public canvasHtml1;
         this.textString = '';
         this.url = '';
+        this.objectType = false;
         this.globalEditor = false;
         this.textEditor = false;
         this.imageEditor = false;
@@ -73,7 +74,7 @@ var EditorPicComponent = /** @class */ (function () {
         this.svg_text = null;
         this.intCountText = null;
         this.imageFilter = null;
-        this.imgPadding = 0;
+        this.textPadding = 15;
         // public checked = false;
         this.shadow = {
             color: 'rgba(0, 0, 0, 1)',
@@ -219,7 +220,7 @@ var EditorPicComponent = /** @class */ (function () {
             'object:scaling': function (e) {
                 var obj = e.target;
                 // this.dataService.scaleKey = obj.scaleX;
-                console.log(obj.scaleX, obj.scaleY);
+                // console.log(obj.scaleX, obj.scaleY);
                 obj.setCoords();
                 obj.saveState();
                 var cornerSize = _this.canvas.width / 40;
@@ -245,7 +246,7 @@ var EditorPicComponent = /** @class */ (function () {
                     obj.left = Math.max(obj.left, obj.left - sumLeft + (cornerSize + moveSiseLimit));
                 }
                 if (sumTop < cornerSize + moveSiseLimit - _this.canvas.width * _this.a) {
-                    obj.top = Math.max(obj.top, obj.top - sumTop + cornerSize + moveSiseLimit - _this.canvas.width * _this.a);
+                    obj.top = Math.max(obj.top, obj.top - sumTop + cornerSize + moveSiseLimit - _this.canvas.width * _this.a + 50);
                 }
                 //top right corner
                 if (sumLeft + sumWith + cornerSize + moveSiseLimit > obj.canvas.width) {
@@ -256,39 +257,84 @@ var EditorPicComponent = /** @class */ (function () {
                     obj.top = Math.min(obj.top, obj.canvas.height - sumHeight + obj.top - sumTop - obj.cornerSize - moveSiseLimit - Delta - _this.canvas.width * _this.a);
                 }
                 // With limit
-                if (sumWith > formatWidth) {
-                    if (activeObject.angle === 0 || activeObject.angle === 180) {
-                        _this.canvas.getObjects().filter(function (o) {
-                            if (o.get('type') === 'i-text') {
-                                activeObject.scaleX = formatWidth / (activeObject.width * 1.5);
-                            }
-                            else {
-                                activeObject.scaleX = formatWidth / activeObject.width;
-                            }
-                        });
-                    }
-                    else {
-                        _this.canvas.getObjects().filter(function (o) {
-                            if (o.get('type') === 'i-text') {
-                                activeObject.scaleX = formatWidth / (activeObject.width * 2);
-                                activeObject.scaleY = formatWidth / (nerqnadzic * 2);
-                            }
-                            else {
-                                activeObject.scaleX = formatWidth / activeObject.width * 1.6;
-                                activeObject.scaleY = formatWidth / nerqnadzic * 1.6;
-                            }
-                        });
-                    }
+                // this.canvas.getObjects().filter((o) => {
+                //   if (o.get('type') === 'i-text') {
+                //     this.imgPadding = 2800 / this.props.diametr
+                //   }
+                // })
+                if (activeObject.angle === 0 || activeObject.angle === 180) {
+                    _this.canvas.getObjects().filter(function (o) {
+                        if (o.get('type') === 'i-text' && sumWith > formatWidth ||
+                            o.get('type') === 'i-text' && sumHeight > formatHeight) {
+                            activeObject.scaleX = formatWidth / (activeObject.width * 1.3);
+                            activeObject.scaleY = formatWidth / (activeObject.width * 1.3);
+                        }
+                        if (o.get('type') !== 'i-text' && sumWith > formatWidth) {
+                            activeObject.scaleX = formatWidth / (activeObject.width);
+                            activeObject.scaleY = formatHeight / (activeObject.height);
+                        }
+                        if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
+                            activeObject.scaleX = formatWidth / (activeObject.width);
+                            activeObject.scaleY = formatHeight / (activeObject.height);
+                        }
+                    });
                 }
-                if (sumHeight > formatHeight) {
-                    if (activeObject.angle === 0) {
-                        activeObject.scaleY = formatHeight / activeObject.height;
-                    }
-                    else {
-                        activeObject.scaleX = formatWidth / nerqnadzic;
-                        activeObject.scaleY = formatWidth / nerqnadzic;
-                    }
+                else {
+                    _this.canvas.getObjects().filter(function (o) {
+                        if (o.get('type') === 'i-text' && sumWith > formatWidth ||
+                            o.get('type') === 'i-text' && sumWith > formatHeight) {
+                            activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
+                            activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
+                        }
+                        if (o.get('type') !== 'i-text' && sumWith > formatWidth) {
+                            activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
+                            activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
+                        }
+                        if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
+                            activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
+                            activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
+                        }
+                    });
                 }
+                // if (activeObject.angle === 0 || activeObject.angle === 180) {
+                //   this.canvas.getObjects().filter((o) => {
+                //     if (o.get('type') === 'i-text' && sumHeight > formatHeight * 0.6) {
+                //       activeObject.scaleX = formatWidth / (activeObject.width * 1.67);
+                //       activeObject.scaleY = formatWidth / (activeObject.width * 1.67);
+                //     } else if (sumWith > formatWidth) {
+                //       activeObject.scaleX = formatWidth / (activeObject.width);
+                //       activeObject.scaleY = formatWidth / (activeObject.width);
+                //     }
+                //   })
+                // } else {
+                //   this.canvas.getObjects().filter((o) => {
+                //     if (o.get('type') === 'i-text' && sumHeight > formatHeight) {
+                //       activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.6));
+                //       activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.6));
+                //     } else if (sumHeight > formatHeight) {
+                //       console.log('nnnnnnnn');
+                //       activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.8));              
+                //       activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.8));
+                //     }
+                //   })
+                // }
+                // } else if (sumHeight > formatHeight) {
+                //   this.canvas.getObjects().filter((o) => {
+                //     if (o.get('type') === 'i-text') {
+                //       activeObject.scaleX = formatWidth / (activeObject.width * 2.2);
+                //       activeObject.scaleY = formatWidth / (activeObject.width * 2.2);
+                //     } else {
+                //       activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.65));
+                //       activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.65));
+                //     }
+                //   })
+                // if (activeObject.angle === 0) {
+                //   activeObject.scaleY = formatHeight / activeObject.height;
+                // } else {
+                //   activeObject.scaleX = formatWidth / nerqnadzic;
+                //   activeObject.scaleY = formatWidth / nerqnadzic;
+                // }
+                // }
                 if (activeObject.width * activeObject.scaleX > formatWidth && activeObject.angle !== 0) {
                     activeObject.scaleX = formatWidth / nerqnadzic;
                     activeObject.scaleY = formatWidth / nerqnadzic;
@@ -297,7 +343,7 @@ var EditorPicComponent = /** @class */ (function () {
                     activeObject.scaleX = formatHeight / nerqnadzic;
                     activeObject.scaleY = formatHeight / nerqnadzic;
                 }
-                obj.minScaleLimit = 0.04;
+                obj.minScaleLimit = 0.02;
                 $(".deleteBtn").remove();
                 $(".distance").remove();
                 $(".distanceY").remove();
@@ -354,6 +400,23 @@ var EditorPicComponent = /** @class */ (function () {
             },
             'selection:created': function (e) {
                 var obj = e.target;
+                // let sumTop = obj.getBoundingRect().top;
+                // let sumWith = obj.getBoundingRect().width;
+                // let sumHeight = obj.getBoundingRect().height;
+                // let formatWidth = (this.canvas.width) - 2 * (1);
+                // let angle = Math.abs(((this.canvas.getActiveObject().angle) * Math.PI) / 180);
+                // let activeObject = this.canvas.getActiveObject();
+                // let cos = Math.abs(Math.cos(angle));
+                // if (activeObject.angle === 0 || activeObject.angle === 180) {
+                //   this.canvas.getObjects().filter((o) => {
+                //     if (o.get('type') === 'i-text') {
+                //       activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.2));
+                //       activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.2));
+                //     } else if (sumWith > formatWidth) {
+                //       activeObject.scaleX = formatWidth / (activeObject.width);
+                //       activeObject.scaleY = formatWidth / (activeObject.width);
+                //     }
+                //   }) }
                 // this.dataService.canvasSelect = true;
                 // var mouse = this.canvas.getPointer(e.memo);
                 //  const x = mouse.x;
@@ -553,22 +616,30 @@ var EditorPicComponent = /** @class */ (function () {
                 var matrix = e.target.calcTransformMatrix();
                 var angle = Math.abs(((_this.canvas.getActiveObject().angle) * Math.PI) / 180);
                 var sumWidth = obj.getBoundingRect().width;
-                var sumHeight = obj.getBoundingRect().width;
+                var sumHeight = obj.getBoundingRect().height;
                 var imageCoordx = matrix[4];
                 var imageCoordy = matrix[5];
+                var activeObject = _this.canvas.getActiveObject();
                 // const nerqnadzicc = Math.sqrt(Math.pow(this.canvas.getActiveObject().width, 2) + Math.pow(this.canvas.getActiveObject().height, 2))
                 var cos = Math.abs(Math.cos(angle));
                 var sin = Math.abs(Math.sin(angle));
                 var formatWidth = (window.innerWidth - _this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - _this.dataService.widthKey * window.innerWidth) / _this.b + (window.innerWidth - _this.dataService.widthKey * window.innerWidth) / 40);
                 var formatHeight = formatWidth * _this.c;
-                if (sumWidth > formatWidth) {
-                    _this.canvas.getActiveObject().scaleX = formatWidth / (_this.canvas.getActiveObject().width / (cos * 0.8));
-                    _this.canvas.getActiveObject().scaleY = formatWidth / (_this.canvas.getActiveObject().width / (cos * 0.8));
-                }
-                if (sumHeight > formatHeight) {
-                    _this.canvas.getActiveObject().scaleX = formatHeight / (_this.canvas.getActiveObject().height / (cos * 0.65));
-                    _this.canvas.getActiveObject().scaleY = formatHeight / (_this.canvas.getActiveObject().height / (cos * 0.65));
-                }
+                _this.canvas.getObjects().filter(function (o) {
+                    if (o.get('type') === 'i-text' && sumWidth > formatWidth ||
+                        o.get('type') === 'i-text' && sumHeight > formatHeight) {
+                        activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
+                        activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
+                    }
+                    if (o.get('type') !== 'i-text' && sumWidth > formatWidth) {
+                        activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
+                        activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
+                    }
+                    if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
+                        activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
+                        activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
+                    }
+                });
                 $(".distance").remove();
                 // addDistancePoint(imageCoordy, imageCoordx);
                 _this.addArrow(imageCoordy, 2);
@@ -581,24 +652,28 @@ var EditorPicComponent = /** @class */ (function () {
                 _this.canvas.renderAll();
             },
             'path:created': function (e) {
+                var obj = e.target;
                 _this.canvasCount += 1;
                 _this.canvas.isDrawingMode = false;
                 // this.canvas.on('mouse:up', () => this.canvas.setActiveObject());
-                console.log(_this.canvas.item(_this.canvasCount - 1));
+                // console.log(this.canvas.item(this.canvasCount - 1));
                 _this.canvas.getObjects().indexOf(e.target);
                 // this.canvas.setActiveObject(this.canvas.item(this.canvasCount- 1));
                 _this.selectItemAfterAdded(_this.canvas.item(_this.canvasCount - 1));
+                obj.setCoords();
+                obj.saveState();
+                _this.canvas.renderAll();
             },
             'object:added': function (e) {
                 var obj = e.target;
                 var matrix = e.target.calcTransformMatrix();
                 var imageCoordx = matrix[4];
                 var imageCoordy = matrix[5];
-                _this.canvas.getObjects().filter(function (o) {
-                    if (o.get('type') === 'i-text') {
-                        _this.imgPadding = 2800 / _this.props.diametr;
-                    }
-                });
+                // this.canvas.getObjects().filter((o) => {
+                //   if (o.get('type') === 'i-text') {
+                //     this.imgPadding = 2800 / this.props.diametr
+                //   }
+                // })
                 $(".deleteBtn").remove();
                 // console.log('added');
                 // addDistancePoint(imageCoordy, imageCoordx);
@@ -736,8 +811,9 @@ var EditorPicComponent = /** @class */ (function () {
         }
     };
     EditorPicComponent.prototype.addText = function () {
-        // console.log(this.props.textCurved);
         var _this = this;
+        // console.log(this.props.textCurved);
+        this.objectType = true;
         var numLeft = this.left;
         var numTop = this.top;
         function addDeleteBtn(x, y) {
@@ -773,6 +849,8 @@ var EditorPicComponent = /** @class */ (function () {
             var k = this.textString.length;
             var fontSize = 1.9 * textPathLength / this.textString.length;
             this.props.fontSize = fontSize;
+            var textWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+            var textHeight = textWidth * this.c;
             if (this.textString) {
                 // this.canvasCount += 1;
                 var text_1 = new fabric.IText(this.textString, {
@@ -789,15 +867,15 @@ var EditorPicComponent = /** @class */ (function () {
                     // color: "rgba(34, 34, 1, 0.3)",
                     // angle: 0,
                     fill: this.props.fill || '#000000',
-                    scaleX: 0.8,
-                    scaleY: 0.8,
+                    // scaleX: 0.8,
+                    // scaleY: 0.8,
                     // fontSize: 80,
                     hasRotatingPoint: true,
                     // strokeWidth: 30,
                     // strokeMiterLimit: 15,
                     // width: 50,
                     cornerSize: this.canvas.width / 40,
-                    padding: this.imgPadding,
+                    padding: this.textPadding,
                     centeredRotation: true
                 }, this.path = path);
                 $('#shadowText').on('click', function () {
@@ -813,17 +891,19 @@ var EditorPicComponent = /** @class */ (function () {
                     }
                     _this.canvas.renderAll();
                 }),
-                    this.extend(text_1, this.randomId());
+                    text_1.scaleToHeight(textHeight / this.d / 1.5);
+                text_1.scaleToWidth(textWidth / this.d / 1.5);
+                this.extend(text_1, this.randomId());
+                // text.charSpacing = pathLength;
                 this.canvas.add(text_1);
+                this.canvas.centerObjectH(text_1);
+                text_1.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a + 18;
+                this.selectItemAfterAdded(text_1);
                 this.canvas.renderAll();
                 // this.canvas.add(path);
                 // console.log(this.canvas.toSVG());
                 // console.log(this.canvas.toSVG().toString().replace("<defs>", '').replace("</defs>", str));
                 // text.left = this.props.curvedTextLeft;
-                // text.top = this.props.curvedTextTop;
-                this.canvas.centerObjectH(text_1);
-                text_1.top = this.canvas.height / 3;
-                this.selectItemAfterAdded(text_1);
                 // this.textString = '';
             }
         }
@@ -875,6 +955,8 @@ var EditorPicComponent = /** @class */ (function () {
             path.segmentsInfo = pathInfo;
             var textPathLength = pathInfo[pathInfo.length - 1].length;
             // let k = this.textString.length;
+            var textWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+            var textHeight = textWidth * this.c;
             var fontSize = 1.9 * this.props.diametr / this.textString.length;
             this.props.fontSize = fontSize;
             if (this.textString) {
@@ -893,15 +975,15 @@ var EditorPicComponent = /** @class */ (function () {
                     // color: "rgba(34, 34, 1, 0.3)",
                     // angle: 0,
                     fill: '#000000',
-                    scaleX: 0.5,
-                    scaleY: 0.5,
+                    // scaleX: 0.5,
+                    // scaleY: 0.5,
                     // fontSize: 80,
                     hasRotatingPoint: true,
                     // strokeWidth: 10,
                     // strokeMiterLimit: 15,
                     // width: 50,
                     cornerSize: this.canvas.width / 40,
-                    padding: this.imgPadding,
+                    padding: this.textPadding,
                     centeredRotation: true
                 });
                 this.props.textStraight = text_2;
@@ -918,17 +1000,21 @@ var EditorPicComponent = /** @class */ (function () {
                     }
                     _this.canvas.renderAll();
                 }),
-                    this.extend(text_2, this.randomId());
+                    text_2.scaleToWidth(textWidth / this.d / 1.5);
+                text_2.scaleToHeight(textHeight / this.d / 1.5);
+                this.extend(text_2, this.randomId());
                 // text.charSpacing = pathLength;
                 this.canvas.add(text_2);
+                this.canvas.centerObjectH(text_2);
+                text_2.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a + 18;
+                this.selectItemAfterAdded(text_2);
                 this.canvas.renderAll();
                 // this.canvas.add(path);
                 // console.log(this.canvas.toSVG().toString().replace("<defs>", '').replace("</defs>", str));
-                this.canvas.centerObjectH(text_2);
-                text_2.top = this.canvas.height / 3;
-                this.selectItemAfterAdded(text_2);
+                // this.canvas.centerObjectH(text);
+                // text.top = this.canvas.height / 3;
                 // this.textString = '';
-                console.log(this.canvasCount);
+                // console.log(this.canvasCount);
             }
         }
     };
@@ -943,10 +1029,11 @@ var EditorPicComponent = /** @class */ (function () {
                 return _this.canvas.setActiveObject(o);
             }
         });
-        if (this.canvasCount !== 0) {
-            // this.selectItemAfterAdded(this.props.textStraight);
+        if (this.intCountText !== 0) {
             this.canvas.remove(this.canvas.getActiveObject());
             this.canvas.add(this.props.textStraight);
+            this.selectItemAfterAdded(this.props.textStraight);
+            // this.canvas.setActiveObject(this.props.textStraight);
             this.canvas.renderAll();
         }
     };
@@ -1552,6 +1639,7 @@ var EditorPicComponent = /** @class */ (function () {
         this.scaleKey = this.d;
         if (this.canvasCount !== 0) {
             this.canvasCount = 1;
+            this.intCountText = 0;
             this.canvas.discardActiveObject().renderAll();
             var sel = new fabric.Group(this.canvas.getObjects(), {
                 canvas: this.canvas
@@ -1570,25 +1658,36 @@ var EditorPicComponent = /** @class */ (function () {
             var formatHeight = formatWidth * this.c;
             if (scaleBlock) {
                 if (this.dataService.horVert) {
+                    if (this.objectType) {
+                        sel.scaleToWidth(formatWidth * scaleKey / 1.8);
+                        sel.scaleToHeight(formatWidth * scaleKey / 1.8);
+                    }
+                    else {
+                        sel.scaleToWidth(formatWidth * scaleKey / 1.3);
+                        sel.scaleToHeight(formatHeight * scaleKey / 1.3);
+                    }
                     // sel.uniScaleTransform = true;
                     // sel.lockUniScaling = true;
-                    console.log(this.dataService.horVert, this.d, scaleKey);
-                    sel.scaleToWidth(formatWidth * scaleKey / 1.3);
-                    sel.scaleToHeight(formatHeight * scaleKey / 1.3);
                 }
                 else {
-                    console.log(this.dataService.horVert, "kkkkkkkkk");
-                    sel.scaleToWidth(formatWidth * scaleKey / 5.3);
-                    sel.scaleToHeight(formatHeight * scaleKey / 5.3);
+                    // console.log(this.dataService.horVert, "kkkkkkkkk");
+                    if (this.objectType) {
+                        sel.scaleToWidth(formatWidth * scaleKey / 5.3);
+                        sel.scaleToHeight(formatWidth * scaleKey / 5.3);
+                    }
+                    else {
+                        sel.scaleToWidth(formatWidth * scaleKey / 5);
+                        sel.scaleToHeight(formatHeight * scaleKey / 5);
+                    }
                 }
                 // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
-                console.log('editor', this.d);
+                // console.log('editor', this.d);
                 // sel.Height = sel.width * this.c;
-                sel.setCoords();
-                sel.saveState();
-                this.canvas.renderAll();
+                // sel.setCoords();
+                // sel.saveState();
+                // this.canvas.renderAll();
             }
-            sel.minScaleLimit = 0.5;
+            sel.minScaleLimit = 0.02;
             // sel.lockScalingY = true;
             // this.canvas.centerObjectH(sel);
             // sel.top = this.canvas.height / 3.7;
@@ -1603,9 +1702,6 @@ var EditorPicComponent = /** @class */ (function () {
             // this.canvas.centerObjectH(sel);
             sel.set({ cornerSize: this.canvas.width / 40 });
             // sel.minScaleLimit()
-            sel.setCoords();
-            sel.saveState();
-            this.canvas.renderAll();
             // this.canvas.getActiveObject().left += 10;
             // this.canvas.getActiveObject().setCoords();
             // this.canvas.getActiveObject().saveState();
@@ -2034,7 +2130,8 @@ var EditorPicComponent = /** @class */ (function () {
     };
     /*System*/
     EditorPicComponent.prototype.removeSelected = function () {
-        console.log(this.canvasCount);
+        // console.log(this.canvasCount);
+        this.objectType = false;
         this.props.diametr = 300;
         if (this.canvas.getActiveObject().type === 'i-text') {
             this.intCountText -= 1;

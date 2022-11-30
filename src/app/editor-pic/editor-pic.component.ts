@@ -73,7 +73,7 @@ export class EditorPicComponent implements AfterViewInit {
   public textString: string = '';
   public url: string | ArrayBuffer = '';
   public scaleKey: number;
-
+  public objectType: boolean = false;
 
 
   onResize(event) {
@@ -143,7 +143,7 @@ export class EditorPicComponent implements AfterViewInit {
   public intCountText = null;
 
   public imageFilter = null;
-  public imgPadding = 0;
+  public textPadding = 15;
 
 
 
@@ -232,7 +232,6 @@ export class EditorPicComponent implements AfterViewInit {
 
       res => this.d = res
     );
-
 
   }
 
@@ -362,7 +361,7 @@ export class EditorPicComponent implements AfterViewInit {
 
         let obj = e.target;
         // this.dataService.scaleKey = obj.scaleX;
-        console.log(obj.scaleX, obj.scaleY);
+        // console.log(obj.scaleX, obj.scaleY);
 
         obj.setCoords();
         obj.saveState();
@@ -395,7 +394,7 @@ export class EditorPicComponent implements AfterViewInit {
         }
 
         if (sumTop < cornerSize + moveSiseLimit - this.canvas.width * this.a) {
-          obj.top = Math.max(obj.top, obj.top - sumTop + cornerSize + moveSiseLimit - this.canvas.width * this.a);
+          obj.top = Math.max(obj.top, obj.top - sumTop + cornerSize + moveSiseLimit - this.canvas.width * this.a + 50);
         }
 
         //top right corner
@@ -411,45 +410,110 @@ export class EditorPicComponent implements AfterViewInit {
 
         // With limit
 
-        if (sumWith > formatWidth) {
-          if (activeObject.angle === 0 || activeObject.angle === 180) {
-            this.canvas.getObjects().filter((o) => {
-              if (o.get('type') === 'i-text') {
-                activeObject.scaleX = formatWidth / (activeObject.width * 1.5);
+        // this.canvas.getObjects().filter((o) => {
+        //   if (o.get('type') === 'i-text') {
+        //     this.imgPadding = 2800 / this.props.diametr
+        //   }
+        // })
 
-              } else {
-                activeObject.scaleX = formatWidth / activeObject.width;
+        if (activeObject.angle === 0 || activeObject.angle === 180) {
+          this.canvas.getObjects().filter((o) => {
+            if (o.get('type') === 'i-text' && sumWith > formatWidth ||
+            o.get('type') === 'i-text' && sumHeight > formatHeight) {
+              
+              activeObject.scaleX = formatWidth / (activeObject.width * 1.3);
+              activeObject.scaleY = formatWidth / (activeObject.width * 1.3);
+            }
 
-              }
-            })
+            if ( o.get('type') !== 'i-text' && sumWith > formatWidth) {
+              activeObject.scaleX = formatWidth / (activeObject.width);
+              activeObject.scaleY = formatHeight / (activeObject.height);
+            }
 
-          } else {
-            this.canvas.getObjects().filter((o) => {
-              if (o.get('type') === 'i-text') {
-                activeObject.scaleX = formatWidth / (activeObject.width * 2);
-                activeObject.scaleY = formatWidth / (nerqnadzic * 2);
+            if ( o.get('type') !== 'i-text' && sumHeight > formatHeight) {
+              activeObject.scaleX = formatWidth / (activeObject.width);
+              activeObject.scaleY = formatHeight / (activeObject.height);
+            }
+          })
 
-              } else {
-                activeObject.scaleX = formatWidth / activeObject.width * 1.6;
-                activeObject.scaleY = formatWidth / nerqnadzic * 1.6;
+        } else {
+          this.canvas.getObjects().filter((o) => {
 
-              }
-            })
+            if (o.get('type') === 'i-text' && sumWith > formatWidth || 
+            o.get('type') === 'i-text' && sumWith > formatHeight) {
+
+              activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
+              activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
+            }
+
+            if (o.get('type') !== 'i-text' && sumWith > formatWidth) {
+
+              activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
+              activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
+            }
+
+            if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
+
+              activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
+              activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
+            }
+          })
 
 
-
-          }
         }
 
-        if (sumHeight > formatHeight) {
-          if (activeObject.angle === 0) {
-            activeObject.scaleY = formatHeight / activeObject.height;
 
-          } else {
-            activeObject.scaleX = formatWidth / nerqnadzic;
-            activeObject.scaleY = formatWidth / nerqnadzic;
-          }
-        }
+        // if (activeObject.angle === 0 || activeObject.angle === 180) {
+
+        //   this.canvas.getObjects().filter((o) => {
+        //     if (o.get('type') === 'i-text' && sumHeight > formatHeight * 0.6) {
+
+        //       activeObject.scaleX = formatWidth / (activeObject.width * 1.67);
+        //       activeObject.scaleY = formatWidth / (activeObject.width * 1.67);
+
+        //     } else if (sumWith > formatWidth) {
+        //       activeObject.scaleX = formatWidth / (activeObject.width);
+        //       activeObject.scaleY = formatWidth / (activeObject.width);
+        //     }
+        //   })
+        // } else {
+        //   this.canvas.getObjects().filter((o) => {
+        //     if (o.get('type') === 'i-text' && sumHeight > formatHeight) {
+        //       activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.6));
+        //       activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.6));
+        //     } else if (sumHeight > formatHeight) {
+        //       console.log('nnnnnnnn');
+
+        //       activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.8));              
+        //       activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.8));
+        //     }
+        //   })
+        // }
+
+        // } else if (sumHeight > formatHeight) {
+        //   this.canvas.getObjects().filter((o) => {
+        //     if (o.get('type') === 'i-text') {
+        //       activeObject.scaleX = formatWidth / (activeObject.width * 2.2);
+        //       activeObject.scaleY = formatWidth / (activeObject.width * 2.2);
+
+        //     } else {
+        //       activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.65));
+        //       activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.65));
+        //     }
+        //   })
+
+
+
+
+
+        // if (activeObject.angle === 0) {
+        //   activeObject.scaleY = formatHeight / activeObject.height;
+
+        // } else {
+        //   activeObject.scaleX = formatWidth / nerqnadzic;
+        //   activeObject.scaleY = formatWidth / nerqnadzic;
+        // }
+        // }
 
 
         if (activeObject.width * activeObject.scaleX > formatWidth && activeObject.angle !== 0) {
@@ -466,7 +530,7 @@ export class EditorPicComponent implements AfterViewInit {
         }
 
 
-        obj.minScaleLimit = 0.04;
+        obj.minScaleLimit = 0.02;
 
         $(".deleteBtn").remove();
         $(".distance").remove();
@@ -545,6 +609,26 @@ export class EditorPicComponent implements AfterViewInit {
 
       'selection:created': (e) => {
         let obj = e.target;
+
+        // let sumTop = obj.getBoundingRect().top;
+        // let sumWith = obj.getBoundingRect().width;
+        // let sumHeight = obj.getBoundingRect().height;
+        // let formatWidth = (this.canvas.width) - 2 * (1);
+
+        // let angle = Math.abs(((this.canvas.getActiveObject().angle) * Math.PI) / 180);
+        // let activeObject = this.canvas.getActiveObject();
+        // let cos = Math.abs(Math.cos(angle));
+
+        // if (activeObject.angle === 0 || activeObject.angle === 180) {
+        //   this.canvas.getObjects().filter((o) => {
+        //     if (o.get('type') === 'i-text') {
+        //       activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.2));
+        //       activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.2));
+        //     } else if (sumWith > formatWidth) {
+        //       activeObject.scaleX = formatWidth / (activeObject.width);
+        //       activeObject.scaleY = formatWidth / (activeObject.width);
+        //     }
+        //   }) }
 
         // this.dataService.canvasSelect = true;
 
@@ -800,9 +884,10 @@ export class EditorPicComponent implements AfterViewInit {
         let matrix = e.target.calcTransformMatrix();
         const angle = Math.abs(((this.canvas.getActiveObject().angle) * Math.PI) / 180);
         const sumWidth = obj.getBoundingRect().width;
-        const sumHeight = obj.getBoundingRect().width;
+        const sumHeight = obj.getBoundingRect().height;
         let imageCoordx = matrix[4];
         let imageCoordy = matrix[5];
+        const activeObject = this.canvas.getActiveObject();
         // const nerqnadzicc = Math.sqrt(Math.pow(this.canvas.getActiveObject().width, 2) + Math.pow(this.canvas.getActiveObject().height, 2))
         const cos = Math.abs(Math.cos(angle));
         const sin = Math.abs(Math.sin(angle));
@@ -810,17 +895,34 @@ export class EditorPicComponent implements AfterViewInit {
         const formatWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
         const formatHeight = formatWidth * this.c;
 
-        if (sumWidth > formatWidth) {
 
-          this.canvas.getActiveObject().scaleX = formatWidth / (this.canvas.getActiveObject().width / (cos * 0.8));
-          this.canvas.getActiveObject().scaleY = formatWidth / (this.canvas.getActiveObject().width / (cos * 0.8));
+        this.canvas.getObjects().filter((o) => {
+          if (o.get('type') === 'i-text' && sumWidth > formatWidth ||
+           o.get('type') === 'i-text' && sumHeight > formatHeight) {
 
-        }
+            activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
+            activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
 
-        if (sumHeight > formatHeight) {
-          this.canvas.getActiveObject().scaleX = formatHeight / (this.canvas.getActiveObject().height / (cos * 0.65));
-          this.canvas.getActiveObject().scaleY = formatHeight / (this.canvas.getActiveObject().height / (cos * 0.65));
-        }
+          }
+
+          if ( o.get('type') !== 'i-text' && sumWidth > formatWidth) {
+            activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
+            activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
+          }
+
+          if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
+            activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
+            activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
+          }
+  
+        })
+
+       
+
+          
+        
+
+        
 
 
         $(".distance").remove();
@@ -842,16 +944,19 @@ export class EditorPicComponent implements AfterViewInit {
 
       'path:created': (e) => {
 
-
+        const obj = e.target;
         this.canvasCount += 1;
 
         this.canvas.isDrawingMode = false;
         // this.canvas.on('mouse:up', () => this.canvas.setActiveObject());
-        console.log(this.canvas.item(this.canvasCount - 1));
+        // console.log(this.canvas.item(this.canvasCount - 1));
 
         this.canvas.getObjects().indexOf(e.target)
         // this.canvas.setActiveObject(this.canvas.item(this.canvasCount- 1));
-        this.selectItemAfterAdded(this.canvas.item(this.canvasCount - 1))
+        this.selectItemAfterAdded(this.canvas.item(this.canvasCount - 1));
+        obj.setCoords();
+        obj.saveState();
+        this.canvas.renderAll();
       },
 
       'object:added': (e) => {
@@ -860,11 +965,11 @@ export class EditorPicComponent implements AfterViewInit {
         let imageCoordx = matrix[4];
         let imageCoordy = matrix[5];
 
-        this.canvas.getObjects().filter((o) => {
-          if (o.get('type') === 'i-text') {
-            this.imgPadding = 2800 / this.props.diametr
-          }
-        })
+        // this.canvas.getObjects().filter((o) => {
+        //   if (o.get('type') === 'i-text') {
+        //     this.imgPadding = 2800 / this.props.diametr
+        //   }
+        // })
 
         $(".deleteBtn").remove();
         // console.log('added');
@@ -1053,6 +1158,9 @@ export class EditorPicComponent implements AfterViewInit {
   addText() {
 
     // console.log(this.props.textCurved);
+    this.objectType = true;
+
+
 
     let numLeft = this.left;
     let numTop = this.top;
@@ -1107,6 +1215,9 @@ export class EditorPicComponent implements AfterViewInit {
       let k = this.textString.length;
       let fontSize = 1.9 * textPathLength / this.textString.length;
       this.props.fontSize = fontSize;
+      const textWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+      const textHeight = textWidth * this.c;
+
 
       if (this.textString) {
         // this.canvasCount += 1;
@@ -1124,15 +1235,15 @@ export class EditorPicComponent implements AfterViewInit {
           // color: "rgba(34, 34, 1, 0.3)",
           // angle: 0,
           fill: this.props.fill || '#000000',
-          scaleX: 0.8,
-          scaleY: 0.8,
+          // scaleX: 0.8,
+          // scaleY: 0.8,
           // fontSize: 80,
           hasRotatingPoint: true,
           // strokeWidth: 30,
           // strokeMiterLimit: 15,
           // width: 50,
           cornerSize: this.canvas.width / 40,
-          padding: this.imgPadding,
+          padding: this.textPadding,
           centeredRotation: true,
           // charSpacing: 50,
           // pathStartOffset: 80,
@@ -1167,20 +1278,23 @@ export class EditorPicComponent implements AfterViewInit {
 
         }),
 
-          this.extend(text, this.randomId());
+          text.scaleToHeight(textHeight / this.d / 1.5);
+        text.scaleToWidth(textWidth / this.d / 1.5);
 
+        this.extend(text, this.randomId());
+
+        // text.charSpacing = pathLength;
         this.canvas.add(text);
-
+        this.canvas.centerObjectH(text);
+        text.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a + 18;
+        this.selectItemAfterAdded(text);
         this.canvas.renderAll();
         // this.canvas.add(path);
         // console.log(this.canvas.toSVG());
 
         // console.log(this.canvas.toSVG().toString().replace("<defs>", '').replace("</defs>", str));
         // text.left = this.props.curvedTextLeft;
-        // text.top = this.props.curvedTextTop;
-        this.canvas.centerObjectH(text);
-        text.top = this.canvas.height / 3;
-        this.selectItemAfterAdded(text);
+
         // this.textString = '';
       }
 
@@ -1246,6 +1360,9 @@ export class EditorPicComponent implements AfterViewInit {
       path.segmentsInfo = pathInfo;
       let textPathLength = pathInfo[pathInfo.length - 1].length;
       // let k = this.textString.length;
+      const textWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+      const textHeight = textWidth * this.c;
+
       let fontSize = 1.9 * this.props.diametr / this.textString.length;
       this.props.fontSize = fontSize;
 
@@ -1265,15 +1382,15 @@ export class EditorPicComponent implements AfterViewInit {
           // color: "rgba(34, 34, 1, 0.3)",
           // angle: 0,
           fill: '#000000',
-          scaleX: 0.5,
-          scaleY: 0.5,
+          // scaleX: 0.5,
+          // scaleY: 0.5,
           // fontSize: 80,
           hasRotatingPoint: true,
           // strokeWidth: 10,
           // strokeMiterLimit: 15,
           // width: 50,
           cornerSize: this.canvas.width / 40,
-          padding: this.imgPadding,
+          padding: this.textPadding,
           centeredRotation: true,
           // charSpacing: 50,
           // pathStartOffset: 80,
@@ -1287,7 +1404,7 @@ export class EditorPicComponent implements AfterViewInit {
           // this.path = path,
         );
 
-        this.props.textStraight = text
+        this.props.textStraight = text;
 
         $('#shadowText').on('click', () => {
           if (!this.siteLayout.shadowText) {
@@ -1308,34 +1425,29 @@ export class EditorPicComponent implements AfterViewInit {
 
         }),
 
-          this.extend(text, this.randomId());
+          text.scaleToWidth(textWidth / this.d / 1.5);
+        text.scaleToHeight(textHeight / this.d / 1.5);
 
-
+        this.extend(text, this.randomId());
 
         // text.charSpacing = pathLength;
-
-
         this.canvas.add(text);
-
+        this.canvas.centerObjectH(text);
+        text.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a + 18;
+        this.selectItemAfterAdded(text);
         this.canvas.renderAll();
         // this.canvas.add(path);
 
         // console.log(this.canvas.toSVG().toString().replace("<defs>", '').replace("</defs>", str));
 
-        this.canvas.centerObjectH(text);
-        text.top = this.canvas.height / 3;
-        this.selectItemAfterAdded(text);
+        // this.canvas.centerObjectH(text);
+        // text.top = this.canvas.height / 3;
         // this.textString = '';
-        console.log(this.canvasCount);
+        // console.log(this.canvasCount);
       }
     }
 
   }
-
-
-
-
-
 
 
 
@@ -1352,11 +1464,12 @@ export class EditorPicComponent implements AfterViewInit {
       }
     });
 
-    if (this.canvasCount !== 0) {
+    if (this.intCountText !== 0) {
 
-      // this.selectItemAfterAdded(this.props.textStraight);
       this.canvas.remove(this.canvas.getActiveObject());
       this.canvas.add(this.props.textStraight);
+      this.selectItemAfterAdded(this.props.textStraight);
+      // this.canvas.setActiveObject(this.props.textStraight);
       this.canvas.renderAll();
     }
 
@@ -2136,6 +2249,8 @@ export class EditorPicComponent implements AfterViewInit {
     if (this.canvasCount !== 0) {
 
       this.canvasCount = 1;
+      this.intCountText = 0;
+
       this.canvas.discardActiveObject().renderAll();
       var sel = new fabric.Group(this.canvas.getObjects(), {
         canvas: this.canvas,
@@ -2146,7 +2261,6 @@ export class EditorPicComponent implements AfterViewInit {
       })
       this.canvas.remove(...this.canvas.getObjects());
 
-
       sel.setControlsVisibility({
         ml: false, //top left
         mr: false, //top right
@@ -2156,7 +2270,7 @@ export class EditorPicComponent implements AfterViewInit {
       sel.lockScalingFlip = true;
       // sel.uniformScaling = true;
 
-      
+
 
       this.canvas.add(sel);
       const formatWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
@@ -2165,33 +2279,40 @@ export class EditorPicComponent implements AfterViewInit {
       if (scaleBlock) {
         if (this.dataService.horVert) {
 
+          if (this.objectType) {
+            sel.scaleToWidth(formatWidth * scaleKey / 1.8);
+            sel.scaleToHeight(formatWidth * scaleKey / 1.8);
+          } else {
+            sel.scaleToWidth(formatWidth * scaleKey / 1.3);
+            sel.scaleToHeight(formatHeight * scaleKey / 1.3);
+          }
           // sel.uniScaleTransform = true;
           // sel.lockUniScaling = true;
-          console.log(this.dataService.horVert, this.d, scaleKey);
 
-          sel.scaleToWidth(formatWidth * scaleKey / 1.3);
-          sel.scaleToHeight(formatHeight * scaleKey / 1.3);
-
-          
         } else {
-          console.log(this.dataService.horVert, "kkkkkkkkk");
+          // console.log(this.dataService.horVert, "kkkkkkkkk");
+          if (this.objectType) {
+            sel.scaleToWidth(formatWidth * scaleKey / 5.3);
+            sel.scaleToHeight(formatWidth * scaleKey / 5.3);
+          } else {
+            sel.scaleToWidth(formatWidth * scaleKey / 5);
+            sel.scaleToHeight(formatHeight * scaleKey / 5);
 
-          sel.scaleToWidth(formatWidth * scaleKey / 5.3);
-          sel.scaleToHeight(formatHeight * scaleKey / 5.3);
-          
+          }
+
         }
         // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
-        console.log('editor', this.d);
+        // console.log('editor', this.d);
 
         // sel.Height = sel.width * this.c;
-        sel.setCoords();
-        sel.saveState();
-        this.canvas.renderAll();
+        // sel.setCoords();
+        // sel.saveState();
+        // this.canvas.renderAll();
       }
 
 
 
-      sel.minScaleLimit = 0.5;
+      sel.minScaleLimit = 0.02;
 
       // sel.lockScalingY = true;
       // this.canvas.centerObjectH(sel);
@@ -2210,9 +2331,7 @@ export class EditorPicComponent implements AfterViewInit {
       // this.canvas.centerObjectH(sel);
       sel.set({ cornerSize: this.canvas.width / 40 });
       // sel.minScaleLimit()
-      sel.setCoords();
-      sel.saveState();
-      this.canvas.renderAll();
+
       // this.canvas.getActiveObject().left += 10;
       // this.canvas.getActiveObject().setCoords();
       // this.canvas.getActiveObject().saveState();
@@ -2763,7 +2882,8 @@ export class EditorPicComponent implements AfterViewInit {
 
 
   removeSelected() {
-    console.log(this.canvasCount);
+    // console.log(this.canvasCount);
+    this.objectType = false;
 
     this.props.diametr = 300;
     if (this.canvas.getActiveObject().type === 'i-text') {
