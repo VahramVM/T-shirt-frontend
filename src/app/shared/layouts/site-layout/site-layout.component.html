@@ -417,14 +417,16 @@
                         <div
                             style="overflow-y: scroll; max-width: 100%; overflow-x: hidden; max-height: 400px; margin-top: 2%;">
                             <div class="card-panel hoverable " style="margin-top: 3%; margin-right: 0%;" id="show"
-                                *ngFor="let imageProduct of products; let i = index" (click)=" 
+                                *ngFor="let imageProduct of products; let i = index" 
+                                (click)=" 
                                 canvas.props.canvasImage = imageProduct.type; 
                                 canvas.props.canvasFill = productBrandColors[0]; 
                                 allColors = true;
                                 orderDatas.productTypeName = imageProduct.name;
                                 orderDatas.productColor = '';
                                 indexBrandType = i;
-                                setCanvasImage();  productsTypeColor();  index = i; "
+                                setCanvasImage();  
+                                productsTypeColor();"
                                 (colorPickerChange)="setCanvasFill()">
                                 <img class="productType" [src]="imageProduct.type1">
                                 <p style="margin-top: -40%; margin-left: -30%;">{{imageProduct.name}}</p>
@@ -470,10 +472,9 @@
                                     <li *ngFor="let productBrand of productBrands; let i = index" (click)="indexBrand = i; allColors = false;  
                                             canvas.props.brandName = productBrand.name;
                                             orderDatas.brendName = productBrand.name;
-                                            orderDatas.productColor = '';
                                             productBrandColor(); 
-                                            setCanvasImage(); 
-                                            productBrandSize(); 
+                                            productBrandSize();
+                                            setCanvasImage();  
                                             productsTypeColor();
                                             " class="tab"><a href="#test[i]">{{productBrand.name}}</a>
                                     </li>
@@ -505,8 +506,11 @@
                                     <div style="margin-top: 5%;" class="row">
                                         <label *ngFor="let size of productBrandSizes | keyvalue:ret; let i = index;"
                                             class="col s5 m3 l2 offset-s0 offset-m0 offset-l0">
-                                            <input (click)="orderDatas.productSize = size.key; sizeValuePass(size.key)" [disabled]="size.value"
-                                                type="radio" name="test" value="big" [checked]="size.key === 'M'">
+                                            <input 
+                                            (click)="
+                                            orderDatas.productSize = size.key; 
+                                            sizeValuePass(size.key)" [disabled]="size.value"
+                                                type="radio" name="sizeKey" value="big" [checked]="orderDatas.productSize === '' ? size.key === 'M' : size.key === orderDatas.productSize">
                                             <div style="font-size: 120%; text-align: center; width: 120%;">
                                                 <b> {{size.key}} </b>
                                             </div>

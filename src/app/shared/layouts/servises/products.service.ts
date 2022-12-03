@@ -14,11 +14,11 @@ export class ProdutsService {
   public firstCanvasBackroundImage;
    
     constructor (private http: HttpClient) {
-      this.fetch().subscribe(
-        (res: Products[]) => {
-          this.firstCanvasBackroundImage = res;          
-        }
-      )   
+      // this.fetch().subscribe(
+      //   (res: Products[]) => {
+      //     this.firstCanvasBackroundImage = res;          
+      //   }
+      // )   
     }
 
     fetch() {

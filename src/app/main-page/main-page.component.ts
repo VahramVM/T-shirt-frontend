@@ -12,7 +12,7 @@ export class MainPageComponent implements OnInit {
   public preview: boolean = false;
 
   constructor(
-    private router: Router, private order: OrderDatasService  ) {}
+    private router: Router, private order: OrderDatasService) {}
 
   ngOnInit(): void {
   }
@@ -21,12 +21,6 @@ export class MainPageComponent implements OnInit {
 
     this.preview = false;
     this.router.navigate(['/main']);
-
-    this.order.orderDatas.productTypeName = '';
-    this.order.orderDatas.brendName = '';
-    this.order.orderDatas.productColor = '';
-    this.order.orderDatas.colorDefoult = '';
-    this.order.orderDatas.productSize = '';
 
   }
 

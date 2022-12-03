@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { OrderDatas } from '../../interface';
 
 @Injectable({
@@ -6,7 +7,6 @@ import { OrderDatas } from '../../interface';
 })
 export class OrderDatasService {
 
-  constructor() { }
 
   public orderDatas: OrderDatas = {
     productTypeName: '',
@@ -15,6 +15,21 @@ export class OrderDatasService {
     colorDefoult: '',
     productSize: ''
   }
+
+
+  constructor() {
+
+   }
+
+  
+   public defaultDatas():void {
+    this.orderDatas.productTypeName = '';
+    this.orderDatas.brendName = '';
+    this.orderDatas.productColor = '';
+    this.orderDatas.colorDefoult = '';
+    this.orderDatas.productSize = '';
+   }
+  
 
   public imageSrc: string = '';
  

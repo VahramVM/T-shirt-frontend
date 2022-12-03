@@ -11,6 +11,11 @@ var core_1 = require("@angular/core");
 var ProdutsService = /** @class */ (function () {
     function ProdutsService(http) {
         this.http = http;
+        // this.fetch().subscribe(
+        //   (res: Products[]) => {
+        //     this.firstCanvasBackroundImage = res;          
+        //   }
+        // )   
     }
     ProdutsService.prototype.fetch = function () {
         return this.http.get('http://localhost:5000/api/product').pipe();

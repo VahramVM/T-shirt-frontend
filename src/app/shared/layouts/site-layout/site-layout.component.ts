@@ -98,13 +98,14 @@ export class SiteLayoutComponent implements AfterViewInit {
   public allColors = true;
 
   public length = null;
+  public colorDefoult: string = '';
 
   public orderDatas: OrderDatas = {
     productTypeName: '',
     brendName: '',
-    productColor: '',
+    productColor: 'White',
     colorDefoult: '',
-    productSize: ''
+    productSize: 'M'
   }
 
 
@@ -138,9 +139,9 @@ export class SiteLayoutComponent implements AfterViewInit {
   public colorFilter;
   public firstBackCanvasImage;
   public firstImageCarousel = '';
-  public canvasHtmlWidth = this.dataService.canvasHtmlWidth;
-  public canvasHtmlHeight = this.dataService.canvasHtmlHeight;
-  public canvasCenteredPosition = this.dataService.canvasCenteredPosition;
+  public canvasHtmlWidth;
+  public canvasHtmlHeight;
+  public canvasCenteredPosition;
 
   public linkeBrand: string = '';
 
@@ -200,7 +201,7 @@ export class SiteLayoutComponent implements AfterViewInit {
   //   { hex: '#4b2cc6', name: 'pink' }
   // ]
 
-
+  
 
   constructor(
     private router: Router,
@@ -209,13 +210,14 @@ export class SiteLayoutComponent implements AfterViewInit {
     private produtsService: ProdutsService,
     private productscolorService: ProdutsColorService,
     private fontService: FontService,
-    public dataService: DataService,
+    private dataService: DataService,
     private main: MainPageComponent,
     private order: OrderDatasService
   ) {
+
+    
     this.initFromServer();
-    // this.indexBrand = this.productBrands[0].linkeBrand;
-    // this.firstImageBrand = this.productBrands[0].src;
+   
   }
 
 
@@ -418,6 +420,7 @@ export class SiteLayoutComponent implements AfterViewInit {
     // Material.carousel()
     // Material.selectOpt()
     // Material.scrolSpy()
+
   }
 
 
@@ -450,6 +453,8 @@ export class SiteLayoutComponent implements AfterViewInit {
       (res: Products[]) => {
         this.products = res;
         this.firstBackCanvasImage = res[1].type;
+        this.dataService.products = res;
+        this.orderDatas.productTypeName = this.products[1].name;
       }
     );
 
@@ -467,8 +472,16 @@ export class SiteLayoutComponent implements AfterViewInit {
       }
     )
 
+
+    this.canvasHtmlWidth = this.dataService.canvasHtmlWidth;
+    this.canvasHtmlHeight = this.dataService.canvasHtmlHeight;
+    this.canvasCenteredPosition = this.dataService.canvasCenteredPosition;
+  
+
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
+
+    
   }
 
   sendMail() {
@@ -654,17 +667,19 @@ export class SiteLayoutComponent implements AfterViewInit {
     this.canvas.drawFill();
   }
 
+  public productSelectWithoutScale = true;
 
   setCanvasImage() {
 
     // this.arrColor.length = 0;
+
     this.dataService.indexBrandType = this.indexBrandType;
     this.dataService.products = this.products;
-    this.sizeValuePass('M');
     const productType = this.products.filter(element => {
       return element.type === this.canvas.props.canvasImage;
     })
 
+    this.dataService.formatSizeSwich();
 
     this.arrColor = productType[0].hex;
     this.productBrandSizes = productType[0].size; //allsize ... productType[0].size
@@ -672,9 +687,9 @@ export class SiteLayoutComponent implements AfterViewInit {
 
     this.canvas.setCanvasImage();
     // console.log(this.indexBrandType);
-    this.dataService.indexBrandType = this.indexBrandType;
+    // this.dataService.indexBrandType = this.indexBrandType;
     // this.productBrandColor();
-    
+
   }
 
   productOrderDatas() {
@@ -686,7 +701,9 @@ export class SiteLayoutComponent implements AfterViewInit {
   }
 
   sizeValuePass(a) {
+
     this.dataService.sizeValue = a;
+
     this.dataService.formatSizeSwich();
     this.canvas.moveWithFormat(this.dataService.scaleKey, true);
   }
@@ -713,8 +730,6 @@ export class SiteLayoutComponent implements AfterViewInit {
     })
 
     this.productBrandSizes = productBrandSize[0].size;
-    console.log(this.productBrandSizes);
-
 
   }
 

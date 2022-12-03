@@ -92,11 +92,13 @@ var SizeFormatComponent = /** @class */ (function () {
         // this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
         // this.obj.topUpDown = 0;
         this.scaleBlock = false;
+        this.changePosition();
     };
     SizeFormatComponent.prototype.formatA4V = function () {
         // this.counter = 0;
         this.dataService.horVert = this.horVert = false;
         // this.scaleKey = 2.3;
+        // this.obj.topUpDown = -0.3;
         this.dataService.formatValue = this.formatValue;
         this.scaleBlock = true;
         this.changePosition();
@@ -108,6 +110,7 @@ var SizeFormatComponent = /** @class */ (function () {
         // this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
         // this.obj.topUpDown = 0.07;
         this.scaleBlock = false;
+        this.changePosition();
     };
     SizeFormatComponent.prototype.counterNum = function () {
         // this.counter = 0;

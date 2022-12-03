@@ -102,12 +102,13 @@ var SiteLayoutComponent = /** @class */ (function () {
         this.firstImageBrand = null;
         this.allColors = true;
         this.length = null;
+        this.colorDefoult = '';
         this.orderDatas = {
             productTypeName: '',
             brendName: '',
-            productColor: '',
+            productColor: 'White',
             colorDefoult: '',
-            productSize: ''
+            productSize: 'M'
         };
         this.fonts = [];
         this.images = [];
@@ -132,9 +133,6 @@ var SiteLayoutComponent = /** @class */ (function () {
         this.index = 0;
         this.firstImage = 0;
         this.firstImageCarousel = '';
-        this.canvasHtmlWidth = this.dataService.canvasHtmlWidth;
-        this.canvasHtmlHeight = this.dataService.canvasHtmlHeight;
-        this.canvasCenteredPosition = this.dataService.canvasCenteredPosition;
         this.linkeBrand = '';
         this.customOptions = {
             // stagePadding: 200,
@@ -174,9 +172,8 @@ var SiteLayoutComponent = /** @class */ (function () {
                 }
             }
         };
+        this.productSelectWithoutScale = true;
         this.initFromServer();
-        // this.indexBrand = this.productBrands[0].linkeBrand;
-        // this.firstImageBrand = this.productBrands[0].src;
     }
     // getUpdatedMessage() {
     //   this.dataService.message.subscribe(
@@ -296,6 +293,8 @@ var SiteLayoutComponent = /** @class */ (function () {
         this.produtsService.fetch().subscribe(function (res) {
             _this.products = res;
             _this.firstBackCanvasImage = res[1].type;
+            _this.dataService.products = res;
+            _this.orderDatas.productTypeName = _this.products[1].name;
         });
         this.productscolorService.fetch().subscribe(function (res) {
             _this.productBrands = res;
@@ -303,6 +302,9 @@ var SiteLayoutComponent = /** @class */ (function () {
         this.fontService.fetch().subscribe(function (res) {
             _this.fonts = res;
         });
+        this.canvasHtmlWidth = this.dataService.canvasHtmlWidth;
+        this.canvasHtmlHeight = this.dataService.canvasHtmlHeight;
+        this.canvasCenteredPosition = this.dataService.canvasCenteredPosition;
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
         //Add 'implements OnInit' to the class.
     };
@@ -433,19 +435,19 @@ var SiteLayoutComponent = /** @class */ (function () {
         this.canvas.drawFill();
     };
     SiteLayoutComponent.prototype.setCanvasImage = function () {
-        var _this = this;
         // this.arrColor.length = 0;
+        var _this = this;
         this.dataService.indexBrandType = this.indexBrandType;
         this.dataService.products = this.products;
-        this.sizeValuePass('M');
         var productType = this.products.filter(function (element) {
             return element.type === _this.canvas.props.canvasImage;
         });
+        this.dataService.formatSizeSwich();
         this.arrColor = productType[0].hex;
         this.productBrandSizes = productType[0].size; //allsize ... productType[0].size
         this.canvas.setCanvasImage();
         // console.log(this.indexBrandType);
-        this.dataService.indexBrandType = this.indexBrandType;
+        // this.dataService.indexBrandType = this.indexBrandType;
         // this.productBrandColor();
     };
     SiteLayoutComponent.prototype.productOrderDatas = function () {
@@ -475,7 +477,6 @@ var SiteLayoutComponent = /** @class */ (function () {
             return element.name === _this.canvas.props.brandName;
         });
         this.productBrandSizes = productBrandSize[0].size;
-        console.log(this.productBrandSizes);
     };
     SiteLayoutComponent.prototype.productsTypeColor = function () {
         if (this.allColors === true) {

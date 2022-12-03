@@ -31,10 +31,12 @@ var DataService = /** @class */ (function () {
     // const myService = new DataService();
     // myService.gago = 'bobo';
     // myService.setMyGago('gago');
-    function DataService() {
+    function DataService(produtsService) {
         // this.sizePrintKey = 686 / ((686 - 297) / 2);
         // this.formatWithHeight = 0.707;
         // this.formatTopKey = 0;
+        var _this = this;
+        this.produtsService = produtsService;
         this.formatA4Horizontal = new rxjs_1.Subject();
         this.formatA4Vertical = new rxjs_1.Subject();
         this.formatTop = new rxjs_1.Subject();
@@ -53,6 +55,9 @@ var DataService = /** @class */ (function () {
         this.formats = [{ format: 'A3', formatSize: 297, formatPrise: 500 }, { format: 'A4', formatSize: 297, formatPrise: 400 }, { format: 'A5', formatSize: 210, formatPrise: 300 }, { format: 'A6', formatSize: 148, formatPrise: 400 }];
         this.initCalculations();
         this.initFromServer();
+        this.produtsService.fetch().subscribe(function (res) {
+            _this.products = res;
+        });
     }
     Object.defineProperty(DataService.prototype, "sizePrintKey", {
         get: function () {
@@ -121,6 +126,7 @@ var DataService = /** @class */ (function () {
         configurable: true
     });
     DataService.prototype.ngOnInit = function () {
+        // this.formatSizeSwich();
     };
     DataService.prototype.formatSizeSwich = function () {
         this.endPrise = 0;
@@ -196,7 +202,7 @@ var DataService = /** @class */ (function () {
     DataService.prototype.initCalculations = function () {
         this.sizePrintKey = 686 / ((686 - 297) / 2);
         this.formatWithHeight = 0.707;
-        this.formatTopKey = 0;
+        this.formatTopKey = -0.02;
         this.scaleKey = 1.1;
         this.canvasHtmlWidth = window.innerWidth - this.widthKey * window.innerWidth;
         this.canvasHtmlHeight = this.canvasHtmlWidth * this.heightKey;

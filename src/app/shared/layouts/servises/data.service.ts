@@ -122,7 +122,7 @@ export class DataService {
   public get scaleKey(): number {
     return this._scaleKey;
   }
-  
+
   private _endPrise;
 
   public set endPrise(value: number) {
@@ -163,7 +163,7 @@ export class DataService {
   // myService.gago = 'bobo';
   // myService.setMyGago('gago');
 
-  constructor() {
+  constructor(private produtsService: ProdutsService) {
 
     // this.sizePrintKey = 686 / ((686 - 297) / 2);
     // this.formatWithHeight = 0.707;
@@ -171,11 +171,21 @@ export class DataService {
 
     this.initCalculations();
     this.initFromServer();
+
+    this.produtsService.fetch().subscribe(
+      (res: Products[]) => {
+        this.products = res;
+      }
+    );
+
+
   }
 
 
   ngOnInit(): void {
+    // this.formatSizeSwich();
     
+
   }
 
   public formats = [{ format: 'A3', formatSize: 297, formatPrise: 500 }, { format: 'A4', formatSize: 297, formatPrise: 400 }, { format: 'A5', formatSize: 210, formatPrise: 300 }, { format: 'A6', formatSize: 148, formatPrise: 400 }];
@@ -257,13 +267,13 @@ export class DataService {
 
   calcEndPrise() {
 
-    for (let i = 0; i <this.formats.length; i++) {
+    for (let i = 0; i < this.formats.length; i++) {
       if (this.formatValue === this.formats[i].format) {
         this.endPrise = this.formats[i].formatPrise;
-        console.log(this.endPrise);   
-      }  
+        console.log(this.endPrise);
+      }
     }
-     
+
   }
 
   // public allLenght = A3Width +  (canvasWidth - 2* sleeveLenght * cos(45)) + chestWidth - A3
@@ -271,10 +281,9 @@ export class DataService {
 
   public initCalculations() {
 
-
     this.sizePrintKey = 686 / ((686 - 297) / 2);
     this.formatWithHeight = 0.707;
-    this.formatTopKey = 0;
+    this.formatTopKey = -0.02;
     this.scaleKey = 1.1;
 
     this.canvasHtmlWidth = window.innerWidth - this.widthKey * window.innerWidth;
@@ -292,6 +301,8 @@ export class DataService {
 
   private initFromServer() {
     // call server function
+
+    
   }
 
 }

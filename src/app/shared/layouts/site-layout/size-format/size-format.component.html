@@ -31,12 +31,12 @@
             </button>
 
             <button class="but btn-small #b0bec5 blue-grey lighten-3" style=" margin-left: 0px;  cursor: pointer;"
-                (click)="upDown = true; counterTop(); setformatScale(); changePosition()">
+                (click)="upDown = true; counterTop(); formatA4H(); setformatScale(); changePosition()">
                 <i class="small material-icons">cloud</i>
 
             </button>
             <button class="but btn-small #b0bec5 blue-grey lighten-3" style=" margin-left: 0px;  cursor: pointer;"
-                (click)="upDown = false; counterTop(); setformatScale(); changePosition()">
+                (click)="upDown = false; counterTop(); formatA4H(); setformatScale(); changePosition()">
                 <i class="small material-icons">cloud</i>
 
             </button>
@@ -68,7 +68,8 @@
                     <div class="imageDiv" style="margin: -5px;">
                         <p style="top: 50%; transform: translateY(-50%); margin: 0; left: 13px; position: relative; font-size: large; font-family: Arial, Helvetica, sans-serif; color: #ffffff;"
                             for="">A4</p>
-
+                            
+                            <!-- obj.topUpDown = 0.03; -->
                         <label
                             (click)="formatValue = 'A4'; obj.topUpDown = 0.03;  formatA4H();  setformatScale()"
                             style="top: -80%; margin: 0; left: 8px; position: relative;">

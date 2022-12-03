@@ -120,6 +120,7 @@ var EditorPicComponent = /** @class */ (function () {
         this.dataService.formatA4Horizontal.subscribe(function (res) { return _this.b = res; });
         this.c = dataService.formatWithHeight;
         this.dataService.formatA4Vertical.subscribe(function (res) { return _this.c = res; });
+        this.d = dataService.scaleKey;
         this.dataService.scaleKeyy.subscribe(function (res) { return _this.d = res; });
     }
     EditorPicComponent.prototype.onResize = function (event) {
@@ -291,8 +292,8 @@ var EditorPicComponent = /** @class */ (function () {
                             activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
                         }
                         if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
-                            activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
-                            activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
+                            activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.4));
+                            activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.4));
                         }
                     });
                 }
@@ -628,6 +629,7 @@ var EditorPicComponent = /** @class */ (function () {
                 _this.canvas.getObjects().filter(function (o) {
                     if (o.get('type') === 'i-text' && sumWidth > formatWidth ||
                         o.get('type') === 'i-text' && sumHeight > formatHeight) {
+                        console.log('ccccc');
                         activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
                         activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
                     }
@@ -636,8 +638,9 @@ var EditorPicComponent = /** @class */ (function () {
                         activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
                     }
                     if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
-                        activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
-                        activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
+                        console.log('kkkkkk');
+                        activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.4));
+                        activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.4));
                     }
                 });
                 $(".distance").remove();
@@ -666,6 +669,8 @@ var EditorPicComponent = /** @class */ (function () {
             },
             'object:added': function (e) {
                 var obj = e.target;
+                obj.setCoords();
+                obj.saveState();
                 var matrix = e.target.calcTransformMatrix();
                 var imageCoordx = matrix[4];
                 var imageCoordy = matrix[5];
@@ -718,10 +723,12 @@ var EditorPicComponent = /** @class */ (function () {
     EditorPicComponent.prototype.addArrowUp = function (o, p) {
         var arrow = '<img src="../assets/img/output-onlinepngtools-up.png" class="distance" style="position:absolute; top:' + p + 'px; left:' + (o - 5) + 'px; cursor:crosshair; width:10px; height:40px;"/>';
         $(".canvas-container").append(arrow);
+        this.canvas.renderAll();
     };
     EditorPicComponent.prototype.addArrow = function (o, p) {
         var arrow = '<img src="../assets/img/green-arrow-clipart-2.png" class="distance" style="position:absolute; top:' + o + 'px; left:' + p + 'px; cursor:crosshair; width:40px; height:10px;"/>';
         $(".canvas-container").append(arrow);
+        this.canvas.renderAll();
     };
     EditorPicComponent.prototype.addDeleteBtn = function (x, y) {
         $(".deleteBtn").remove();
@@ -729,6 +736,7 @@ var EditorPicComponent = /** @class */ (function () {
         var btnTop = y + this.top;
         var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
         $(".canvas-container").append(deleteBtn);
+        this.canvas.renderAll();
     };
     EditorPicComponent.prototype.resizeEbiten = function (iframe, parentId, aspectRatio) {
         var parent = document.getElementById(parentId);
@@ -828,6 +836,7 @@ var EditorPicComponent = /** @class */ (function () {
             // console.log('selected');
             addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
         });
+        console.log('texttt');
         if (this.props.diametr < 299) {
             console.log('<280');
             this.props.inputDisabled = 'inputDisabled';
@@ -893,6 +902,7 @@ var EditorPicComponent = /** @class */ (function () {
                 }),
                     text_1.scaleToHeight(textHeight / this.d / 1.5);
                 text_1.scaleToWidth(textWidth / this.d / 1.5);
+                console.log(this.a, this.b, this.d);
                 this.extend(text_1, this.randomId());
                 // text.charSpacing = pathLength;
                 this.canvas.add(text_1);
@@ -1002,6 +1012,7 @@ var EditorPicComponent = /** @class */ (function () {
                 }),
                     text_2.scaleToWidth(textWidth / this.d / 1.5);
                 text_2.scaleToHeight(textHeight / this.d / 1.5);
+                console.log(this.a, this.b, this.d);
                 this.extend(text_2, this.randomId());
                 // text.charSpacing = pathLength;
                 this.canvas.add(text_2);
@@ -1638,8 +1649,6 @@ var EditorPicComponent = /** @class */ (function () {
         this.scaleKey = 0;
         this.scaleKey = this.d;
         if (this.canvasCount !== 0) {
-            this.canvasCount = 1;
-            this.intCountText = 0;
             this.canvas.discardActiveObject().renderAll();
             var sel = new fabric.Group(this.canvas.getObjects(), {
                 canvas: this.canvas
@@ -1656,37 +1665,43 @@ var EditorPicComponent = /** @class */ (function () {
             this.canvas.add(sel);
             var formatWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
             var formatHeight = formatWidth * this.c;
-            if (scaleBlock) {
-                if (this.dataService.horVert) {
-                    if (this.objectType) {
-                        sel.scaleToWidth(formatWidth * scaleKey / 1.8);
-                        sel.scaleToHeight(formatWidth * scaleKey / 1.8);
-                    }
-                    else {
-                        sel.scaleToWidth(formatWidth * scaleKey / 1.3);
-                        sel.scaleToHeight(formatHeight * scaleKey / 1.3);
-                    }
-                    // sel.uniScaleTransform = true;
-                    // sel.lockUniScaling = true;
-                }
-                else {
-                    // console.log(this.dataService.horVert, "kkkkkkkkk");
-                    if (this.objectType) {
-                        sel.scaleToWidth(formatWidth * scaleKey / 5.3);
-                        sel.scaleToHeight(formatWidth * scaleKey / 5.3);
-                    }
-                    else {
-                        sel.scaleToWidth(formatWidth * scaleKey / 5);
-                        sel.scaleToHeight(formatHeight * scaleKey / 5);
-                    }
-                }
-                // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
-                // console.log('editor', this.d);
-                // sel.Height = sel.width * this.c;
-                // sel.setCoords();
-                // sel.saveState();
-                // this.canvas.renderAll();
-            }
+            this.canvasCount = 1;
+            this.intCountText = 0;
+            // if (scaleBlock) {
+            //   if (this.dataService.horVert) {
+            //     if (this.objectType && this.canvasCount < 1) {
+            //       console.log('zzzzzz');
+            //       sel.scaleToWidth(formatWidth * scaleKey / 5.8);
+            //       sel.scaleToHeight(formatWidth * scaleKey / 5.8);
+            //       this.canvasCount = 1;
+            //       this.intCountText = 0;
+            //     } else if(this.objectType && this.canvasCount > 1) {
+            //       console.log('wwwwww');
+            //       sel.scaleToWidth(formatWidth * scaleKey / 1.3);
+            //       sel.scaleToHeight(formatHeight * scaleKey / 1.3);
+            //       this.canvasCount = 1;
+            //       this.intCountText = 0;
+            //     }
+            //     // sel.uniScaleTransform = true;
+            //     // sel.lockUniScaling = true;
+            //   } else {
+            //     console.log('uooo');
+            //     // console.log(this.dataService.horVert, "kkkkkkkkk");
+            //     if (this.objectType) {
+            //       sel.scaleToWidth(formatWidth * scaleKey / 11.3);
+            //       sel.scaleToHeight(formatWidth * scaleKey / 11.3);
+            //     } else {
+            //       sel.scaleToWidth(formatWidth * scaleKey / 5);
+            //       sel.scaleToHeight(formatHeight * scaleKey / 5);
+            //     }
+            //   }
+            //   // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+            //   // console.log('editor', this.d);
+            //   // sel.Height = sel.width * this.c;
+            //   // sel.setCoords();
+            //   // sel.saveState();
+            //   // this.canvas.renderAll();
+            // }
             sel.minScaleLimit = 0.02;
             // sel.lockScalingY = true;
             // this.canvas.centerObjectH(sel);

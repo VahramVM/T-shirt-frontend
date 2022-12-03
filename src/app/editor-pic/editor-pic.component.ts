@@ -228,6 +228,8 @@ export class EditorPicComponent implements AfterViewInit {
       res => this.c = res
     );
 
+    this.d = dataService.scaleKey;
+
     this.dataService.scaleKeyy.subscribe(
 
       res => this.d = res
@@ -419,18 +421,18 @@ export class EditorPicComponent implements AfterViewInit {
         if (activeObject.angle === 0 || activeObject.angle === 180) {
           this.canvas.getObjects().filter((o) => {
             if (o.get('type') === 'i-text' && sumWith > formatWidth ||
-            o.get('type') === 'i-text' && sumHeight > formatHeight) {
-              
+              o.get('type') === 'i-text' && sumHeight > formatHeight) {
+
               activeObject.scaleX = formatWidth / (activeObject.width * 1.3);
               activeObject.scaleY = formatWidth / (activeObject.width * 1.3);
             }
 
-            if ( o.get('type') !== 'i-text' && sumWith > formatWidth) {
+            if (o.get('type') !== 'i-text' && sumWith > formatWidth) {
               activeObject.scaleX = formatWidth / (activeObject.width);
               activeObject.scaleY = formatHeight / (activeObject.height);
             }
 
-            if ( o.get('type') !== 'i-text' && sumHeight > formatHeight) {
+            if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
               activeObject.scaleX = formatWidth / (activeObject.width);
               activeObject.scaleY = formatHeight / (activeObject.height);
             }
@@ -439,8 +441,8 @@ export class EditorPicComponent implements AfterViewInit {
         } else {
           this.canvas.getObjects().filter((o) => {
 
-            if (o.get('type') === 'i-text' && sumWith > formatWidth || 
-            o.get('type') === 'i-text' && sumWith > formatHeight) {
+            if (o.get('type') === 'i-text' && sumWith > formatWidth ||
+              o.get('type') === 'i-text' && sumWith > formatHeight) {
 
               activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
               activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
@@ -454,8 +456,8 @@ export class EditorPicComponent implements AfterViewInit {
 
             if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
 
-              activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
-              activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
+              activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.4));
+              activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.4));
             }
           })
 
@@ -897,33 +899,30 @@ export class EditorPicComponent implements AfterViewInit {
 
 
         this.canvas.getObjects().filter((o) => {
+
           if (o.get('type') === 'i-text' && sumWidth > formatWidth ||
-           o.get('type') === 'i-text' && sumHeight > formatHeight) {
+            o.get('type') === 'i-text' && sumHeight > formatHeight) {
+            console.log('ccccc');
 
             activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
             activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
 
           }
 
-          if ( o.get('type') !== 'i-text' && sumWidth > formatWidth) {
+          if (o.get('type') !== 'i-text' && sumWidth > formatWidth) {
             activeObject.scaleX = formatWidth / (activeObject.width / (cos * 0.75));
             activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
           }
 
           if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
-            activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
-            activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
+            console.log('kkkkkk');
+
+            activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.4));
+            activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.4));
           }
-  
+
+
         })
-
-       
-
-          
-        
-
-        
-
 
         $(".distance").remove();
 
@@ -961,6 +960,8 @@ export class EditorPicComponent implements AfterViewInit {
 
       'object:added': (e) => {
         let obj = e.target;
+        obj.setCoords();
+        obj.saveState();
         var matrix = e.target.calcTransformMatrix();
         let imageCoordx = matrix[4];
         let imageCoordy = matrix[5];
@@ -1041,11 +1042,13 @@ export class EditorPicComponent implements AfterViewInit {
   addArrowUp(o, p) {
     var arrow = '<img src="../assets/img/output-onlinepngtools-up.png" class="distance" style="position:absolute; top:' + p + 'px; left:' + (o - 5) + 'px; cursor:crosshair; width:10px; height:40px;"/>';
     $(".canvas-container").append(arrow);
+    this.canvas.renderAll();
   }
 
   addArrow(o, p) {
     var arrow = '<img src="../assets/img/green-arrow-clipart-2.png" class="distance" style="position:absolute; top:' + o + 'px; left:' + p + 'px; cursor:crosshair; width:40px; height:10px;"/>';
     $(".canvas-container").append(arrow);
+    this.canvas.renderAll();
   }
 
   addDeleteBtn(x, y) {
@@ -1055,7 +1058,7 @@ export class EditorPicComponent implements AfterViewInit {
     var btnTop = y + this.top;
     var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
     $(".canvas-container").append(deleteBtn);
-
+    this.canvas.renderAll();
   }
 
 
@@ -1184,6 +1187,7 @@ export class EditorPicComponent implements AfterViewInit {
 
     });
 
+    console.log('texttt');
 
 
     if (this.props.diametr < 299) {
@@ -1259,6 +1263,8 @@ export class EditorPicComponent implements AfterViewInit {
         );
 
 
+
+
         $('#shadowText').on('click', () => {
           if (!this.siteLayout.shadowText) {
             text.shadow = null;
@@ -1280,6 +1286,7 @@ export class EditorPicComponent implements AfterViewInit {
 
           text.scaleToHeight(textHeight / this.d / 1.5);
         text.scaleToWidth(textWidth / this.d / 1.5);
+        console.log(this.a, this.b, this.d);
 
         this.extend(text, this.randomId());
 
@@ -1289,6 +1296,8 @@ export class EditorPicComponent implements AfterViewInit {
         text.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a + 18;
         this.selectItemAfterAdded(text);
         this.canvas.renderAll();
+
+
         // this.canvas.add(path);
         // console.log(this.canvas.toSVG());
 
@@ -1427,6 +1436,8 @@ export class EditorPicComponent implements AfterViewInit {
 
           text.scaleToWidth(textWidth / this.d / 1.5);
         text.scaleToHeight(textHeight / this.d / 1.5);
+        console.log(this.a, this.b, this.d);
+
 
         this.extend(text, this.randomId());
 
@@ -2248,8 +2259,7 @@ export class EditorPicComponent implements AfterViewInit {
 
     if (this.canvasCount !== 0) {
 
-      this.canvasCount = 1;
-      this.intCountText = 0;
+
 
       this.canvas.discardActiveObject().renderAll();
       var sel = new fabric.Group(this.canvas.getObjects(), {
@@ -2275,40 +2285,53 @@ export class EditorPicComponent implements AfterViewInit {
       this.canvas.add(sel);
       const formatWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
       const formatHeight = formatWidth * this.c;
+      this.canvasCount = 1;
+      this.intCountText = 0;
 
-      if (scaleBlock) {
-        if (this.dataService.horVert) {
+      // if (scaleBlock) {
+      //   if (this.dataService.horVert) {
 
-          if (this.objectType) {
-            sel.scaleToWidth(formatWidth * scaleKey / 1.8);
-            sel.scaleToHeight(formatWidth * scaleKey / 1.8);
-          } else {
-            sel.scaleToWidth(formatWidth * scaleKey / 1.3);
-            sel.scaleToHeight(formatHeight * scaleKey / 1.3);
-          }
-          // sel.uniScaleTransform = true;
-          // sel.lockUniScaling = true;
+      //     if (this.objectType && this.canvasCount < 1) {
+      //       console.log('zzzzzz');
 
-        } else {
-          // console.log(this.dataService.horVert, "kkkkkkkkk");
-          if (this.objectType) {
-            sel.scaleToWidth(formatWidth * scaleKey / 5.3);
-            sel.scaleToHeight(formatWidth * scaleKey / 5.3);
-          } else {
-            sel.scaleToWidth(formatWidth * scaleKey / 5);
-            sel.scaleToHeight(formatHeight * scaleKey / 5);
+      //       sel.scaleToWidth(formatWidth * scaleKey / 5.8);
+      //       sel.scaleToHeight(formatWidth * scaleKey / 5.8);
+      //       this.canvasCount = 1;
+      //       this.intCountText = 0;
 
-          }
+      //     } else if(this.objectType && this.canvasCount > 1) {
+      //       console.log('wwwwww');
 
-        }
-        // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
-        // console.log('editor', this.d);
+      //       sel.scaleToWidth(formatWidth * scaleKey / 1.3);
+      //       sel.scaleToHeight(formatHeight * scaleKey / 1.3);
+      //       this.canvasCount = 1;
+      //       this.intCountText = 0;
+      //     }
+      //     // sel.uniScaleTransform = true;
+      //     // sel.lockUniScaling = true;
 
-        // sel.Height = sel.width * this.c;
-        // sel.setCoords();
-        // sel.saveState();
-        // this.canvas.renderAll();
-      }
+      //   } else {
+      //     console.log('uooo');
+
+      //     // console.log(this.dataService.horVert, "kkkkkkkkk");
+      //     if (this.objectType) {
+      //       sel.scaleToWidth(formatWidth * scaleKey / 11.3);
+      //       sel.scaleToHeight(formatWidth * scaleKey / 11.3);
+      //     } else {
+      //       sel.scaleToWidth(formatWidth * scaleKey / 5);
+      //       sel.scaleToHeight(formatHeight * scaleKey / 5);
+
+      //     }
+
+      //   }
+      //   // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+      //   // console.log('editor', this.d);
+
+      //   // sel.Height = sel.width * this.c;
+      //   // sel.setCoords();
+      //   // sel.saveState();
+      //   // this.canvas.renderAll();
+      // }
 
 
 

@@ -13,7 +13,10 @@ import { OrderDatasService } from '../shared/layouts/servises/order-datas.servic
 
 export class ShopingPageComponent implements OnInit {
 
-  constructor(private order: OrderDatasService) { }
+  constructor(private order: OrderDatasService) {
+
+    
+   }
 
   public imageSrc;
   public colorDefoult = this.order.orderDatas.colorDefoult;
@@ -24,13 +27,18 @@ export class ShopingPageComponent implements OnInit {
     productColor: this.order.orderDatas.productColor,
     colorDefoult: this.order.orderDatas.colorDefoult,
     productSize: this.order.orderDatas.productSize
+
+
   }
 
+  
 
   ngOnInit(): void {
     const image = new Image();
     image.src = this.order.imageSrc;
     this.imageSrc = this.order.imageSrc;
+
+    console.log(this.props);
 
   }
 

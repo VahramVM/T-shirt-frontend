@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { nextTick } from 'process';
-import { EditorPicComponent } from 'src/app/editor-pic/editor-pic.component';
 import { DataService } from '../../servises/data.service';
 import { SiteLayoutComponent } from '../site-layout.component';
 
@@ -163,7 +162,7 @@ export class SizeFormatComponent implements OnInit {
     // this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
     // this.obj.topUpDown = 0;
     this.scaleBlock = false;
-
+    this.changePosition();
 
   }
 
@@ -173,6 +172,7 @@ export class SizeFormatComponent implements OnInit {
     // this.counter = 0;
     this.dataService.horVert = this.horVert = false;
     // this.scaleKey = 2.3;
+    // this.obj.topUpDown = -0.3;
     this.dataService.formatValue = this.formatValue;
     this.scaleBlock = true;
     this.changePosition();
@@ -186,14 +186,15 @@ export class SizeFormatComponent implements OnInit {
     // this.obj.objectWidth = this.objectWidth = this.dataService.sizePrintKey;
     // this.obj.topUpDown = 0.07;
     this.scaleBlock = false;
-
+    this.changePosition();
+    
   }
 
 
   counterNum() {
     // this.counter = 0;
 
-    if (this.upDown) {
+    if (this.upDown) {      
       return this.counter = 0.05;
     } else {
       return this.counter = - 0.05;
