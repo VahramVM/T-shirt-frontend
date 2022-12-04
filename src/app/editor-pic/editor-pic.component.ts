@@ -2288,50 +2288,50 @@ export class EditorPicComponent implements AfterViewInit {
       this.canvasCount = 1;
       this.intCountText = 0;
 
-      // if (scaleBlock) {
-      //   if (this.dataService.horVert) {
+      if (scaleBlock) {
+        if (this.dataService.horVert) {
 
-      //     if (this.objectType && this.canvasCount < 1) {
-      //       console.log('zzzzzz');
+          if (this.objectType) {
+            console.log('zzzzzz');
 
-      //       sel.scaleToWidth(formatWidth * scaleKey / 5.8);
-      //       sel.scaleToHeight(formatWidth * scaleKey / 5.8);
-      //       this.canvasCount = 1;
-      //       this.intCountText = 0;
+            sel.scaleToWidth(formatWidth * scaleKey / 0.8);
+            sel.scaleToWidth(formatHeight * scaleKey / 0.8);
+            // this.canvasCount = 1;
+            // this.intCountText = 0;
 
-      //     } else if(this.objectType && this.canvasCount > 1) {
-      //       console.log('wwwwww');
+          } else {
+            console.log('wwwwww', this.objectType);
 
-      //       sel.scaleToWidth(formatWidth * scaleKey / 1.3);
-      //       sel.scaleToHeight(formatHeight * scaleKey / 1.3);
-      //       this.canvasCount = 1;
-      //       this.intCountText = 0;
-      //     }
-      //     // sel.uniScaleTransform = true;
-      //     // sel.lockUniScaling = true;
+            sel.scaleToWidth(formatWidth * scaleKey / 1.2);
+            sel.scaleToHeight(formatHeight * scaleKey / 1.2);
+            // this.canvasCount = 1;
+            // this.intCountText = 0;
+          }
+          // sel.uniScaleTransform = true;
+          // sel.lockUniScaling = true;
 
-      //   } else {
-      //     console.log('uooo');
+        } else {
+          console.log('uooo', this.objectType);
 
-      //     // console.log(this.dataService.horVert, "kkkkkkkkk");
-      //     if (this.objectType) {
-      //       sel.scaleToWidth(formatWidth * scaleKey / 11.3);
-      //       sel.scaleToHeight(formatWidth * scaleKey / 11.3);
-      //     } else {
-      //       sel.scaleToWidth(formatWidth * scaleKey / 5);
-      //       sel.scaleToHeight(formatHeight * scaleKey / 5);
+          // console.log(this.dataService.horVert, "kkkkkkkkk");
+          if (this.objectType) {
+            sel.scaleToWidth(formatWidth * scaleKey / 3.5);
+            sel.scaleToWidth(formatHeight * scaleKey / 3.5);
+          } else {
+            sel.scaleToWidth(formatWidth * scaleKey / 4.9);
+            sel.scaleToHeight(formatHeight * scaleKey / 4.9);
 
-      //     }
+          }
 
-      //   }
-      //   // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
-      //   // console.log('editor', this.d);
+        }
+        // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+        // console.log('editor', this.d);
 
-      //   // sel.Height = sel.width * this.c;
-      //   // sel.setCoords();
-      //   // sel.saveState();
-      //   // this.canvas.renderAll();
-      // }
+        // sel.Height = sel.width * this.c;
+        // sel.setCoords();
+        // sel.saveState();
+        // this.canvas.renderAll();
+      }
 
 
 
