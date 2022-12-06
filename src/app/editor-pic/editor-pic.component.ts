@@ -315,6 +315,10 @@ export class EditorPicComponent implements AfterViewInit {
         let sumWidth = obj.getBoundingRect().width;
         let sumHeight = obj.getBoundingRect().height;
         let Delta = this.canvas.height - 2 * (moveSizeLimit + cornerSize) - (this.canvas.width - 2 * (moveSizeLimit + cornerSize)) * this.dataService.formatWithHeight;
+        let formatWidth = (this.canvas.width) - 2 * (moveSizeLimit + cornerSize);
+        let formatHeight = formatWidth * this.dataService.formatWithHeight;
+        let angle = Math.abs(((this.canvas.getActiveObject().angle) * Math.PI) / 180);
+        let cos = Math.abs(Math.cos(angle));
 
         // if (obj.height > obj.canvas.height || obj.width > obj.canvas.width) {
         //   obj.originY;
@@ -340,6 +344,8 @@ export class EditorPicComponent implements AfterViewInit {
           obj.top = Math.min(obj.top, obj.canvas.height - sumHeight + obj.top - sumTop - cornerSize - moveSizeLimit - Delta - this.canvas.width * this.a);
           obj.left = Math.min(obj.left, obj.canvas.width - sumWidth + obj.left - sumLeft - cornerSize - moveSizeLimit);
         }
+
+        
 
         $(".deleteBtn").remove();
         $(".distance").remove();
@@ -456,8 +462,8 @@ export class EditorPicComponent implements AfterViewInit {
 
             if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
 
-              activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.4));
-              activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.4));
+              activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
+              activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
             }
           })
 
@@ -917,8 +923,8 @@ export class EditorPicComponent implements AfterViewInit {
           if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
             console.log('kkkkkk');
 
-            activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.4));
-            activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.4));
+            activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
+            activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
           }
 
 
@@ -2271,12 +2277,12 @@ export class EditorPicComponent implements AfterViewInit {
       })
       this.canvas.remove(...this.canvas.getObjects());
 
-      sel.setControlsVisibility({
-        ml: false, //top left
-        mr: false, //top right
-        mb: false, //bottom left
-        mt: false //bottom right
-      });
+      // sel.setControlsVisibility({
+      //   ml: false, //top left
+      //   mr: false, //top right
+      //   mb: false, //bottom left
+      //   mt: false //bottom right
+      // });
       sel.lockScalingFlip = true;
       // sel.uniformScaling = true;
 

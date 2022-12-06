@@ -190,6 +190,10 @@ var EditorPicComponent = /** @class */ (function () {
                 var sumWidth = obj.getBoundingRect().width;
                 var sumHeight = obj.getBoundingRect().height;
                 var Delta = _this.canvas.height - 2 * (moveSizeLimit + cornerSize) - (_this.canvas.width - 2 * (moveSizeLimit + cornerSize)) * _this.dataService.formatWithHeight;
+                var formatWidth = (_this.canvas.width) - 2 * (moveSizeLimit + cornerSize);
+                var formatHeight = formatWidth * _this.dataService.formatWithHeight;
+                var angle = Math.abs(((_this.canvas.getActiveObject().angle) * Math.PI) / 180);
+                var cos = Math.abs(Math.cos(angle));
                 // if (obj.height > obj.canvas.height || obj.width > obj.canvas.width) {
                 //   obj.originY;
                 //   obj.originX;
@@ -292,8 +296,8 @@ var EditorPicComponent = /** @class */ (function () {
                             activeObject.scaleY = formatWidth / (activeObject.width / (cos * 0.75));
                         }
                         if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
-                            activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.4));
-                            activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.4));
+                            activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
+                            activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
                         }
                     });
                 }
@@ -639,8 +643,8 @@ var EditorPicComponent = /** @class */ (function () {
                     }
                     if (o.get('type') !== 'i-text' && sumHeight > formatHeight) {
                         console.log('kkkkkk');
-                        activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.4));
-                        activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.4));
+                        activeObject.scaleX = formatHeight / (activeObject.height / (cos * 0.75));
+                        activeObject.scaleY = formatHeight / (activeObject.height / (cos * 0.75));
                     }
                 });
                 $(".distance").remove();
@@ -1654,12 +1658,12 @@ var EditorPicComponent = /** @class */ (function () {
                 canvas: this.canvas
             });
             (_a = this.canvas).remove.apply(_a, this.canvas.getObjects());
-            sel.setControlsVisibility({
-                ml: false,
-                mr: false,
-                mb: false,
-                mt: false //bottom right
-            });
+            // sel.setControlsVisibility({
+            //   ml: false, //top left
+            //   mr: false, //top right
+            //   mb: false, //bottom left
+            //   mt: false //bottom right
+            // });
             sel.lockScalingFlip = true;
             // sel.uniformScaling = true;
             this.canvas.add(sel);
