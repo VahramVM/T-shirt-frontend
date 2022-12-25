@@ -16,6 +16,8 @@ export class DataService {
   public canvasDivSelect = new Subject<boolean>();
   public scaleKeyy = new Subject<number>();
   public endPriseValue = new Subject<number>();
+  public horVertt = new Subject<boolean>();
+  public formatValue1 = new Subject<string>();
 
 
   public widthKey: number = 0.67;
@@ -40,12 +42,15 @@ export class DataService {
   public sizeValue: string = 'M';
   public formatValue: string = 'A4';
 
+  public horizontalVertical: boolean;
 
-  public horVert: boolean = true;
+
+  // public horVert: boolean = true;
 
   public scaleKeyForCanvas: number;
   public products: Products[] = [];
   public indexBrandType: number = 0;
+
   // public endPrise: number = 0;
   // public scaleKeyyy: number = 2.3;
   // public scaleBlock: boolean;
@@ -134,21 +139,35 @@ export class DataService {
     return this._endPrise;
   }
 
+  private _horVert;
 
+  public set horVert(value: boolean) {
+    this._horVert = value;
+    this.horVertt.next(value);
+  }
 
+  public get horVert(): boolean {
+    return this._horVert;
+  }
 
+  private _formatVal;
 
+  public set formatVal(value: string) {
+    this._formatVal = value;
+    this.formatValue1.next(value);
+  }
+
+  public get formatVal(): string {
+    return this._formatVal;
+  }
 
   /*
 
   private jorik;
 
-
   public get gago(): string {
     return this.jorik;
   }
-
-  
 
   public set gago(bobo: string) {
     if (bobo === 'kanach' || bobo === 'rozovi') {
@@ -184,7 +203,7 @@ export class DataService {
 
   ngOnInit(): void {
     // this.formatSizeSwich();
-    
+
 
   }
 
@@ -193,7 +212,7 @@ export class DataService {
 
   formatSizeSwich() {
 
-    this.endPrise = 0;
+    this.endPrise = 100;
     const realSize = this.products[this.indexBrandType].realSize;
     const cafficient = 1.0229;
 
@@ -207,14 +226,27 @@ export class DataService {
         if (this.sizeValue === Object.keys(realSize)[i] && this.formatValue === this.formats[ind].format) {
           if (this.horVert) {
             this.sizePrintKey = Object.values(realSize)[i] / ((Object.values(realSize)[i] - this.formats[ind].formatSize) / 2);
-            this.scaleKey = 1.1;
+            this.scaleKey = 1;
           } else {
-            if (this.formatValue === this.formats[0].format) {
-              this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind].formatSize) / 2);
-              this.scaleKey = 2.3;
+
+            if (this.horizontalVertical) {
+
+              if (this.formatValue === this.formats[0].format) {
+                this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind].formatSize) / 2);
+                this.scaleKey = 4.5;
+              } else {
+                this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind + 1].formatSize) / 2);
+                this.scaleKey = 4.5;
+              }
             } else {
-              this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind + 1].formatSize) / 2);
-              this.scaleKey = 2.3;
+              
+              if (this.formatValue === this.formats[0].format) {
+                this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind].formatSize) / 2);
+                this.scaleKey = 2.5;
+              } else {
+                this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind + 1].formatSize) / 2);
+                this.scaleKey = 2.5;
+              }
             }
           }
         }
@@ -282,8 +314,16 @@ export class DataService {
   public initCalculations() {
 
     this.sizePrintKey = 686 / ((686 - 297) / 2);
-    this.formatWithHeight = 0.707;
-    this.formatTopKey = -0.02;
+    this.formatWithHeight = 0.707; // 0.707
+    this.formatTopKey = -0.03;
+    this.horVert = true;
+    // if (this.horVert) {
+    //   this.scaleKey = 1
+    // } else {
+    //   console.log('ggggg');
+
+    //   this.scaleKey = 4.3
+    // }
     this.scaleKey = 1.1;
 
     this.canvasHtmlWidth = window.innerWidth - this.widthKey * window.innerWidth;
@@ -302,7 +342,7 @@ export class DataService {
   private initFromServer() {
     // call server function
 
-    
+
   }
 
 }

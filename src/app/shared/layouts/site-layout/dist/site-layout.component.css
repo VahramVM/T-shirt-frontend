@@ -258,6 +258,17 @@ div.colorBox div:hover {
   /* padding-top: 90px;  */
 }
 
+.horizontal {
+  width: 45%;
+  height: auto;
+}
+
+.vertical {
+  padding-top: 13%;
+  width: 29%;
+  height: 90%;
+}
+
 @media (max-width: 1000px) {
   div.owl-item․active {
     margin: 0;
@@ -271,15 +282,15 @@ img {
 }
 
 div.owl-item {
-  filter: grayscale(70%);
-  transition: 1s ease all;
+  filter: grayscale(80%);
+  transition: 0.5s ease all;
   opacity: 0.5;
 }
 
 div.owl-item.active {
-  filter: grayscale(70%);
+  filter: grayscale(80%);
   transform: scale(0.6);
-  transition: 1s ease all;
+  transition: 0.5s ease all;
   /* margin:0 10px; */
   opacity: 0.5;
 }
@@ -356,6 +367,12 @@ div.owl-item {
   color: white;
   margin: 0;
   transition: all 0.3s ease-in-out;
+}
+
+.but {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }
 
 .owl-dots {

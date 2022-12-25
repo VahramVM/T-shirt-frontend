@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { DataService } from '../shared/layouts/servises/data.service';
 import { OrderDatasService } from '../shared/layouts/servises/order-datas.service';
 
 @Component({
@@ -12,7 +13,7 @@ export class MainPageComponent implements OnInit {
   public preview: boolean = false;
 
   constructor(
-    private router: Router, private order: OrderDatasService) {}
+    private router: Router, private order: OrderDatasService, private data: DataService) {}
 
   ngOnInit(): void {
   }
@@ -21,7 +22,10 @@ export class MainPageComponent implements OnInit {
 
     this.preview = false;
     this.router.navigate(['/main']);
+setTimeout(() => {
+  location.reload();
 
+}, 10);
   }
 
 }

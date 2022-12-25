@@ -18,7 +18,6 @@ var SizeFormatComponent = /** @class */ (function () {
         this.canvasSelect = null;
         this.scaleBlock = false;
         this.formatValue = 'A4';
-        this.horVert = true;
         this.endPrise = 0;
         this.obj = { objectWidth: null, objectWidthHeight: null, topUpDown: 0 };
         this.canvasHtmlWidth = this.dataService.canvasHtmlWidth;
@@ -33,6 +32,7 @@ var SizeFormatComponent = /** @class */ (function () {
         this.positionTopKey = this.dataService.formatTopKey;
         this.objectWidth = this.dataService.sizePrintKey;
         this.objectWidthHeight = this.dataService.formatWithHeight;
+        this.horVert = this.dataService.horVert;
         this.scaleKey = this.dataService.scaleKey;
         this.getUpdatedMessage();
     }
@@ -41,6 +41,11 @@ var SizeFormatComponent = /** @class */ (function () {
         var _this = this;
         this.dataService.canvasDivSelect.subscribe(function (res) {
             _this.canvasSelect = res;
+            // console.log(res);
+            _this.setFormatHeightTop();
+        });
+        this.dataService.formatValue1.subscribe(function (res) {
+            _this.formatValue = res;
             // console.log(res);
             _this.setFormatHeightTop();
         });
@@ -71,6 +76,11 @@ var SizeFormatComponent = /** @class */ (function () {
         });
         this.dataService.endPriseValue.subscribe(function (res) {
             _this.endPrise = res;
+            // console.log(res);
+            _this.setFormatHeightTop();
+        });
+        this.dataService.horVertt.subscribe(function (res) {
+            _this.horVert = res;
             // console.log(res);
             _this.setFormatHeightTop();
         });

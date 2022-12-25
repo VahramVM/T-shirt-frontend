@@ -46,6 +46,7 @@ import { ShopingPageComponent } from './shoping-page/shoping-page.component';
     BackgroundDirective,
     SizeFormatComponent,
     ShopingPageComponent,
+    
   ],
   imports: [
     BrowserModule,

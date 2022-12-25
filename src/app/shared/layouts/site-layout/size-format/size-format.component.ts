@@ -41,7 +41,7 @@ export class SizeFormatComponent implements OnInit {
   public scaleKey: number;
   public scaleBlock: boolean = false;
   public formatValue: string = 'A4';
-  public horVert: boolean = true;
+  public horVert: boolean;
 
   public endPrise: number = 0;
 
@@ -61,6 +61,7 @@ export class SizeFormatComponent implements OnInit {
 
     this.objectWidth = this.dataService.sizePrintKey;
     this.objectWidthHeight = this.dataService.formatWithHeight;
+    this.horVert = this.dataService.horVert;
 
     this.scaleKey = this.dataService.scaleKey;
     this.getUpdatedMessage();
@@ -78,6 +79,16 @@ export class SizeFormatComponent implements OnInit {
         this.setFormatHeightTop();
       }
     );
+
+    this.dataService.formatValue1.subscribe(
+      res => {
+        this.formatValue = res;
+        // console.log(res);
+
+        this.setFormatHeightTop();
+      }
+    );
+
     // this.canvas.setHeight(this.canvasHtmlHeight);
     // this.canv = this.dataService.canvasSelect
   }
@@ -132,6 +143,15 @@ export class SizeFormatComponent implements OnInit {
       }
     );
 
+    this.dataService.horVertt.subscribe(
+      res => {
+        this.horVert = res;
+        // console.log(res);
+
+        this.setFormatHeightTop();
+      }
+    );
+
     this.setFormatHeightTop();
 
   }
@@ -154,7 +174,7 @@ export class SizeFormatComponent implements OnInit {
     this.dataService.formatValue = this.formatValue;
     this.scaleBlock = true;
     this.changePosition();
-    this.obj.objectWidthHeight = this.objectWidthHeight = 1.414 / 2;
+    this.obj.objectWidthHeight = this.objectWidthHeight = 1.414/2;
     this.dataService.formatSizeSwich();
     // this.sizePrintKey = 686 / ((686 - 297) / 2);
     // this.dataService.scaleKey = this.canvasSizeFormatWidth / 145;

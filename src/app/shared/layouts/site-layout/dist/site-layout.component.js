@@ -82,6 +82,8 @@ var SiteLayoutComponent = /** @class */ (function () {
         this.expression = false;
         this.toggleButton = true;
         this.category = '';
+        this.formatValue = 'A4';
+        this.horVert = true;
         this.origin = true;
         this.shadow = false;
         this.shadowText = true;
@@ -198,6 +200,7 @@ var SiteLayoutComponent = /** @class */ (function () {
         var index = this.activeSlides.startPosition;
         var src = $('.owlCarousel').find(".owl-item").eq(index).find("img").attr('src');
         $('.divv').text(src);
+        console.log(index, src, 'QQQQQQQQ');
         this.firstImage = 1;
         index = 0;
         // $('.owlCarousel').on('changed.owlCarousel', (event) => {
@@ -301,6 +304,12 @@ var SiteLayoutComponent = /** @class */ (function () {
         });
         this.fontService.fetch().subscribe(function (res) {
             _this.fonts = res;
+        });
+        this.dataService.formatValue1.subscribe(function (res) {
+            _this.formatValue = res;
+        });
+        this.dataService.horVertt.subscribe(function (res) {
+            _this.horVert = res;
         });
         this.canvasHtmlWidth = this.dataService.canvasHtmlWidth;
         this.canvasHtmlHeight = this.dataService.canvasHtmlHeight;
@@ -460,6 +469,7 @@ var SiteLayoutComponent = /** @class */ (function () {
         this.dataService.sizeValue = a;
         this.dataService.formatSizeSwich();
         this.canvas.moveWithFormat(this.dataService.scaleKey, true);
+        this.canvas.canvas.discardActiveObject().renderAll();
     };
     SiteLayoutComponent.prototype.productBrandColor = function () {
         var _this = this;
@@ -495,7 +505,7 @@ var SiteLayoutComponent = /** @class */ (function () {
     };
     SiteLayoutComponent.prototype.setDistance = function () {
         this.canvas.setDistance();
-        console.log('distance');
+        // console.log('distance');
     };
     SiteLayoutComponent.prototype.setOpacity = function () {
         this.canvas.setOpacity();

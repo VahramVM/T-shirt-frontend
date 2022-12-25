@@ -1,87 +1,5 @@
 <!-- Tools sideNav -->
-<div class="nav-wrapper">
-    <div class="row sidenav" id="mobile-links" style="width: 50%">
-        <nav style="height: 50px;">
-            <div class="nav-wrapper teal lighten-2">
-                <a class="brand-logo left"> Your2 design</a>
-                <a href="#" class="right sidenav-trigger" data-target="mobile-links">
-                    <i class="material-icons">menu</i>
-                </a>
-            </div>
-        </nav>
 
-        <div class="tabBoxNav center-align">
-
-            <div class="full-width">
-                <div class="row">
-                    <div class="col s12">
-                        <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-                            <li style="width:10%" class="tab i"><a href="#test11"> <i style="margin-left: 33.33%"
-                                        class="small material-icons">color_lens</i>
-                                </a></li>
-                            <li style="width:10%" class="tab "><a href="#test22"> <i style="margin-left: 33.33%"
-                                        class="small material-icons">photo</i>
-                                </a></li>
-                            <li style="width:10%" class="tab"><a href="#test33"> <i style="margin-left: 33.33%"
-                                        class="small material-icons">format_size</i>
-                                </a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div id="test11" class="col s12 m12">
-                        <div class="colorConteiner left-align">
-                            <button type="button" class="colorButton" (click)="isOpen = !isOpen" cdkOverlayOrigin
-                                [style.background]="selectColor || 'none'">Color</button>
-
-                            <!-- <ng-template #display>
-                                Select color
-                            </ng-template> -->
-
-                            <div *ngIf="isOpen; ">
-                                <div class="colorBox" role="dialog" aria-label="Color picker">
-                                    <div *ngFor="let color of productBrands" role="option"
-                                        [style.background]="color.hex" [attr.aria-label]="color.name"
-                                        [attr.aria-selected]="color.hex == selectColor"
-                                        (click)="selectColor = color.hex; isOpen = false">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="colorConteiner left-align">
-                            <!-- <button type="button" class="colorButton" (click)="isOpen = !isOpen" cdkOverlayOrigin
-                                [style.background]="selectColor || 'none'">Color</button> -->
-
-                            <!-- <ng-template #display>
-                                Select color
-                            </ng-template> -->
-
-                            <!-- <div class="colorBox" role="dialog" aria-label="Color picker">
-                                <div class="card-panel hoverable" *ngFor="let color of productsColor" role="option"
-                                    [style.background]="color.hex" [attr.aria-label]="color.name"
-                                    [attr.aria-selected]="color.hex == selectColor" (click)="selectColor = color.hex;">
-                                </div>
-                            </div> -->
-                        </div>
-                    </div>
-
-                    <div id="test22" class="active col s12 ">
-                        <p>Test 2</p>op
-                    </div>
-                    <div id="test33" class="col s12 ">
-                        <p>Test 3</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- <ul class="sidenav" id="mobile-links" style="width: 45%">
-        <li routerLinkActive="color"><a routerLink='/login'>LogOuttt</a></li>
-        <li routerLinkActive="color"><a routerLink='/register'>Registrationtt</a></li>
-    </ul> -->
-    </div>
-</div>
 <!-- /Tools sideNav -->
 
 
@@ -110,10 +28,9 @@
         </div>
 
 
-
         <!-- <div class="col ">Options</div> -->
-        <div class="col s7 m3 l4 xl3 offset-s0 offset-m9 offset-l6 offset-xl0"
-            style="padding-top: 1%; position: absolute;">
+        <div *ngIf="canvas.canvasCount !==0" class="col s12 m12 l12 xl12 offset-s0 offset-m0 offset-l0 offset-xl0"
+            style="top: -0.3%; position: absolute; z-index: 1;">
             <div class="btn-group" role="group" aria-label="...">
                 <!-- <button data-toggle="tooltip" data-placement="bottom" title="Delete element" type="button"
                     class="btn btn-outline-danger remove" [disabled]="!canvas.selected"
@@ -121,47 +38,59 @@
                     <i class="large material-icons" aria-hidden="true">delete</i>
                 </button> -->
                 <button data-toggle="tooltip" data-placement="bottom" title="Send to back" type="button"
-                    class="btn btn-small outline-primary"
+                    class="btn btn-small indigo lighten-3" style="height: 30px;"
                     [disabled]="!canvas.selected || canvas.selected.type == 'group'" (click)="sendToBack();">
                     <i class="large material-icons" aria-hidden="true">flip_to_back</i>
                 </button>
                 <button data-toggle="tooltip" data-placement="bottom" title="Send to front" type="button"
-                    class="btn btn-small outline-primary"
+                    class="btn btn-small indigo lighten-3" style="height: 30px;"
                     [disabled]="!canvas.selected || canvas.selected.type == 'group'" (click)="bringToFront();">
                     <i class="large material-icons" aria-hidden="true">flip_to_front</i>
                 </button>
                 <button data-toggle="tooltip" data-placement="bottom" title="Clone" type="button"
-                    class="btn btn-small outline-primary"
+                    class="btn btn-small indigo lighten-3" style="height: 30px;"
                     [disabled]="!canvas.selected || canvas.selected.type == 'group'" (click)="clone();">
                     <i class="large material-icons" aria-hidden="true">content_copy</i>
                 </button>
-                <button data-toggle="tooltip" data-placement="bottom" title="Done" type="button"
-                    class="btn btn-small outline-primary"
+                <button class="btn-small indigo lighten-3" style="cursor: pointer; width: 80px; height: 28px;">
+                    <!-- <i class="small material-icons">{{formatValue}}</i> -->
+                    <p style="top: 50%; float:left; margin: 0; margin-left: -8px;  font-size: large; font-family: Arial, Helvetica, sans-serif; color: #ffffff;"
+                        for="">{{formatValue}}</p>
+                    <i style="margin-left: 10px;">
+                        <img [ngClass]="{horizontal : horVert, vertical : !horVert}" style="margin-top: 3%; display: inline-block;
+                    margin: 0px;
+                    cursor: pointer;
+                    border-radius: 5%;" src="../assets/img/oie_aHdWpUcmnmvA.png">
+                    </i>
+                </button>
+
+                <!-- <button data-toggle="tooltip" data-placement="bottom" title="Done" type="button"
+                    class="btn btn-small indigo lighten-3" style="height: 30px;"
                     [disabled]="!canvas.selected || canvas.selected.type == 'group'"
                     (click)="cleanSelect(); bob = true">
                     <i class="small material-icons" aria-hidden="true">done_all</i>
-                </button>
+                </button> -->
 
-                <div class="btn-group" style="margin-top: 3%;">
-                    <button id="draw" type="button" data-toggle="tooltip" data-placement="bottom" title="Done"
+                <!-- <div class="btn-group" style="margin-top: 3%;">
+                    <button id="draw" type="button" data-toggle="tooltip" data-placement="bottom" title="Paint"
                         class="btn btn-small outline-primary" [(colorPicker)]="canvas.props.drawFill"
                         (click)="canvasDrawing('draw'); canvas.defoultUpdate(); isCarouselOpen = false">
                         <i class="small material-icons" aria-hidden="true">draw</i>
                     </button>
 
-                    <button id="draw" type="button" data-toggle="tooltip" data-placement="bottom" title="Done"
+                    <button id="draw" type="button" data-toggle="tooltip" data-placement="bottom" title="Brush"
                         class="btn btn-small outline-primary" [(colorPicker)]="canvas.props.drawFill"
                         (click)="canvasDrawing('spray'); canvas.defoultUpdate(); isCarouselOpen = false">
                         <i class="small material-icons" aria-hidden="true">draw</i>
                     </button>
-                </div>
+                </div> -->
 
 
             </div>
 
         </div>
-        
-        <div class="col s7 m3 l4 xl10 offset-s0 offset-m9 offset-l6 offset-xl6"
+
+        <div *ngIf="canvas.canvasCount !== 0" class="col s7 m3 l4 xl10 offset-s0 offset-m9 offset-l6 offset-xl6"
             style="padding-top: 530px; position: absolute; width: 180px;">
             <button data-toggle="tooltip" data-placement="bottom" title="Clean Canvas" type="button"
                 class="btn btn-danger" [disabled]="canvas.selected" (click)="confirmClear(); isCarouselOpen = true">
@@ -215,18 +144,17 @@
         <div class="col offset-s1 offset-m4 offset-l3 offset-xl6"
             style="margin-top: 2%; position: absolute; z-index: 1;">
             <!-- || canvas.textEditor || canvas.figureEditor -->
-            <button ngclas data-toggle="tooltip"
-                (click)="selectPicture();  canvas.defoultUpdate();  isCarouselOpen = false "
+            <!-- <button data-toggle="tooltip" (click)="selectPicture();  canvas.defoultUpdate();  isCarouselOpen = false "
                 *ngIf="canvas.canvasCount === 0 " class="but btn-small #00e676 green accent-4 black-text">
-                <i class="material-icons">check</i>
+                <i class="check material-icons">check</i>
             </button>
             <button data-toggle="tooltip" (click)="removeSelected(); isCarouselOpen = true "
                 *ngIf="canvas.canvasCount !== 0  " class="but btn-small #e57373 red lighten-1">
                 <i class="large material-icons">delete</i>
-            </button>
+            </button> -->
 
 
-            <button class="but btn-small #00e676" style="margin-left: 5px;" (click)="isOpen = !isOpen">
+            <button *ngIf="canvas.canvasCount === 0" class="btn-small #00e676" style="margin-left: 5px;" (click)="isOpen = !isOpen">
                 <i class="material-icons right">cloud</i>
                 Themes
             </button>
@@ -274,20 +202,18 @@
         </div>
 
 
-        <div *ngIf="isCarouselOpen === false || canvas.canvasCount !== 0">
-            <div class="col xl2 offset-s3 offset-m4 offset-l2 offset-xl2"
-                style="margin-top: 550px; position: absolute; z-index: 10;">
+        <div *ngIf="canvas.canvasCount !== 0"
+            style="margin-left: 25%; position: absolute; margin-top: 40%; z-index: 3;">
+            <div style="z-index: 10;">
                 <input type="range" [(ngModel)]="canvas.props.opacity" (ngModelChange)="setOpacity()"
                     [disabled]="canvas.canvasCount == 0">
             </div>
-            <label class="col offset-s1 offset-m4 offset-l3 offset-xl1"
-                style="margin-top: 540px; position: absolute; cursor:pointer; z-index: 10;">
+            <label style="margin-top: -40px; margin-left: 160px; position: absolute; cursor:pointer; z-index: 10;">
                 <input id="shadowSVG" type="checkbox" (change)="shadowSVG = !shadowSVG" class="filled-in"
                     [disabled]="canvas.canvasCount == 0" />
                 <i class="fa fa-cloud" style="font-size:40px; color:#009688;text-shadow:12px 8px 4px #4d4a4a;"></i>
             </label>
         </div>
-
         <!-- <owl-carousel [options]="SlideOptions" [items]="images" [carouselClasses]="['owl-theme', 'sliding']" >  
             <div class="item" *ngFor="let img of Images">  
             <div style="align-content: center">  
@@ -324,7 +250,7 @@
 
 
         <div (window:resize)="onResize($event)" Load="myFunction()" [ngClass]="{'class1': toggle === true}"
-            style="margin-top: -4%; position: absolute; z-index: 0;"
+            style="margin-top: -3%; position: absolute; z-index: 0;"
             class="owlCarousel owl-theme selectPic col s12 m12 l8 xl8 offset-s0 offset-m0 offset-l0 offset-xl0">
             <owl-carousel-o id="myCarousel" #owlElement [options]="customOptions" (translated)="getPassedData($event)">
 
@@ -335,8 +261,14 @@
                         <div style="width: 70%; height: auto; margin-left: 17%;">
 
                             <img [src]="image.imageSrc">
+                            <button data-toggle="tooltip" style="margin-top: 0px;" (click)="selectPicture();  isCarouselOpen = false "
+                                *ngIf="canvas.canvasCount === 0 "
+                                class="but btn-small #00e676 green accent-4 black-text">
+                                <i style="margin-left: -9px; margin-top: -0px;" class="check material-icons">check</i>
+                            </button>
 
                         </div>
+                        
                     </ng-template>
                 </ng-container>
                 <ng-template carouselSlide id="image.id">
@@ -388,8 +320,8 @@
 
             <!-- Tabs box -->
 
-            <div style="background-color:rgb(228, 232, 243); height: 580px; overflow-y: hidden; overflow-x: hidden;" id="nav-mobile"
-                class="center-align hide-on-med-and-down ">
+            <div style="background-color:rgb(228, 232, 243); height: 580px; overflow-y: hidden; overflow-x: hidden;"
+                id="nav-mobile" class="center-align hide-on-med-and-down ">
                 <ul class="tabs tabs-fixed-width tab-demo z-depth-1"
                     style="height: 40px; background-color:rgb(255, 255, 255);">
                     <li class="tab"><a id="ilo" href="#test1"> <i class="small material-icons"
@@ -417,8 +349,7 @@
                         <div
                             style="overflow-y: scroll; max-width: 100%; overflow-x: hidden; max-height: 400px; margin-top: 2%;">
                             <div class="card-panel hoverable " style="margin-top: 3%; margin-right: 0%;" id="show"
-                                *ngFor="let imageProduct of products; let i = index" 
-                                (click)=" 
+                                *ngFor="let imageProduct of products; let i = index" (click)=" 
                                 canvas.props.canvasImage = imageProduct.type; 
                                 canvas.props.canvasFill = productBrandColors[0]; 
                                 allColors = true;
@@ -426,8 +357,7 @@
                                 orderDatas.productColor = '';
                                 indexBrandType = i;
                                 setCanvasImage();  
-                                productsTypeColor();"
-                                (colorPickerChange)="setCanvasFill()">
+                                productsTypeColor();" (colorPickerChange)="setCanvasFill()">
                                 <img class="productType" [src]="imageProduct.type1">
                                 <p style="margin-top: -40%; margin-left: -30%;">{{imageProduct.name}}</p>
                                 <!-- [style.background]="canvas.props.canvasFill" [value]="canvas.props.canvasFill" -->
@@ -456,8 +386,8 @@
 
 
                         <div style="margin-top: 5%;" class="card">
-                            <div  class="card-content" style="height: 120px; width: 100%;">
-                                <a 
+                            <div class="card-content" style="height: 120px; width: 100%;">
+                                <a
                                     [href]="indexBrand=== null ? productBrands[0].linkeBrand: productBrands[indexBrand].linkeBrand">
                                     <img style="width: 40%; height: auto;  display: flex;
                                     justify-content: center; margin-top: 0%;
@@ -506,11 +436,11 @@
                                     <div style="margin-top: 5%;" class="row">
                                         <label *ngFor="let size of productBrandSizes | keyvalue:ret; let i = index;"
                                             class="col s5 m3 l2 offset-s0 offset-m0 offset-l0">
-                                            <input 
-                                            (click)="
+                                            <input (click)="
                                             orderDatas.productSize = size.key; 
-                                            sizeValuePass(size.key)" [disabled]="size.value"
-                                                type="radio" name="sizeKey" value="big" [checked]="orderDatas.productSize === '' ? size.key === 'M' : size.key === orderDatas.productSize">
+                                            sizeValuePass(size.key)" [disabled]="size.value" type="radio"
+                                                name="sizeKey" value="big"
+                                                [checked]="orderDatas.productSize === '' ? size.key === 'M' : size.key === orderDatas.productSize">
                                             <div style="font-size: 120%; text-align: center; width: 120%;">
                                                 <b> {{size.key}} </b>
                                             </div>
@@ -596,8 +526,8 @@
                     </div>
                     <br>
                     <label class="col s3 offset-s0;" style="margin-top: 10px; cursor:pointer">
-                        <input id="shadow" type="checkbox" (change)="shadow = !shadow" class="filled-in"
-                            [disabled]="canvas.canvasCount == 0" />
+                        <input id="shadow" type="checkbox" (change)="shadow
+                         = !shadow" class="filled-in" [disabled]="canvas.canvasCount == 0" />
                         <i class="fa fa-cloud"
                             style="font-size:40px; color:#009688;text-shadow:12px 8px 4px #4d4a4a;"></i>
                     </label>
@@ -615,7 +545,7 @@
                         <div class="col s2">Distance</div>
                         <div class="col s8">
                             <input type="range" id="hue-value" [(ngModel)]="canvas.props.distance"
-                                (ngModelChange)="setDistance()" value="0" min="0" max="1" step="0.02">
+                                (ngModelChange)="setDistance()" value="0" min="0" max="1" step="0.0001">
                         </div>
                         <div>{{canvas.props.distance}}</div>
                     </div>
@@ -623,14 +553,14 @@
                         <div class="col s2">Saturation</div>
                         <div class="col s8">
                             <input type="range" id="saturation" [(ngModel)]="saturation" value="0" min="-1" max="1"
-                                step="0.02">
+                                step="0.0001">
                         </div>
                         <div>{{saturation}}</div>
                     </div>
                     <div class="col s12 offset-s0" style="padding-top: 0px;">
                         <div class="col s2">Blur</div>
                         <div class="col s8">
-                            <input type="range" id="blur" [(ngModel)]="blur" value="0.1" min="0" max="1" step="0.02">
+                            <input type="range" id="blur" [(ngModel)]="blur" value="0" min="0" max="1" step="0.0001">
                         </div>
                         <div>{{blur}}</div>
                     </div>
@@ -638,7 +568,7 @@
                         <div class="col s2">Contrast</div>
                         <div class="col s8">
                             <input type="range" id="contrast1" [(ngModel)]="contrast" value="0" min="-1" max="1"
-                                step="0.02">
+                                step="0.0001">
                         </div>
                         <div>{{contrast}}</div>
                     </div>
@@ -646,7 +576,7 @@
                         <div class="col s2">Noise</div>
                         <div class="col s8">
                             <input type="range" id="noise" [(ngModel)]="noise" value="100" min="0" max="1000"
-                                step="0.02">
+                                step="0.0001">
                         </div>
                         <div>{{noise}}</div>
                     </div>
@@ -720,17 +650,13 @@
                         <div style="margin-left: 60px; width: 280px; margin-top: 350px; " role="group" aria-label="...">
 
                             <img class="col s3" id="square" (click)="addFigure('square'); toggle = true ;" width="40px"
-                                height="55px" src="https://i.ya-webdesign.com/images/blank-checkbox-png-9.png" alt="">
+                                height="55px" src="../assets/img/square.png" alt="">
 
                             <img class="col s3" id="triangle" (click)="addFigure('triangle'); toggle = true;"
-                                width="45px" height="55px"
-                                src="https://cdn1.iconfinder.com/data/icons/materia-arrows-symbols-vol-9/24/018_343_insignia_badge_shape_triangle-512.png"
-                                alt="">
+                                width="45px" height="55px" src="../assets/img/threeangle.png" ciricle.png alt="">
 
                             <img class="col s3" id="circle" (click)="addFigure('circle'); toggle = true;" width="40px"
-                                height="55px"
-                                src="https://cdn2.iconfinder.com/data/icons/player-rounded-set/154/player-function-circle-round-empty-512.png"
-                                alt="">
+                                height="55px" src="../assets/img/ciricle.png" alt="">
 
                         </div>
 

@@ -9,9 +9,10 @@ exports.__esModule = true;
 exports.MainPageComponent = void 0;
 var core_1 = require("@angular/core");
 var MainPageComponent = /** @class */ (function () {
-    function MainPageComponent(router, order) {
+    function MainPageComponent(router, order, data) {
         this.router = router;
         this.order = order;
+        this.data = data;
         this.preview = false;
     }
     MainPageComponent.prototype.ngOnInit = function () {
@@ -19,6 +20,9 @@ var MainPageComponent = /** @class */ (function () {
     MainPageComponent.prototype.redirectPreview = function () {
         this.preview = false;
         this.router.navigate(['/main']);
+        setTimeout(function () {
+            location.reload();
+        }, 10);
     };
     MainPageComponent = __decorate([
         core_1.Component({

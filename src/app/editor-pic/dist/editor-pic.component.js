@@ -122,6 +122,10 @@ var EditorPicComponent = /** @class */ (function () {
         this.dataService.formatA4Vertical.subscribe(function (res) { return _this.c = res; });
         this.d = dataService.scaleKey;
         this.dataService.scaleKeyy.subscribe(function (res) { return _this.d = res; });
+        // this.dataService.canvasCount1.subscribe(
+        //   res => this.canvasCount = res      
+        // );
+        console.log(this.canvasCount);
     }
     EditorPicComponent.prototype.onResize = function (event) {
         // --!
@@ -140,7 +144,7 @@ var EditorPicComponent = /** @class */ (function () {
         $('.owl-theme').on('changed.owl-carousel', function (event) {
             var current = event.item.index;
             _this.id = $(event.target).find(".owl-item").eq(current).find("img").attr('id');
-            // console.log(this.id);
+            console.log(_this.id, current);
         });
     };
     EditorPicComponent.prototype.ngOnInit = function () {
@@ -600,6 +604,9 @@ var EditorPicComponent = /** @class */ (function () {
                 obj.saveState();
                 _this.canvas.renderAll();
             },
+            'mouse:down': function (e) {
+                console.log('mouse:down');
+            },
             'selection:cleared': function (e) {
                 _this.dataService.canvasSelect = false;
                 $(".deleteBtn").remove();
@@ -738,7 +745,7 @@ var EditorPicComponent = /** @class */ (function () {
         $(".deleteBtn").remove();
         var btnLeft = x - this.left;
         var btnTop = y + this.top;
-        var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
+        var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:30px;height:30px;"/>';
         $(".canvas-container").append(deleteBtn);
         this.canvas.renderAll();
     };
@@ -1001,6 +1008,37 @@ var EditorPicComponent = /** @class */ (function () {
                     centeredRotation: true
                 });
                 this.props.textStraight = text_2;
+                // if (text.height > 1300) {
+                //   this.dataService.formatVal = this.dataService.formatValue = 'A3';
+                // } else if (text.height > 500 && text.height < 1300) {
+                //   this.dataService.formatVal = this.dataService.formatValue = 'A4';
+                // }
+                var scale = 1;
+                if (this.dataService.horizontalVertical === true) {
+                    // this.dataService.horizontalVertical = false;
+                    // this.dataService.horVert = false;
+                    // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+                    // this.dataService.formatWithHeight = 1.414;
+                    // this.dataService.formatTopKey = 0.03;
+                    // this.dataService.scaleKey = 1;
+                    // this.dataService.formatSizeSwich();
+                    scale = 2;
+                    text_2.scaleToHeight(textHeight / 1.2);
+                    text_2.scaleToWidth(textWidth / 1.2);
+                }
+                else {
+                    // this.dataService.horizontalVertical = false;
+                    // this.dataService.scaleKey = 1;
+                    // this.dataService.horVert = true;
+                    // this.dataService.formatWithHeight = 0.707;
+                    // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+                    // this.dataService.formatTopKey = -0.03;
+                    // this.dataService.formatSizeSwich();
+                    scale = 2;
+                    text_2.scaleToHeight(textHeight / 1.5);
+                    text_2.scaleToWidth(textWidth / 1.5);
+                    // scale = this.dataService.scaleKey;
+                }
                 $('#shadowText').on('click', function () {
                     if (!_this.siteLayout.shadowText) {
                         text_2.shadow = null;
@@ -1014,9 +1052,7 @@ var EditorPicComponent = /** @class */ (function () {
                     }
                     _this.canvas.renderAll();
                 }),
-                    text_2.scaleToWidth(textWidth / this.d / 1.5);
-                text_2.scaleToHeight(textHeight / this.d / 1.5);
-                console.log(this.a, this.b, this.d);
+                    console.log(this.a, this.b, this.d);
                 this.extend(text_2, this.randomId());
                 // text.charSpacing = pathLength;
                 this.canvas.add(text_2);
@@ -1070,41 +1106,85 @@ var EditorPicComponent = /** @class */ (function () {
     EditorPicComponent.prototype.getImgPolaroid = function (event) {
         var _this = this;
         this.canvas.includeDefaultValues;
-        $(document).on('click', ".deleteBtn", function (event) {
-            event.stopImmediatePropagation();
-            // console.log('delete');
-            var activeObject = _this.canvas.getActiveObject();
-            var activeGroup = _this.canvas.getActiveObjects();
-            _this.canvasCount -= 1;
-            if (_this.canvasCount === 0) {
-                _this.siteLayout.firstImage = 0;
-                $('#shadowSVG').prop('checked', false);
-                _this.siteLayout.shadowSVG = false;
-                $('.owl-nav').show();
-                _this.siteLayout.toggle = false;
-                // $('.owlCarousel').show()
-                $(".canvas").css("z-index", 0);
-                // this.siteLayout.isCarouselOpen = true;
-                _this.disableBtn = false;
-            }
-            if (activeObject) {
-                _this.canvas.remove(activeObject);
-                $(".deleteBtn").remove();
-                $(".distance").remove();
-                // this.textString = '';
-            }
-            else if (activeGroup) {
-                // console.log('group');
-                _this.canvas.discardActiveObject();
-                var self_3 = _this;
-                activeGroup.forEach(function (object) {
-                    self_3.canvas.remove(object);
-                });
-            }
-        });
         this.canvasCount += 1;
         var el = event;
+        var scale = 1;
+        $(document).on('click', '.deleteBtn', function (event) {
+            _this.removeSelected();
+        });
         fabric.Image.fromURL(el, function (image) {
+            if (image.height > 1300) {
+                _this.dataService.formatVal = _this.dataService.formatValue = 'A3';
+                if (image.height / image.width > 1.1) {
+                    console.log('mage.height / image.width > 1.1');
+                    _this.dataService.horizontalVertical = true;
+                    _this.dataService.horVert = false;
+                    // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+                    _this.dataService.formatWithHeight = 1.414;
+                    _this.dataService.formatTopKey = -0.03;
+                    // this.dataService.scaleKey = 1;
+                    _this.dataService.formatSizeSwich();
+                    scale = 1.05;
+                }
+                else {
+                    console.log('mage.height / image.width > 1.1 else');
+                    _this.dataService.horizontalVertical = false;
+                    // this.dataService.scaleKey = 1;
+                    _this.dataService.horVert = true;
+                    _this.dataService.formatWithHeight = 0.707;
+                    // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+                    _this.dataService.formatTopKey = -0.03;
+                    _this.dataService.formatSizeSwich();
+                    scale = 1;
+                    // scale = this.dataService.scaleKey;
+                }
+            }
+            else if (image.height > 100 && image.height < 1300) {
+                _this.dataService.formatVal = _this.dataService.formatValue = 'A4';
+                if (image.height / image.width > 1.1) {
+                    _this.dataService.horizontalVertical = true;
+                    _this.dataService.horVert = false;
+                    // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+                    _this.dataService.formatWithHeight = 1.414;
+                    _this.dataService.formatTopKey = 0.03;
+                    // this.dataService.scaleKey = 1;
+                    _this.dataService.formatSizeSwich();
+                    scale = 1.05;
+                }
+                else {
+                    _this.dataService.horizontalVertical = false;
+                    // this.dataService.scaleKey = 1;
+                    _this.dataService.horVert = true;
+                    _this.dataService.formatWithHeight = 0.707;
+                    // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+                    _this.dataService.formatTopKey = -0.03;
+                    _this.dataService.formatSizeSwich();
+                    scale = 1;
+                    // scale = this.dataService.scaleKey;
+                }
+            }
+            // function sizing() {
+            //   if (image.height / image.width > 1.1) {
+            //     this.dataService.horizontalVertical = true;
+            //     this.dataService.horVert = false;
+            //     // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+            //     this.dataService.formatWithHeight = 1.414;
+            //     this.dataService.formatTopKey = 0.03;
+            //     // this.dataService.scaleKey = 1;
+            //     this.dataService.formatSizeSwich();
+            //     scale = 1.1;
+            //   } else {
+            //     this.dataService.horizontalVertical = false;
+            //     // this.dataService.scaleKey = 1;
+            //     this.dataService.horVert = true;
+            //     this.dataService.formatWithHeight = 0.707;
+            //     // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+            //     // this.dataService.formatTopKey = -0.03;
+            //     this.dataService.formatSizeSwich();
+            //     scale = 1;
+            //     // scale = this.dataService.scaleKey;
+            //   }
+            // }
             // const image = fabric.util.groupSVGElements(objects, options);
             var imageWidth = (window.innerWidth - _this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - _this.dataService.widthKey * window.innerWidth) / _this.b + (window.innerWidth - _this.dataService.widthKey * window.innerWidth) / 40);
             var imageHeight = imageWidth * _this.c;
@@ -1124,10 +1204,11 @@ var EditorPicComponent = /** @class */ (function () {
             });
             // value.shadow.affectStroke = false;
             // image.panToActiveObject()
-            image.scaleToWidth(imageWidth / _this.scaleKey);
-            image.scaleToHeight(imageHeight / _this.scaleKey);
+            image.scaleToWidth(imageWidth / scale);
+            image.scaleToHeight(imageHeight / scale);
             _this.extend(image, _this.randomId());
             image.filters.push(new fabric.Image.filters.ColorMatrix({
+                duration: 200,
                 matrix: [1, 0, 0, 0, 0,
                     0, 1, 0, 0, 0,
                     0, 0, 1, 0, 0,
@@ -1145,7 +1226,7 @@ var EditorPicComponent = /** @class */ (function () {
                 if (_this.filterName == 'blackWhite') {
                     image.filters.push(new fabric.Image.filters.BlackWhite());
                 }
-                else if (_this.filterName == 'vintage' && _this.canvas.getActiveObject()) {
+                else if (_this.filterName == 'vintage') {
                     image.filters.push(new fabric.Image.filters.Vintage());
                 }
                 else if (_this.filterName == 'sepia') {
@@ -1155,28 +1236,14 @@ var EditorPicComponent = /** @class */ (function () {
                     image.filters.push(new fabric.Image.filters.Invert());
                 }
                 else if (_this.filterName == 'origin') {
-                    image.filters.push(new fabric.Image.filters.ColorMatrix({
-                        matrix: [1, 0, 0, 0, 0,
-                            0, 1, 0, 0, 0,
-                            0, 0, 1, 0, 0,
-                            0, 0, 1, 1, 0]
-                    }));
-                    // console.log('ooooooooooooooooo');
+                    image.filters = [];
                 }
                 image.filters.push(new fabric.Image.filters.RemoveColor({
                     distance: _this.props.distance
                 }));
-                console.log(_this.props.distance);
-                _this.imageFilter = image;
                 image.applyFilters();
                 _this.canvas.renderAll();
             });
-            // $(document).on('click', ".but", (event) => {
-            //   image.left += 10;
-            //   image.setCoords();
-            //   image.saveState();
-            //   this.canvas.renderAll();
-            // }),
             $('#saturation').on('change', function () {
                 image.filters = [];
                 image.filters.push(new fabric.Image.filters.Saturation({
@@ -1216,7 +1283,8 @@ var EditorPicComponent = /** @class */ (function () {
                     image.shadow = null;
                 }
                 else if (_this.siteLayout.shadowSVG) {
-                    image.setShadow(_this.shadow);
+                    image.shadow = new fabric.Shadow(_this.shadow);
+                    // image.setShadow(this.shadow);
                     // console.log(image);
                     // image.shadow = new fabric.Shadow(this.shadow);
                     // image.set('shadow', new fabric.Shadow(this.shadow));
@@ -1225,7 +1293,7 @@ var EditorPicComponent = /** @class */ (function () {
             }),
                 $('#grayscale').on('click', function () {
                     _this.filterName = 'blackWhite';
-                    _this.siteLayout.removeColorValue = 0;
+                    _this.props.distance = 0;
                     _this.siteLayout.saturation = 0;
                     _this.siteLayout.blur = 0;
                     _this.siteLayout.noise = 0;
@@ -1237,7 +1305,7 @@ var EditorPicComponent = /** @class */ (function () {
                 }),
                 $('#vintage').on('click', function () {
                     _this.filterName = 'vintage';
-                    _this.siteLayout.removeColorValue = 0;
+                    _this.props.distance = 0;
                     _this.siteLayout.saturation = 0;
                     _this.siteLayout.blur = 0;
                     _this.siteLayout.noise = 0;
@@ -1249,7 +1317,7 @@ var EditorPicComponent = /** @class */ (function () {
                 }),
                 $('#sepia').on('click', function () {
                     _this.filterName = 'sepia';
-                    _this.siteLayout.removeColorValue = 0;
+                    _this.props.distance = 0;
                     _this.siteLayout.saturation = 0;
                     _this.siteLayout.blur = 0;
                     _this.siteLayout.noise = 0;
@@ -1263,7 +1331,7 @@ var EditorPicComponent = /** @class */ (function () {
                 }),
                 $('#invert').on('click', function () {
                     _this.filterName = 'invert';
-                    _this.siteLayout.removeColorValue = 0;
+                    _this.props.distance = 0;
                     _this.siteLayout.saturation = 0;
                     _this.siteLayout.blur = 0;
                     _this.siteLayout.noise = 0;
@@ -1277,7 +1345,7 @@ var EditorPicComponent = /** @class */ (function () {
                 }),
                 $('#origin').on('click', function () {
                     _this.filterName = 'origin';
-                    _this.siteLayout.removeColorValue = 0;
+                    _this.props.distance = 0;
                     _this.siteLayout.saturation = 0;
                     _this.siteLayout.blur = 0;
                     _this.siteLayout.noise = 0;
@@ -1310,7 +1378,9 @@ var EditorPicComponent = /** @class */ (function () {
                     image.applyFilters();
                     _this.canvas.renderAll();
                 }),
-                _this.selectItemAfterAdded(image);
+                _this.canvas.setActiveObject(image);
+            _this.canvas.discardActiveObject().renderAll();
+            _this.addDeleteBtn(image.oCoords.mb.x, image.oCoords.mb.y);
         });
         // event.target.left = 100;
         // event.target.top = 100;
@@ -1329,7 +1399,7 @@ var EditorPicComponent = /** @class */ (function () {
             $(".deleteBtn").remove();
             var btnLeft = x - numLeft;
             var btnTop = y + numTop;
-            var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
+            var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px; cursor:pointer; width:40px; height:40px;"/>';
             $(".canvas-container").append(deleteBtn);
         }
         this.canvas.on('selection:created', function (e) {
@@ -1360,17 +1430,46 @@ var EditorPicComponent = /** @class */ (function () {
             }
             else if (activeGroup) {
                 _this.canvas.discardActiveObject();
-                var self_4 = _this;
+                var self_3 = _this;
                 activeGroup.forEach(function (object) {
-                    self_4.canvas.remove(object);
+                    self_3.canvas.remove(object);
                 });
             }
         });
         if (url) {
             this.canvasCount += 1;
-            console.log(url);
+            // console.log(url);
+            var scale_1 = 1.1;
             // console.log(this.canvasCount);
             fabric.Image.fromURL(url, function (image1) {
+                if (image1.height > 1300) {
+                    _this.dataService.formatVal = _this.dataService.formatValue = 'A3';
+                }
+                else if (image1.height > 500 && image1.height < 1300) {
+                    _this.dataService.formatVal = _this.dataService.formatValue = 'A4';
+                }
+                if (image1.height / image1.width > 1.1) {
+                    _this.dataService.horizontalVertical = true;
+                    _this.dataService.horVert = false;
+                    // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+                    _this.dataService.formatWithHeight = 1.414;
+                    _this.dataService.formatTopKey = 0.03;
+                    // this.dataService.scaleKey = 1;
+                    // this.dataService.formatSizeSwich();
+                    scale_1 = 1.1;
+                }
+                else {
+                    _this.dataService.horizontalVertical = false;
+                    // this.dataService.scaleKey = 1;
+                    _this.dataService.horVert = true;
+                    _this.dataService.formatWithHeight = 0.707;
+                    // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+                    _this.dataService.formatTopKey = -0.03;
+                    // this.dataService.formatSizeSwich();
+                    // scale = this.dataService.scaleKey;
+                }
+                var imageWidth = (window.innerWidth - _this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - _this.dataService.widthKey * window.innerWidth) / _this.b + (window.innerWidth - _this.dataService.widthKey * window.innerWidth) / 40);
+                var imageHeight = imageWidth * _this.c;
                 image1.set({
                     // originX: 'center',
                     // originY: 'center',
@@ -1382,8 +1481,8 @@ var EditorPicComponent = /** @class */ (function () {
                     cornerSize: _this.canvas.width / 40,
                     hasRotatingPoint: true
                 });
-                image1.scaleToWidth(_this.canvas.width / 3);
-                image1.scaleToHeight(_this.canvas.width / 3);
+                image1.scaleToWidth(imageWidth / scale_1);
+                image1.scaleToHeight(imageHeight / scale_1);
                 _this.extend(image1, _this.randomId());
                 image1.filters.push(new fabric.Image.filters.ColorMatrix({
                     matrix: [1, 0, 0, 0, 0,
@@ -1393,7 +1492,7 @@ var EditorPicComponent = /** @class */ (function () {
                 }));
                 _this.canvas.add(image1);
                 _this.canvas.centerObjectH(image1);
-                image1.top = _this.canvas.height / 2.7;
+                image1.top = _this.canvas.width / 40 + _this.canvas.width / _this.b - _this.canvas.width * _this.a;
                 image1.applyFilters();
                 _this.canvas.renderAll();
                 $('#hue-value').on('change', function () {
@@ -1584,9 +1683,9 @@ var EditorPicComponent = /** @class */ (function () {
             }
             else if (activeGroup) {
                 _this.canvas.discardActiveObject();
-                var self_5 = _this;
+                var self_4 = _this;
                 activeGroup.forEach(function (object) {
-                    self_5.canvas.remove(object);
+                    self_4.canvas.remove(object);
                 });
             }
         });
@@ -1673,33 +1772,47 @@ var EditorPicComponent = /** @class */ (function () {
             this.intCountText = 0;
             if (scaleBlock) {
                 if (this.dataService.horVert) {
-                    if (this.objectType) {
-                        console.log('zzzzzz');
-                        sel.scaleToWidth(formatWidth * scaleKey / 0.8);
-                        sel.scaleToWidth(formatHeight * scaleKey / 0.8);
-                        // this.canvasCount = 1;
-                        // this.intCountText = 0;
+                    if (this.dataService.horizontalVertical) {
+                        if (this.objectType) {
+                            sel.scaleToWidth(formatWidth * scaleKey / 1.3);
+                            sel.scaleToWidth(formatHeight * scaleKey / 1.3);
+                        }
+                        else {
+                            sel.scaleToWidth(formatWidth * scaleKey / 1);
+                            sel.scaleToHeight(formatHeight * scaleKey / 1);
+                        }
                     }
                     else {
-                        console.log('wwwwww', this.objectType);
-                        sel.scaleToWidth(formatWidth * scaleKey / 1.2);
-                        sel.scaleToHeight(formatHeight * scaleKey / 1.2);
-                        // this.canvasCount = 1;
-                        // this.intCountText = 0;
+                        if (this.objectType) {
+                            sel.scaleToWidth(formatWidth * scaleKey / 0.8);
+                            sel.scaleToWidth(formatHeight * scaleKey / 0.8);
+                        }
+                        else {
+                            sel.scaleToWidth(formatWidth * scaleKey / 1);
+                            sel.scaleToHeight(formatHeight * scaleKey / 1);
+                        }
                     }
-                    // sel.uniScaleTransform = true;
-                    // sel.lockUniScaling = true;
                 }
                 else {
-                    console.log('uooo', this.objectType);
-                    // console.log(this.dataService.horVert, "kkkkkkkkk");
-                    if (this.objectType) {
-                        sel.scaleToWidth(formatWidth * scaleKey / 3.5);
-                        sel.scaleToWidth(formatHeight * scaleKey / 3.5);
+                    if (this.dataService.horizontalVertical) {
+                        if (this.objectType) {
+                            sel.scaleToWidth(formatWidth * scaleKey / 6);
+                            sel.scaleToWidth(formatHeight * scaleKey / 6);
+                        }
+                        else {
+                            sel.scaleToWidth(formatWidth * scaleKey / 4.8);
+                            sel.scaleToHeight(formatHeight * scaleKey / 4.8);
+                        }
                     }
                     else {
-                        sel.scaleToWidth(formatWidth * scaleKey / 4.9);
-                        sel.scaleToHeight(formatHeight * scaleKey / 4.9);
+                        if (this.objectType) {
+                            sel.scaleToWidth(formatWidth * scaleKey / 3.5);
+                            sel.scaleToWidth(formatHeight * scaleKey / 3.5);
+                        }
+                        else {
+                            sel.scaleToWidth(formatWidth * scaleKey / 4.8);
+                            sel.scaleToHeight(formatHeight * scaleKey / 4.8);
+                        }
                     }
                 }
                 // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
@@ -2152,14 +2265,28 @@ var EditorPicComponent = /** @class */ (function () {
     };
     /*System*/
     EditorPicComponent.prototype.removeSelected = function () {
+        var _a;
+        if (this.canvasCount === 1) {
+            (_a = this.canvas).remove.apply(_a, this.canvas.getObjects());
+            $('#shadowSVG').prop('checked', false);
+            this.siteLayout.shadowSVG = false;
+            $('.owl-nav').show();
+            $(".canvas").css("z-index", 0);
+            this.siteLayout.toggle = false;
+            this.disableBtn = false;
+            console.log(this.canvasCount);
+            this.canvasCount -= 1;
+        }
+        $(".deleteBtn").remove();
+        $(".distance").remove();
         // console.log(this.canvasCount);
         this.objectType = false;
+        // this.dataService.scaleKey = 1;
         this.props.diametr = 300;
         if (this.canvas.getActiveObject().type === 'i-text') {
             this.intCountText -= 1;
             console.log(this.intCountText);
         }
-        this.canvasCount -= 1;
         var activeObject = this.canvas.getActiveObject();
         var activeGroup = this.canvas.getActiveObjects();
         // this.siteLayout.firstImage = 2;
@@ -2180,11 +2307,13 @@ var EditorPicComponent = /** @class */ (function () {
         else if (activeGroup) {
             // console.log('group');
             this.canvas.discardActiveObject();
-            var self_6 = this;
+            var self_5 = this;
             activeGroup.forEach(function (object) {
-                self_6.canvas.remove(object);
+                self_5.canvas.remove(object);
             });
         }
+        this.canvasCount -= 1;
+        this.siteLayout.isCarouselOpen = true;
     };
     EditorPicComponent.prototype.bringToFront = function () {
         var activeObject = this.canvas.getActiveObject();
@@ -2274,6 +2403,7 @@ var EditorPicComponent = /** @class */ (function () {
         switch (this.props.textCurved) {
             case 1:
                 svgUrll = this.canvas.toSVG();
+                // console.log(this.canvas.toSVG());
                 break;
             case 2:
                 svgUrll = this.canvas.toSVG().toString().replace(/<tspan/g, "<textPath xlink:href='#urve'><tspan").replace(/tspan>/g, "tspan></textPath>").replace(/tspan x="/g, 'tspan x="0*').replace("</defs>", "</defs> " + this.path.toSVG()).replace('style="stroke', 'id = "urve" style="stroke').replace("</defs>", "</defs> " + this.path.toSVG()).replace('style="stroke', 'id = "urve1" style="stroke');

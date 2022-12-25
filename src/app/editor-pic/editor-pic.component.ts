@@ -235,15 +235,24 @@ export class EditorPicComponent implements AfterViewInit {
       res => this.d = res
     );
 
+    // this.dataService.canvasCount1.subscribe(
+
+    //   res => this.canvasCount = res      
+    // );
+
+    console.log(this.canvasCount);
+
   }
 
   defoultUpdate() {
+
     $('.owl-theme').on('changed.owl-carousel', (event) => {
       var current = event.item.index;
       this.id = $(event.target).find(".owl-item").eq(current).find("img").attr('id');
-      // console.log(this.id);
+      console.log(this.id, current);
 
     })
+
   }
 
   ngOnInit(): void {
@@ -294,6 +303,7 @@ export class EditorPicComponent implements AfterViewInit {
 
 
       'after:render': (e) => {
+
         this.canvas.calcOffset();
 
       },
@@ -345,7 +355,7 @@ export class EditorPicComponent implements AfterViewInit {
           obj.left = Math.min(obj.left, obj.canvas.width - sumWidth + obj.left - sumLeft - cornerSize - moveSizeLimit);
         }
 
-        
+
 
         $(".deleteBtn").remove();
         $(".distance").remove();
@@ -749,6 +759,8 @@ export class EditorPicComponent implements AfterViewInit {
 
       },
 
+
+
       // 'selection:created': (e) => {
 
       //   if (this.canvasCount !== 0) {
@@ -763,6 +775,7 @@ export class EditorPicComponent implements AfterViewInit {
         }
         $(".deleteBtn").remove();
         $(".distance").remove();
+
       },
 
       'selection:updated': (e) => {
@@ -864,6 +877,12 @@ export class EditorPicComponent implements AfterViewInit {
 
       },
 
+      'mouse:down': (e) => {
+
+        console.log('mouse:down');
+
+      },
+
       'selection:cleared': (e) => {
 
         this.dataService.canvasSelect = false;
@@ -881,7 +900,6 @@ export class EditorPicComponent implements AfterViewInit {
         this.siteLayout.imageCoordy = null;
         this.siteLayout.imgWith = null;
         this.siteLayout.imgHeigt = null;
-
 
       },
 
@@ -1062,7 +1080,7 @@ export class EditorPicComponent implements AfterViewInit {
     $(".deleteBtn").remove();
     var btnLeft = x - this.left;
     var btnTop = y + this.top;
-    var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
+    var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:30px;height:30px;"/>';
     $(".canvas-container").append(deleteBtn);
     this.canvas.renderAll();
   }
@@ -1382,8 +1400,12 @@ export class EditorPicComponent implements AfterViewInit {
       this.props.fontSize = fontSize;
 
       if (this.textString) {
+
+
         // this.canvasCount += 1;
         const text = new fabric.IText(this.textString, {
+
+
           fontFamily: 'helvetica',
           fontSize: fontSize,
           // path: path,
@@ -1421,6 +1443,43 @@ export class EditorPicComponent implements AfterViewInit {
 
         this.props.textStraight = text;
 
+        // if (text.height > 1300) {
+
+        //   this.dataService.formatVal = this.dataService.formatValue = 'A3';
+
+        // } else if (text.height > 500 && text.height < 1300) {
+
+        //   this.dataService.formatVal = this.dataService.formatValue = 'A4';
+
+        // }
+        let scale = 1;
+
+        if (this.dataService.horizontalVertical === true) {
+
+          // this.dataService.horizontalVertical = false;
+          // this.dataService.horVert = false;
+          // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+          // this.dataService.formatWithHeight = 1.414;
+          // this.dataService.formatTopKey = 0.03;
+          // this.dataService.scaleKey = 1;
+          // this.dataService.formatSizeSwich();
+          scale = 2;
+          text.scaleToHeight(textHeight / 1.2);
+          text.scaleToWidth(textWidth / 1.2);
+        } else {
+          // this.dataService.horizontalVertical = false;
+          // this.dataService.scaleKey = 1;
+          // this.dataService.horVert = true;
+          // this.dataService.formatWithHeight = 0.707;
+          // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+          // this.dataService.formatTopKey = -0.03;
+          // this.dataService.formatSizeSwich();
+          scale = 2;
+          text.scaleToHeight(textHeight / 1.5);
+          text.scaleToWidth(textWidth / 1.5);
+          // scale = this.dataService.scaleKey;
+        }
+
         $('#shadowText').on('click', () => {
           if (!this.siteLayout.shadowText) {
             text.shadow = null;
@@ -1440,9 +1499,8 @@ export class EditorPicComponent implements AfterViewInit {
 
         }),
 
-          text.scaleToWidth(textWidth / this.d / 1.5);
-        text.scaleToHeight(textHeight / this.d / 1.5);
-        console.log(this.a, this.b, this.d);
+
+          console.log(this.a, this.b, this.d);
 
 
         this.extend(text, this.randomId());
@@ -1519,49 +1577,104 @@ export class EditorPicComponent implements AfterViewInit {
 
     this.canvas.includeDefaultValues;
 
-
-    $(document).on('click', ".deleteBtn", (event) => {
-
-      event.stopImmediatePropagation()
-      // console.log('delete');
-      const activeObject = this.canvas.getActiveObject();
-      const activeGroup = this.canvas.getActiveObjects();
-      this.canvasCount -= 1;
-
-
-      if (this.canvasCount === 0) {
-        this.siteLayout.firstImage = 0;
-        $('#shadowSVG').prop('checked', false);
-        this.siteLayout.shadowSVG = false;
-        $('.owl-nav').show();
-        this.siteLayout.toggle = false;
-        // $('.owlCarousel').show()
-
-        $(".canvas").css("z-index", 0);
-        // this.siteLayout.isCarouselOpen = true;
-        this.disableBtn = false;
-      }
-      if (activeObject) {
-        this.canvas.remove(activeObject);
-        $(".deleteBtn").remove();
-        $(".distance").remove();
-        // this.textString = '';
-      } else if (activeGroup) {
-        // console.log('group');
-
-        this.canvas.discardActiveObject();
-        const self = this;
-        activeGroup.forEach((object) => {
-          self.canvas.remove(object);
-        });
-      }
-    });
-
     this.canvasCount += 1;
     const el = event;
+    let scale = 1;
+
+
+    $(document).on('click', '.deleteBtn', (event) => {
+
+      this.removeSelected();
+
+    });
 
 
     fabric.Image.fromURL(el, (image) => {
+
+      if (image.height > 1300) {
+
+        this.dataService.formatVal = this.dataService.formatValue = 'A3';
+        if (image.height / image.width > 1.1) {
+          console.log('mage.height / image.width > 1.1');
+          this.dataService.horizontalVertical = true;
+          this.dataService.horVert = false;
+          // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+          this.dataService.formatWithHeight = 1.414;
+          this.dataService.formatTopKey = -0.03;
+          // this.dataService.scaleKey = 1;
+          this.dataService.formatSizeSwich();
+          scale = 1.05;
+        } else {
+          console.log('mage.height / image.width > 1.1 else');
+          this.dataService.horizontalVertical = false;
+          // this.dataService.scaleKey = 1;
+          this.dataService.horVert = true;
+          this.dataService.formatWithHeight = 0.707;
+          // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+          this.dataService.formatTopKey = -0.03;
+          this.dataService.formatSizeSwich();
+          scale = 1;
+
+          // scale = this.dataService.scaleKey;
+        }
+
+
+      } else if (image.height > 100 && image.height < 1300) {
+
+        this.dataService.formatVal = this.dataService.formatValue = 'A4';
+
+        if (image.height / image.width > 1.1) {
+
+          this.dataService.horizontalVertical = true;
+          this.dataService.horVert = false;
+          // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+          this.dataService.formatWithHeight = 1.414;
+          this.dataService.formatTopKey = 0.03;
+          // this.dataService.scaleKey = 1;
+          this.dataService.formatSizeSwich();
+          scale = 1.05;
+        } else {
+          this.dataService.horizontalVertical = false;
+          // this.dataService.scaleKey = 1;
+          this.dataService.horVert = true;
+          this.dataService.formatWithHeight = 0.707;
+          // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+          this.dataService.formatTopKey = -0.03;
+          this.dataService.formatSizeSwich();
+          scale = 1;
+
+          // scale = this.dataService.scaleKey;
+        }
+      }
+
+
+      // function sizing() {
+      //   if (image.height / image.width > 1.1) {
+
+      //     this.dataService.horizontalVertical = true;
+      //     this.dataService.horVert = false;
+      //     // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+      //     this.dataService.formatWithHeight = 1.414;
+      //     this.dataService.formatTopKey = 0.03;
+      //     // this.dataService.scaleKey = 1;
+      //     this.dataService.formatSizeSwich();
+      //     scale = 1.1;
+      //   } else {
+      //     this.dataService.horizontalVertical = false;
+      //     // this.dataService.scaleKey = 1;
+      //     this.dataService.horVert = true;
+      //     this.dataService.formatWithHeight = 0.707;
+      //     // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+      //     // this.dataService.formatTopKey = -0.03;
+      //     this.dataService.formatSizeSwich();
+      //     scale = 1;
+
+      //     // scale = this.dataService.scaleKey;
+      //   }
+
+      // }
+
+
       // const image = fabric.util.groupSVGElements(objects, options);
       const imageWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
       const imageHeight = imageWidth * this.c;
@@ -1590,19 +1703,19 @@ export class EditorPicComponent implements AfterViewInit {
       // value.shadow.affectStroke = false;
       // image.panToActiveObject()
 
-      image.scaleToWidth(imageWidth / this.scaleKey);
-      image.scaleToHeight(imageHeight / this.scaleKey);
+      image.scaleToWidth(imageWidth / scale);
+      image.scaleToHeight(imageHeight / scale);
       this.extend(image, this.randomId());
 
 
       image.filters.push(new fabric.Image.filters.ColorMatrix({
+        duration: 200,
+
         matrix: [1, 0, 0, 0, 0,
           0, 1, 0, 0, 0,
           0, 0, 1, 0, 0,
           0, 0, 1, 1, 0]
       }));
-
-
 
       image.applyFilters();
       this.canvas.add(image);
@@ -1617,58 +1730,32 @@ export class EditorPicComponent implements AfterViewInit {
         image.filters = [];
         if (this.filterName == 'blackWhite') {
           image.filters.push(new fabric.Image.filters.BlackWhite());
-        } else if (this.filterName == 'vintage' && this.canvas.getActiveObject()) {
+        } else if (this.filterName == 'vintage') {
           image.filters.push(new fabric.Image.filters.Vintage());
         } else if (this.filterName == 'sepia') {
-
           image.filters.push(new fabric.Image.filters.Sepia());
         } else if (this.filterName == 'invert') {
           image.filters.push(new fabric.Image.filters.Invert());
         } else if (this.filterName == 'origin') {
-          image.filters.push(new fabric.Image.filters.ColorMatrix({
-            matrix: [1, 0, 0, 0, 0,
-              0, 1, 0, 0, 0,
-              0, 0, 1, 0, 0,
-              0, 0, 1, 1, 0]
-          }));
-          // console.log('ooooooooooooooooo');
-
+          image.filters = [];
         }
         image.filters.push(new fabric.Image.filters.RemoveColor({
           distance: this.props.distance,
-
+          // color: "red",
+          // threshold: 0.2,
         }
         ));
-
-        console.log(this.props.distance);
-        this.imageFilter = image;
         image.applyFilters();
         this.canvas.renderAll();
-
-
-
       });
-
-      // $(document).on('click', ".but", (event) => {
-      //   image.left += 10;
-      //   image.setCoords();
-      //   image.saveState();
-      //   this.canvas.renderAll();
-      // }),
-
-
-
 
       $('#saturation').on('change', () => {
         image.filters = [];
-
         image.filters.push(new fabric.Image.filters.Saturation({
-
           saturation: this.siteLayout.saturation
         }
         ));
         image.applyFilters();
-
         this.canvas.renderAll();
       });
 
@@ -1713,8 +1800,9 @@ export class EditorPicComponent implements AfterViewInit {
           image.shadow = null;
 
         } else if (this.siteLayout.shadowSVG) {
+          image.shadow = new fabric.Shadow(this.shadow);
 
-          image.setShadow(this.shadow);
+          // image.setShadow(this.shadow);
           // console.log(image);
 
           // image.shadow = new fabric.Shadow(this.shadow);
@@ -1729,7 +1817,7 @@ export class EditorPicComponent implements AfterViewInit {
 
         $('#grayscale').on('click', () => {
           this.filterName = 'blackWhite';
-          this.siteLayout.removeColorValue = 0;
+          this.props.distance = 0;
           this.siteLayout.saturation = 0;
           this.siteLayout.blur = 0;
           this.siteLayout.noise = 0;
@@ -1744,7 +1832,7 @@ export class EditorPicComponent implements AfterViewInit {
 
         $('#vintage').on('click', () => {
           this.filterName = 'vintage'
-          this.siteLayout.removeColorValue = 0;
+          this.props.distance = 0;
           this.siteLayout.saturation = 0;
           this.siteLayout.blur = 0;
           this.siteLayout.noise = 0;
@@ -1759,7 +1847,7 @@ export class EditorPicComponent implements AfterViewInit {
 
         $('#sepia').on('click', () => {
           this.filterName = 'sepia';
-          this.siteLayout.removeColorValue = 0;
+          this.props.distance = 0;
           this.siteLayout.saturation = 0;
           this.siteLayout.blur = 0;
           this.siteLayout.noise = 0;
@@ -1776,7 +1864,7 @@ export class EditorPicComponent implements AfterViewInit {
 
         $('#invert').on('click', () => {
           this.filterName = 'invert';
-          this.siteLayout.removeColorValue = 0;
+          this.props.distance = 0;
           this.siteLayout.saturation = 0;
           this.siteLayout.blur = 0;
           this.siteLayout.noise = 0;
@@ -1793,7 +1881,7 @@ export class EditorPicComponent implements AfterViewInit {
 
         $('#origin').on('click', () => {
           this.filterName = 'origin'
-          this.siteLayout.removeColorValue = 0;
+          this.props.distance = 0;
           this.siteLayout.saturation = 0;
           this.siteLayout.blur = 0;
           this.siteLayout.noise = 0;
@@ -1833,7 +1921,12 @@ export class EditorPicComponent implements AfterViewInit {
           this.canvas.renderAll();
         }),
 
-        this.selectItemAfterAdded(image);
+
+        this.canvas.setActiveObject(image);
+      this.canvas.discardActiveObject().renderAll();
+      this.addDeleteBtn(image.oCoords.mb.x, image.oCoords.mb.y);
+
+
     });
 
     // event.target.left = 100;
@@ -1861,7 +1954,7 @@ export class EditorPicComponent implements AfterViewInit {
       $(".deleteBtn").remove();
       var btnLeft = x - numLeft;
       var btnTop = y + numTop;
-      var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
+      var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px; cursor:pointer; width:40px; height:40px;"/>';
       $(".canvas-container").append(deleteBtn);
 
     }
@@ -1913,11 +2006,47 @@ export class EditorPicComponent implements AfterViewInit {
 
     if (url) {
       this.canvasCount += 1;
-      console.log(url);
+      // console.log(url);
+      let scale = 1.1;
 
       // console.log(this.canvasCount);
       fabric.Image.fromURL(url, (image1) => {
 
+        if (image1.height > 1300) {
+
+          this.dataService.formatVal = this.dataService.formatValue = 'A3';
+
+        } else if (image1.height > 500 && image1.height < 1300) {
+
+          this.dataService.formatVal = this.dataService.formatValue = 'A4';
+
+        }
+
+
+        if (image1.height / image1.width > 1.1) {
+
+          this.dataService.horizontalVertical = true;
+          this.dataService.horVert = false;
+          // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+          this.dataService.formatWithHeight = 1.414;
+          this.dataService.formatTopKey = 0.03;
+          // this.dataService.scaleKey = 1;
+          // this.dataService.formatSizeSwich();
+          scale = 1.1;
+        } else {
+          this.dataService.horizontalVertical = false;
+          // this.dataService.scaleKey = 1;
+          this.dataService.horVert = true;
+          this.dataService.formatWithHeight = 0.707;
+          // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+          this.dataService.formatTopKey = -0.03;
+          // this.dataService.formatSizeSwich();
+
+          // scale = this.dataService.scaleKey;
+        }
+
+        const imageWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
+        const imageHeight = imageWidth * this.c;
 
         image1.set({
           // originX: 'center',
@@ -1930,9 +2059,10 @@ export class EditorPicComponent implements AfterViewInit {
           cornerSize: this.canvas.width / 40,
           hasRotatingPoint: true
         });
-        image1.scaleToWidth(this.canvas.width / 3);
-        image1.scaleToHeight(this.canvas.width / 3);
+        image1.scaleToWidth(imageWidth / scale);
+        image1.scaleToHeight(imageHeight / scale);
         this.extend(image1, this.randomId());
+
         image1.filters.push(new fabric.Image.filters.ColorMatrix({
           matrix: [1, 0, 0, 0, 0,
             0, 1, 0, 0, 0,
@@ -1943,7 +2073,7 @@ export class EditorPicComponent implements AfterViewInit {
 
         this.canvas.add(image1);
         this.canvas.centerObjectH(image1);
-        image1.top = this.canvas.height / 2.7;
+        image1.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a;
         image1.applyFilters();
         this.canvas.renderAll();
 
@@ -2296,38 +2426,55 @@ export class EditorPicComponent implements AfterViewInit {
 
       if (scaleBlock) {
         if (this.dataService.horVert) {
+          if (this.dataService.horizontalVertical) {
 
-          if (this.objectType) {
-            console.log('zzzzzz');
+            if (this.objectType) {
+              sel.scaleToWidth(formatWidth * scaleKey / 1.3);
+              sel.scaleToWidth(formatHeight * scaleKey / 1.3);
 
-            sel.scaleToWidth(formatWidth * scaleKey / 0.8);
-            sel.scaleToWidth(formatHeight * scaleKey / 0.8);
-            // this.canvasCount = 1;
-            // this.intCountText = 0;
+            } else {
+              sel.scaleToWidth(formatWidth * scaleKey / 1);
+              sel.scaleToHeight(formatHeight * scaleKey / 1);
+
+            }
 
           } else {
-            console.log('wwwwww', this.objectType);
 
-            sel.scaleToWidth(formatWidth * scaleKey / 1.2);
-            sel.scaleToHeight(formatHeight * scaleKey / 1.2);
-            // this.canvasCount = 1;
-            // this.intCountText = 0;
+            if (this.objectType) {
+              sel.scaleToWidth(formatWidth * scaleKey / 0.8);
+              sel.scaleToWidth(formatHeight * scaleKey / 0.8);
+
+            } else {
+              sel.scaleToWidth(formatWidth * scaleKey / 1);
+              sel.scaleToHeight(formatHeight * scaleKey / 1);
+
+            }
           }
-          // sel.uniScaleTransform = true;
-          // sel.lockUniScaling = true;
-
         } else {
-          console.log('uooo', this.objectType);
 
-          // console.log(this.dataService.horVert, "kkkkkkkkk");
-          if (this.objectType) {
-            sel.scaleToWidth(formatWidth * scaleKey / 3.5);
-            sel.scaleToWidth(formatHeight * scaleKey / 3.5);
+          if (this.dataService.horizontalVertical) {
+            if (this.objectType) {
+
+              sel.scaleToWidth(formatWidth * scaleKey / 6);
+              sel.scaleToWidth(formatHeight * scaleKey / 6);
+            } else {
+              sel.scaleToWidth(formatWidth * scaleKey / 4.8);
+              sel.scaleToHeight(formatHeight * scaleKey / 4.8);
+
+            }
           } else {
-            sel.scaleToWidth(formatWidth * scaleKey / 4.9);
-            sel.scaleToHeight(formatHeight * scaleKey / 4.9);
+            if (this.objectType) {
 
+              sel.scaleToWidth(formatWidth * scaleKey / 3.5);
+              sel.scaleToWidth(formatHeight * scaleKey / 3.5);
+            } else {
+              sel.scaleToWidth(formatWidth * scaleKey / 4.8);
+              sel.scaleToHeight(formatHeight * scaleKey / 4.8);
+
+            }
           }
+
+
 
         }
         // sel.With = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
@@ -2337,6 +2484,7 @@ export class EditorPicComponent implements AfterViewInit {
         // sel.setCoords();
         // sel.saveState();
         // this.canvas.renderAll();
+
       }
 
 
@@ -2911,16 +3059,33 @@ export class EditorPicComponent implements AfterViewInit {
 
 
   removeSelected() {
+    
+
+    if (this.canvasCount === 1) {
+
+      this.canvas.remove(...this.canvas.getObjects());
+      $('#shadowSVG').prop('checked', false);
+      this.siteLayout.shadowSVG = false;
+      $('.owl-nav').show();
+      $(".canvas").css("z-index", 0);
+      this.siteLayout.toggle = false;
+      this.disableBtn = false;
+      console.log(this.canvasCount);
+      this.canvasCount -= 1;
+
+    }
+
+    $(".deleteBtn").remove();
+    $(".distance").remove();
     // console.log(this.canvasCount);
     this.objectType = false;
-
+    // this.dataService.scaleKey = 1;
     this.props.diametr = 300;
     if (this.canvas.getActiveObject().type === 'i-text') {
       this.intCountText -= 1;
       console.log(this.intCountText);
     }
 
-    this.canvasCount -= 1;
 
     const activeObject = this.canvas.getActiveObject();
     const activeGroup = this.canvas.getActiveObjects();
@@ -2948,6 +3113,9 @@ export class EditorPicComponent implements AfterViewInit {
         self.canvas.remove(object);
       });
     }
+
+    this.canvasCount -= 1;
+    this.siteLayout.isCarouselOpen = true
   }
 
   bringToFront() {
@@ -3072,6 +3240,8 @@ export class EditorPicComponent implements AfterViewInit {
     switch (this.props.textCurved) {
       case 1:
         svgUrll = this.canvas.toSVG();
+        // console.log(this.canvas.toSVG());
+
 
         break;
 

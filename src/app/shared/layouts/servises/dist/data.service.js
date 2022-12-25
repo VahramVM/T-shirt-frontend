@@ -14,12 +14,9 @@ var DataService = /** @class */ (function () {
   
     private jorik;
   
-  
     public get gago(): string {
       return this.jorik;
     }
-  
-    
   
     public set gago(bobo: string) {
       if (bobo === 'kanach' || bobo === 'rozovi') {
@@ -43,13 +40,14 @@ var DataService = /** @class */ (function () {
         this.canvasDivSelect = new rxjs_1.Subject();
         this.scaleKeyy = new rxjs_1.Subject();
         this.endPriseValue = new rxjs_1.Subject();
+        this.horVertt = new rxjs_1.Subject();
+        this.formatValue1 = new rxjs_1.Subject();
         this.widthKey = 0.67;
         this.heightKey = 1.26;
         this.positionKey = 5.9;
         this.scaleBlock = false;
         this.sizeValue = 'M';
         this.formatValue = 'A4';
-        this.horVert = true;
         this.products = [];
         this.indexBrandType = 0;
         this.formats = [{ format: 'A3', formatSize: 297, formatPrise: 500 }, { format: 'A4', formatSize: 297, formatPrise: 400 }, { format: 'A5', formatSize: 210, formatPrise: 300 }, { format: 'A6', formatSize: 148, formatPrise: 400 }];
@@ -125,11 +123,33 @@ var DataService = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(DataService.prototype, "horVert", {
+        get: function () {
+            return this._horVert;
+        },
+        set: function (value) {
+            this._horVert = value;
+            this.horVertt.next(value);
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(DataService.prototype, "formatVal", {
+        get: function () {
+            return this._formatVal;
+        },
+        set: function (value) {
+            this._formatVal = value;
+            this.formatValue1.next(value);
+        },
+        enumerable: false,
+        configurable: true
+    });
     DataService.prototype.ngOnInit = function () {
         // this.formatSizeSwich();
     };
     DataService.prototype.formatSizeSwich = function () {
-        this.endPrise = 0;
+        this.endPrise = 100;
         var realSize = this.products[this.indexBrandType].realSize;
         var cafficient = 1.0229;
         // const realSizes = { XS: 609, S: 648, M: 686, L: 724, XL: 762, XXL: 800 };
@@ -139,16 +159,28 @@ var DataService = /** @class */ (function () {
                 if (this.sizeValue === Object.keys(realSize)[i] && this.formatValue === this.formats[ind].format) {
                     if (this.horVert) {
                         this.sizePrintKey = Object.values(realSize)[i] / ((Object.values(realSize)[i] - this.formats[ind].formatSize) / 2);
-                        this.scaleKey = 1.1;
+                        this.scaleKey = 1;
                     }
                     else {
-                        if (this.formatValue === this.formats[0].format) {
-                            this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind].formatSize) / 2);
-                            this.scaleKey = 2.3;
+                        if (this.horizontalVertical) {
+                            if (this.formatValue === this.formats[0].format) {
+                                this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind].formatSize) / 2);
+                                this.scaleKey = 4.5;
+                            }
+                            else {
+                                this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind + 1].formatSize) / 2);
+                                this.scaleKey = 4.5;
+                            }
                         }
                         else {
-                            this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind + 1].formatSize) / 2);
-                            this.scaleKey = 2.3;
+                            if (this.formatValue === this.formats[0].format) {
+                                this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind].formatSize) / 2);
+                                this.scaleKey = 2.5;
+                            }
+                            else {
+                                this.sizePrintKey = Object.values(realSize)[i] * cafficient / ((Object.values(realSize)[i] - this.formats[ind + 1].formatSize) / 2);
+                                this.scaleKey = 2.5;
+                            }
                         }
                     }
                 }
@@ -201,8 +233,15 @@ var DataService = /** @class */ (function () {
     // public allLenght = A3Width +  (canvasWidth - 2* sleeveLenght * cos(45)) + chestWidth - A3
     DataService.prototype.initCalculations = function () {
         this.sizePrintKey = 686 / ((686 - 297) / 2);
-        this.formatWithHeight = 0.707;
-        this.formatTopKey = -0.02;
+        this.formatWithHeight = 0.707; // 0.707
+        this.formatTopKey = -0.03;
+        this.horVert = true;
+        // if (this.horVert) {
+        //   this.scaleKey = 1
+        // } else {
+        //   console.log('ggggg');
+        //   this.scaleKey = 4.3
+        // }
         this.scaleKey = 1.1;
         this.canvasHtmlWidth = window.innerWidth - this.widthKey * window.innerWidth;
         this.canvasHtmlHeight = this.canvasHtmlWidth * this.heightKey;

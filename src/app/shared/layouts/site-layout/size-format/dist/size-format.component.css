@@ -1,0 +1,50 @@
+.box {
+  border: dashed 2px rgba(0, 0, 0, 0.411);
+}
+
+.radio {
+  transform: translateY(-73%);
+}
+
+.radio:checked + img {
+  border: 2px solid #00ff22;
+}
+
+.imageBox1 {
+  background-color: white;
+  width: 25%;
+  height: auto;
+  display: inline-block;
+  margin: 0px;
+  cursor: pointer;
+  border-radius: 5%;
+}
+
+.horizontal {
+  width: 45%;
+  height: auto;
+}
+
+.vertical {
+  padding-top: 13%;
+  width: 29%;
+  height: 90%;
+}
+
+.imageBox1:hover {
+  transform: scale(1.1);
+  /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+.imageDiv {
+  height: 40px;
+}
+
+.imageDiv:hover {
+  background-color: #3d365abb;
+  margin-left: 5px;
+}
+
+.A4H {
+  pointer-events: none;
+}

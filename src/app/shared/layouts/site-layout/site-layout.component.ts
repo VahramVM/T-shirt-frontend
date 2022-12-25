@@ -65,6 +65,8 @@ export class SiteLayoutComponent implements AfterViewInit {
   expression = false;
   toggleButton = true;
   public category = '';
+  public formatValue: string = 'A4';
+  public horVert: boolean = true;
 
 
   origin = true;
@@ -79,7 +81,6 @@ export class SiteLayoutComponent implements AfterViewInit {
   noise = 0;
 
   activatebutton = true;
-
 
   // public imageCoordyy = this.canvas.imageCoordy
 
@@ -201,7 +202,7 @@ export class SiteLayoutComponent implements AfterViewInit {
   //   { hex: '#4b2cc6', name: 'pink' }
   // ]
 
-  
+
 
   constructor(
     private router: Router,
@@ -215,9 +216,9 @@ export class SiteLayoutComponent implements AfterViewInit {
     private order: OrderDatasService
   ) {
 
-    
+
     this.initFromServer();
-   
+    
   }
 
 
@@ -253,10 +254,14 @@ export class SiteLayoutComponent implements AfterViewInit {
 
 
     this.activeSlides = data;
-    let index = this.activeSlides.startPosition
+    let index = this.activeSlides.startPosition;
+
+    
 
     let src = $('.owlCarousel').find(".owl-item").eq(index).find("img").attr('src');
     $('.divv').text(src)
+
+    console.log(index, src, 'QQQQQQQQ');
 
     this.firstImage = 1;
     index = 0;
@@ -472,16 +477,28 @@ export class SiteLayoutComponent implements AfterViewInit {
       }
     )
 
+    this.dataService.formatValue1.subscribe(
+      res => {
+        this.formatValue = res;
+      }
+    );
+
+    this.dataService.horVertt.subscribe(
+      res => {
+        this.horVert = res;
+      }
+    );
+
 
     this.canvasHtmlWidth = this.dataService.canvasHtmlWidth;
     this.canvasHtmlHeight = this.dataService.canvasHtmlHeight;
     this.canvasCenteredPosition = this.dataService.canvasCenteredPosition;
-  
+
 
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
 
-    
+
   }
 
   sendMail() {
@@ -706,6 +723,8 @@ export class SiteLayoutComponent implements AfterViewInit {
 
     this.dataService.formatSizeSwich();
     this.canvas.moveWithFormat(this.dataService.scaleKey, true);
+    this.canvas.canvas.discardActiveObject().renderAll();
+
   }
 
   productBrandColor() {
@@ -759,7 +778,7 @@ export class SiteLayoutComponent implements AfterViewInit {
 
   public setDistance() {
     this.canvas.setDistance();
-    console.log('distance');
+    // console.log('distance');
 
   }
 
