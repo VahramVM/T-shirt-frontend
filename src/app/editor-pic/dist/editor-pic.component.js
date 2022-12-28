@@ -75,6 +75,7 @@ var EditorPicComponent = /** @class */ (function () {
         this.intCountText = null;
         this.imageFilter = null;
         this.textPadding = 15;
+        this.objectTypeImage = null;
         // public checked = false;
         this.shadow = {
             color: 'rgba(0, 0, 0, 1)',
@@ -604,7 +605,7 @@ var EditorPicComponent = /** @class */ (function () {
                 obj.saveState();
                 _this.canvas.renderAll();
             },
-            'mouse:down': function (e) {
+            'mouse:up:before': function (e) {
                 console.log('mouse:down');
             },
             'selection:cleared': function (e) {
@@ -745,7 +746,7 @@ var EditorPicComponent = /** @class */ (function () {
         $(".deleteBtn").remove();
         var btnLeft = x - this.left;
         var btnTop = y + this.top;
-        var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:30px;height:30px;"/>';
+        var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
         $(".canvas-container").append(deleteBtn);
         this.canvas.renderAll();
     };
@@ -1105,14 +1106,17 @@ var EditorPicComponent = /** @class */ (function () {
     // Block "Add images"
     EditorPicComponent.prototype.getImgPolaroid = function (event) {
         var _this = this;
-        this.canvas.includeDefaultValues;
-        this.canvasCount += 1;
-        var el = event;
-        var scale = 1;
         $(document).on('click', '.deleteBtn', function (event) {
             _this.removeSelected();
         });
+        this.canvas.includeDefaultValues;
+        this.objectTypeImage = 'image';
+        this.canvasCount += 1;
+        console.log(this.canvasCount, 'this.canvasCount');
+        var el = event;
+        var scale = 1;
         fabric.Image.fromURL(el, function (image) {
+            _this.image = image;
             if (image.height > 1300) {
                 _this.dataService.formatVal = _this.dataService.formatValue = 'A3';
                 if (image.height / image.width > 1.1) {
@@ -1121,7 +1125,7 @@ var EditorPicComponent = /** @class */ (function () {
                     _this.dataService.horVert = false;
                     // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
                     _this.dataService.formatWithHeight = 1.414;
-                    _this.dataService.formatTopKey = -0.03;
+                    _this.dataService.formatTopKey = -0.00;
                     // this.dataService.scaleKey = 1;
                     _this.dataService.formatSizeSwich();
                     scale = 1.05;
@@ -1133,7 +1137,7 @@ var EditorPicComponent = /** @class */ (function () {
                     _this.dataService.horVert = true;
                     _this.dataService.formatWithHeight = 0.707;
                     // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
-                    _this.dataService.formatTopKey = -0.03;
+                    _this.dataService.formatTopKey = -0.00;
                     _this.dataService.formatSizeSwich();
                     scale = 1;
                     // scale = this.dataService.scaleKey;
@@ -1146,7 +1150,7 @@ var EditorPicComponent = /** @class */ (function () {
                     _this.dataService.horVert = false;
                     // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
                     _this.dataService.formatWithHeight = 1.414;
-                    _this.dataService.formatTopKey = 0.03;
+                    _this.dataService.formatTopKey = 0.08;
                     // this.dataService.scaleKey = 1;
                     _this.dataService.formatSizeSwich();
                     scale = 1.05;
@@ -1157,12 +1161,13 @@ var EditorPicComponent = /** @class */ (function () {
                     _this.dataService.horVert = true;
                     _this.dataService.formatWithHeight = 0.707;
                     // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
-                    _this.dataService.formatTopKey = -0.03;
+                    _this.dataService.formatTopKey = -0.00;
                     _this.dataService.formatSizeSwich();
                     scale = 1;
                     // scale = this.dataService.scaleKey;
                 }
             }
+            _this.dataService.calcEndPrise();
             // function sizing() {
             //   if (image.height / image.width > 1.1) {
             //     this.dataService.horizontalVertical = true;
@@ -1378,14 +1383,16 @@ var EditorPicComponent = /** @class */ (function () {
                     image.applyFilters();
                     _this.canvas.renderAll();
                 }),
-                _this.canvas.setActiveObject(image);
-            _this.canvas.discardActiveObject().renderAll();
-            _this.addDeleteBtn(image.oCoords.mb.x, image.oCoords.mb.y);
+                _this.selectItemAfterAdded(image);
+            setTimeout(function () {
+                _this.canvas.discardActiveObject().renderAll();
+            }, 1500);
+            // this.addDeleteBtn(image.oCoords.mb.x, image.oCoords.mb.y);
         });
         // event.target.left = 100;
         // event.target.top = 100;
         // event.target.setCoords({'left' : 50});
-        console.log(this.canvas.getActiveObject());
+        // console.log(this.canvas.getActiveObject());
         // event.target.saveState();
         // this.canvas.renderAll();
         // event.target.setCoords()
@@ -1399,7 +1406,7 @@ var EditorPicComponent = /** @class */ (function () {
             $(".deleteBtn").remove();
             var btnLeft = x - numLeft;
             var btnTop = y + numTop;
-            var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px; cursor:pointer; width:40px; height:40px;"/>';
+            var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px; cursor:pointer; width:25px; height:25px;"/>';
             $(".canvas-container").append(deleteBtn);
         }
         this.canvas.on('selection:created', function (e) {
@@ -1442,32 +1449,109 @@ var EditorPicComponent = /** @class */ (function () {
             var scale_1 = 1.1;
             // console.log(this.canvasCount);
             fabric.Image.fromURL(url, function (image1) {
-                if (image1.height > 1300) {
-                    _this.dataService.formatVal = _this.dataService.formatValue = 'A3';
-                }
-                else if (image1.height > 500 && image1.height < 1300) {
-                    _this.dataService.formatVal = _this.dataService.formatValue = 'A4';
-                }
-                if (image1.height / image1.width > 1.1) {
-                    _this.dataService.horizontalVertical = true;
-                    _this.dataService.horVert = false;
-                    // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
-                    _this.dataService.formatWithHeight = 1.414;
-                    _this.dataService.formatTopKey = 0.03;
-                    // this.dataService.scaleKey = 1;
-                    // this.dataService.formatSizeSwich();
-                    scale_1 = 1.1;
+                if (_this.canvasCount === 1) {
+                    if (image1.height > 1300) {
+                        _this.dataService.formatVal = _this.dataService.formatValue = 'A3';
+                        if (image1.height / image1.width > 1.1) {
+                            console.log('mage.height / image.width > 1.1');
+                            _this.dataService.horizontalVertical = true;
+                            _this.dataService.horVert = false;
+                            // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+                            _this.dataService.formatWithHeight = 1.414;
+                            _this.dataService.formatTopKey = -0.03;
+                            // this.dataService.scaleKey = 1;
+                            _this.dataService.formatSizeSwich();
+                            scale_1 = 1.05;
+                        }
+                        else {
+                            console.log('mage.height / image.width > 1.1 else');
+                            _this.dataService.horizontalVertical = false;
+                            // this.dataService.scaleKey = 1;
+                            _this.dataService.horVert = true;
+                            _this.dataService.formatWithHeight = 0.707;
+                            // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+                            _this.dataService.formatTopKey = -0.03;
+                            _this.dataService.formatSizeSwich();
+                            scale_1 = 1;
+                            // scale = this.dataService.scaleKey;
+                        }
+                    }
+                    else if (image1.height > 100 && image1.height < 1300) {
+                        _this.dataService.formatVal = _this.dataService.formatValue = 'A4';
+                        if (image1.height / image1.width > 1.1) {
+                            _this.dataService.horizontalVertical = true;
+                            _this.dataService.horVert = false;
+                            // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+                            _this.dataService.formatWithHeight = 1.414;
+                            _this.dataService.formatTopKey = 0.03;
+                            // this.dataService.scaleKey = 1;
+                            _this.dataService.formatSizeSwich();
+                            scale_1 = 1.05;
+                        }
+                        else {
+                            _this.dataService.horizontalVertical = false;
+                            // this.dataService.scaleKey = 1;
+                            _this.dataService.horVert = true;
+                            _this.dataService.formatWithHeight = 0.707;
+                            // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+                            _this.dataService.formatTopKey = -0.03;
+                            _this.dataService.formatSizeSwich();
+                            scale_1 = 1;
+                            // scale = this.dataService.scaleKey;
+                        }
+                    }
                 }
                 else {
-                    _this.dataService.horizontalVertical = false;
-                    // this.dataService.scaleKey = 1;
-                    _this.dataService.horVert = true;
-                    _this.dataService.formatWithHeight = 0.707;
-                    // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
-                    _this.dataService.formatTopKey = -0.03;
-                    // this.dataService.formatSizeSwich();
-                    // scale = this.dataService.scaleKey;
+                    if (image1.height > 1300) {
+                        // this.dataService.formatVal = this.dataService.formatValue = 'A3';
+                        if (image1.height / image1.width > 1.1) {
+                            // this.dataService.horizontalVertical = true;
+                            // this.dataService.horVert = false;
+                            // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+                            // this.dataService.formatWithHeight = 1.414;
+                            // this.dataService.formatTopKey = -0.03;
+                            // this.dataService.scaleKey = 1;
+                            // this.dataService.formatSizeSwich();
+                            scale_1 = 1.3;
+                        }
+                        else {
+                            _this.dataService.horizontalVertical = false;
+                            // this.dataService.scaleKey = 1;
+                            // this.dataService.horVert = true;
+                            // this.dataService.formatWithHeight = 0.707;
+                            // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+                            // this.dataService.formatTopKey = -0.03;
+                            // this.dataService.formatSizeSwich();
+                            scale_1 = 2.3;
+                            // scale = this.dataService.scaleKey;
+                        }
+                    }
+                    else if (image1.height > 100 && image1.height < 1300) {
+                        // this.dataService.formatVal = this.dataService.formatValue = 'A4';
+                        if (image1.height / image1.width > 1.1) {
+                            // this.dataService.horizontalVertical = true;
+                            // this.dataService.horVert = false;
+                            // this.dataService.sizePrintKey = 686 / ((686 - 210) / 2);
+                            // this.dataService.formatWithHeight = 1.414;
+                            // this.dataService.formatTopKey = 0.03;
+                            // this.dataService.scaleKey = 1;
+                            // this.dataService.formatSizeSwich();
+                            scale_1 = 1.3;
+                        }
+                        else {
+                            // this.dataService.horizontalVertical = false;
+                            // this.dataService.scaleKey = 1;
+                            // this.dataService.horVert = true;
+                            // this.dataService.formatWithHeight = 0.707;
+                            // this.dataService.sizePrintKey = 686 / ((686 - 297) / 2);
+                            // this.dataService.formatTopKey = -0.06;
+                            // this.dataService.formatSizeSwich();
+                            scale_1 = 2.3;
+                            // scale = this.dataService.scaleKey;
+                        }
+                    }
                 }
+                _this.dataService.calcEndPrise();
                 var imageWidth = (window.innerWidth - _this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - _this.dataService.widthKey * window.innerWidth) / _this.b + (window.innerWidth - _this.dataService.widthKey * window.innerWidth) / 40);
                 var imageHeight = imageWidth * _this.c;
                 image1.set({
@@ -1641,6 +1725,8 @@ var EditorPicComponent = /** @class */ (function () {
                         _this.canvas.renderAll();
                     }),
                     _this.selectItemAfterAdded(image1);
+                _this.canvas.discardActiveObject().renderAll();
+                _this.addDeleteBtn(image1.oCoords.mb.x, image1.oCoords.mb.y);
             });
         }
     };
@@ -1661,7 +1747,7 @@ var EditorPicComponent = /** @class */ (function () {
     EditorPicComponent.prototype.addFigure = function (figure) {
         var _this = this;
         this.canvasCount += 1;
-        // console.log(this.canvasCount);
+        console.log(this.canvasCount, 'figure');
         $(document).on('click', ".deleteBtn", function (event) {
             event.stopImmediatePropagation();
             _this.canvasCount -= 1;
@@ -1743,6 +1829,8 @@ var EditorPicComponent = /** @class */ (function () {
         }),
             this.extend(add, this.randomId());
         this.canvas.add(add);
+        this.canvas.centerObjectH(add);
+        add.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a;
         this.selectItemAfterAdded(add);
     };
     /*Canvas*/
@@ -2128,7 +2216,7 @@ var EditorPicComponent = /** @class */ (function () {
         this.canvas.renderAll();
     };
     EditorPicComponent.prototype.clone = function () {
-        this.defoultUpdate();
+        // this.defoultUpdate()
         var activeObject = this.canvas.getActiveObject();
         var activeGroup = this.canvas.getActiveObjects();
         if (activeObject) {
@@ -2136,36 +2224,40 @@ var EditorPicComponent = /** @class */ (function () {
             switch (activeObject.type) {
                 case 'rect':
                     clone = new fabric.Rect(activeObject.toObject());
-                    this.canvasCount += 1;
+                    // this.canvasCount += 1;
                     // console.log(this.canvasCount);
                     break;
                 case 'circle':
                     clone = new fabric.Circle(activeObject.toObject());
-                    this.canvasCount += 1;
+                    // this.canvasCount += 1;
                     // console.log(this.canvasCount);
                     break;
                 case 'triangle':
                     clone = new fabric.Triangle(activeObject.toObject());
-                    this.canvasCount += 1;
+                    // this.canvasCount += 1;
                     // console.log(this.canvasCount);
                     break;
                 case 'i-text':
                     clone = new fabric.IText('', activeObject.toObject());
-                    this.canvasCount += 1;
+                    // this.canvasCount += 1;
                     // console.log(this.canvasCount);
                     this.canvas.getActiveObject();
                     break;
                 case 'image':
                     clone = fabric.util.object.clone(activeObject);
-                    this.canvasCount += 1;
+                    // this.canvasCount += 1;
                     // console.log(this.canvasCount);
                     break;
             }
             if (clone) {
-                clone.set({ left: 80, top: 80 });
                 this.canvas.add(clone);
-                this.selectItemAfterAdded(clone);
-                this.defoultUpdate();
+                this.bringToFront();
+                this.canvasCount += 1;
+                console.log(this.canvasCount, 'figure');
+                // this.selectItemAfterAdded(clone);
+                // this.defoultUpdate();
+                this.canvas.centerObjectH(clone);
+                clone.top = this.canvas.width / 40 + this.canvas.width / this.b - this.canvas.width * this.a;
                 this.canvas.getActiveObject();
             }
         }
@@ -2265,30 +2357,31 @@ var EditorPicComponent = /** @class */ (function () {
     };
     /*System*/
     EditorPicComponent.prototype.removeSelected = function () {
-        var _a;
-        if (this.canvasCount === 1) {
-            (_a = this.canvas).remove.apply(_a, this.canvas.getObjects());
-            $('#shadowSVG').prop('checked', false);
-            this.siteLayout.shadowSVG = false;
-            $('.owl-nav').show();
-            $(".canvas").css("z-index", 0);
-            this.siteLayout.toggle = false;
-            this.disableBtn = false;
-            console.log(this.canvasCount);
-            this.canvasCount -= 1;
-        }
-        $(".deleteBtn").remove();
-        $(".distance").remove();
+        // if (this.canvasCount === 1 && this.objectTypeImage === 'image') {
+        //   this.canvas.remove(...this.canvas.getObjects());
+        //   $(".deleteBtn").remove();
+        //   $(".distance").remove();
+        //   $('#shadowSVG').prop('checked', false);
+        //   this.siteLayout.shadowSVG = false;
+        //   $('.owl-nav').show();
+        //   $(".canvas").css("z-index", 0);
+        //   this.siteLayout.toggle = false;
+        //   this.disableBtn = false;
+        //   // console.log(this.canvasCount);
+        //   this.canvasCount -= 1;
+        // }
         // console.log(this.canvasCount);
         this.objectType = false;
         // this.dataService.scaleKey = 1;
         this.props.diametr = 300;
         if (this.canvas.getActiveObject().type === 'i-text') {
             this.intCountText -= 1;
-            console.log(this.intCountText);
+            // console.log(this.intCountText);
         }
         var activeObject = this.canvas.getActiveObject();
         var activeGroup = this.canvas.getActiveObjects();
+        this.canvasCount -= 1;
+        this.siteLayout.isCarouselOpen = true;
         // this.siteLayout.firstImage = 2;
         if (this.canvasCount === 0) {
             $('#shadowSVG').prop('checked', false);
@@ -2300,8 +2393,6 @@ var EditorPicComponent = /** @class */ (function () {
         }
         if (activeObject) {
             this.canvas.remove(activeObject);
-            $(".deleteBtn").remove();
-            $(".distance").remove();
             // this.textString = '';
         }
         else if (activeGroup) {
@@ -2312,8 +2403,7 @@ var EditorPicComponent = /** @class */ (function () {
                 self_5.canvas.remove(object);
             });
         }
-        this.canvasCount -= 1;
-        this.siteLayout.isCarouselOpen = true;
+        console.log(this.canvasCount, 'soso');
     };
     EditorPicComponent.prototype.bringToFront = function () {
         var activeObject = this.canvas.getActiveObject();

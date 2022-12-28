@@ -203,8 +203,7 @@ export class DataService {
 
   ngOnInit(): void {
     // this.formatSizeSwich();
-
-
+   
   }
 
   public formats = [{ format: 'A3', formatSize: 297, formatPrise: 500 }, { format: 'A4', formatSize: 297, formatPrise: 400 }, { format: 'A5', formatSize: 210, formatPrise: 300 }, { format: 'A6', formatSize: 148, formatPrise: 400 }];
@@ -212,7 +211,6 @@ export class DataService {
 
   formatSizeSwich() {
 
-    this.endPrise = 100;
     const realSize = this.products[this.indexBrandType].realSize;
     const cafficient = 1.0229;
 

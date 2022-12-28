@@ -149,7 +149,6 @@ var DataService = /** @class */ (function () {
         // this.formatSizeSwich();
     };
     DataService.prototype.formatSizeSwich = function () {
-        this.endPrise = 100;
         var realSize = this.products[this.indexBrandType].realSize;
         var cafficient = 1.0229;
         // const realSizes = { XS: 609, S: 648, M: 686, L: 724, XL: 762, XXL: 800 };

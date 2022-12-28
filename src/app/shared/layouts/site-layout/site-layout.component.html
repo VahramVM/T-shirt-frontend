@@ -206,11 +206,12 @@
             style="margin-left: 25%; position: absolute; margin-top: 40%; z-index: 3;">
             <div style="z-index: 10;">
                 <input type="range" [(ngModel)]="canvas.props.opacity" (ngModelChange)="setOpacity()"
-                    [disabled]="canvas.canvasCount == 0">
+                   >
             </div>
             <label style="margin-top: -40px; margin-left: 160px; position: absolute; cursor:pointer; z-index: 10;">
-                <input id="shadowSVG" type="checkbox" (change)="shadowSVG = !shadowSVG" class="filled-in"
-                    [disabled]="canvas.canvasCount == 0" />
+                <input
+                id="shadowSVG" type="checkbox" (change)="shadowSVG = !shadowSVG;" class="filled-in"
+                />
                 <i class="fa fa-cloud" style="font-size:40px; color:#009688;text-shadow:12px 8px 4px #4d4a4a;"></i>
             </label>
         </div>
@@ -258,7 +259,7 @@
 
                     <ng-template carouselSlide [id]="image.id">
 
-                        <div style="width: 70%; height: auto; margin-left: 17%;">
+                        <div style="width: 60%; height: auto; margin-left: 24%;">
 
                             <img [src]="image.imageSrc">
                             <button data-toggle="tooltip" style="margin-top: 0px;" (click)="selectPicture();  isCarouselOpen = false "

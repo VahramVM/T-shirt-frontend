@@ -559,7 +559,7 @@ export class SiteLayoutComponent implements AfterViewInit {
 
   }
 
-
+  
 
 
   public selectPicture() {
