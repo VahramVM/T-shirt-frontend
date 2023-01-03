@@ -1340,44 +1340,45 @@ export class EditorPicComponent implements AfterViewInit {
       if (this.props.diametr === 300) {
         this.intCountText += 1;
         this.canvasCount += 1;
-        console.log(this.canvasCount);
+        console.log(this.canvasCount, 'this.props.diametr === 300');
       }
 
       console.log('>280');
 
 
-      $(document).on('click', ".deleteBtn", (event) => {
-        this.siteLayout.activatebutton = true;
+      // $(document).on('click', ".deleteBtn", (event) => {
+      //   this.siteLayout.activatebutton = true;
 
-        event.stopImmediatePropagation()
-        this.canvasCount -= 1;
-        console.log(this.canvasCount);
+      //   event.stopImmediatePropagation()
+      //   this.canvasCount -= 1;
+      //   // this.intCountText -= 1;
+      //   console.log(this.canvasCount, ".deleteBtn");
 
-        // console.log(this.canvasCount);
-        if (this.canvasCount === 0) {
-          this.siteLayout.firstImage = 0;
-          $('.owl-nav').show();
-          $(".canvas").css("z-index", 0);
-          this.siteLayout.toggle = false;
-          this.disableBtn = false;
+      //   // console.log(this.canvasCount);
+      //   if (this.canvasCount === 0) {
+      //     this.siteLayout.firstImage = 0;
+      //     $('.owl-nav').show();
+      //     $(".canvas").css("z-index", 0);
+      //     this.siteLayout.toggle = false;
+      //     this.disableBtn = false;
 
-        }
-        const activeObject = this.canvas.getActiveObject();
-        const activeGroup = this.canvas.getActiveObjects();
-        if (activeObject) {
+      //   }
+      //   const activeObject = this.canvas.getActiveObject();
+      //   const activeGroup = this.canvas.getActiveObjects();
+      //   if (activeObject) {
 
-          this.canvas.remove(activeObject);
-          $(".deleteBtn").remove();
-          $(".distance").remove();
-          // this.textString = '';
-        } else if (activeGroup) {
-          this.canvas.discardActiveObject();
-          const self = this;
-          activeGroup.forEach((object) => {
-            self.canvas.remove(object);
-          });
-        }
-      });
+      //     this.canvas.remove(activeObject);
+      //     $(".deleteBtn").remove();
+      //     $(".distance").remove();
+      //     // this.textString = '';
+      //   } else if (activeGroup) {
+      //     this.canvas.discardActiveObject();
+      //     const self = this;
+      //     activeGroup.forEach((object) => {
+      //       self.canvas.remove(object);
+      //     });
+      //   }
+      // });
 
       const path = new fabric.Path(`'M 69 435 A ${this.props.diametr} ${this.props.diametr} 0 0 1 271 420 '`, {
         strokeWidth: 1,

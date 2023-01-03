@@ -935,38 +935,38 @@ var EditorPicComponent = /** @class */ (function () {
             if (this.props.diametr === 300) {
                 this.intCountText += 1;
                 this.canvasCount += 1;
-                console.log(this.canvasCount);
+                console.log(this.canvasCount, 'this.props.diametr === 300');
             }
             console.log('>280');
-            $(document).on('click', ".deleteBtn", function (event) {
-                _this.siteLayout.activatebutton = true;
-                event.stopImmediatePropagation();
-                _this.canvasCount -= 1;
-                console.log(_this.canvasCount);
-                // console.log(this.canvasCount);
-                if (_this.canvasCount === 0) {
-                    _this.siteLayout.firstImage = 0;
-                    $('.owl-nav').show();
-                    $(".canvas").css("z-index", 0);
-                    _this.siteLayout.toggle = false;
-                    _this.disableBtn = false;
-                }
-                var activeObject = _this.canvas.getActiveObject();
-                var activeGroup = _this.canvas.getActiveObjects();
-                if (activeObject) {
-                    _this.canvas.remove(activeObject);
-                    $(".deleteBtn").remove();
-                    $(".distance").remove();
-                    // this.textString = '';
-                }
-                else if (activeGroup) {
-                    _this.canvas.discardActiveObject();
-                    var self_2 = _this;
-                    activeGroup.forEach(function (object) {
-                        self_2.canvas.remove(object);
-                    });
-                }
-            });
+            // $(document).on('click', ".deleteBtn", (event) => {
+            //   this.siteLayout.activatebutton = true;
+            //   event.stopImmediatePropagation()
+            //   this.canvasCount -= 1;
+            //   // this.intCountText -= 1;
+            //   console.log(this.canvasCount, ".deleteBtn");
+            //   // console.log(this.canvasCount);
+            //   if (this.canvasCount === 0) {
+            //     this.siteLayout.firstImage = 0;
+            //     $('.owl-nav').show();
+            //     $(".canvas").css("z-index", 0);
+            //     this.siteLayout.toggle = false;
+            //     this.disableBtn = false;
+            //   }
+            //   const activeObject = this.canvas.getActiveObject();
+            //   const activeGroup = this.canvas.getActiveObjects();
+            //   if (activeObject) {
+            //     this.canvas.remove(activeObject);
+            //     $(".deleteBtn").remove();
+            //     $(".distance").remove();
+            //     // this.textString = '';
+            //   } else if (activeGroup) {
+            //     this.canvas.discardActiveObject();
+            //     const self = this;
+            //     activeGroup.forEach((object) => {
+            //       self.canvas.remove(object);
+            //     });
+            //   }
+            // });
             var path = new fabric.Path("'M 69 435 A " + this.props.diametr + " " + this.props.diametr + " 0 0 1 271 420 '", {
                 strokeWidth: 1,
                 absolutePositioned: true,
@@ -1437,9 +1437,9 @@ var EditorPicComponent = /** @class */ (function () {
             }
             else if (activeGroup) {
                 _this.canvas.discardActiveObject();
-                var self_3 = _this;
+                var self_2 = _this;
                 activeGroup.forEach(function (object) {
-                    self_3.canvas.remove(object);
+                    self_2.canvas.remove(object);
                 });
             }
         });
@@ -1769,9 +1769,9 @@ var EditorPicComponent = /** @class */ (function () {
             }
             else if (activeGroup) {
                 _this.canvas.discardActiveObject();
-                var self_4 = _this;
+                var self_3 = _this;
                 activeGroup.forEach(function (object) {
-                    self_4.canvas.remove(object);
+                    self_3.canvas.remove(object);
                 });
             }
         });
@@ -2398,9 +2398,9 @@ var EditorPicComponent = /** @class */ (function () {
         else if (activeGroup) {
             // console.log('group');
             this.canvas.discardActiveObject();
-            var self_5 = this;
+            var self_4 = this;
             activeGroup.forEach(function (object) {
-                self_5.canvas.remove(object);
+                self_4.canvas.remove(object);
             });
         }
         console.log(this.canvasCount, 'soso');
