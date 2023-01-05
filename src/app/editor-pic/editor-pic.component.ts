@@ -1343,7 +1343,7 @@ export class EditorPicComponent implements AfterViewInit {
         console.log(this.canvasCount, 'this.props.diametr === 300');
       }
 
-      console.log('>280');
+      console.log('>280', 'sff');
 
 
       // $(document).on('click', ".deleteBtn", (event) => {
