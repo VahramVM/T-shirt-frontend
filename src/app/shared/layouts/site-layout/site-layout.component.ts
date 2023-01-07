@@ -839,6 +839,7 @@ export class SiteLayoutComponent implements AfterViewInit {
 
   public link() {
     console.log(this.canvas.linkk);
+    console.log(this.canvas.linkk);
 
   }
 
