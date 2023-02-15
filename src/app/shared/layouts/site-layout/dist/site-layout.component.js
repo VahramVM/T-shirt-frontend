@@ -136,6 +136,8 @@ var SiteLayoutComponent = /** @class */ (function () {
         this.firstImage = 0;
         this.firstImageCarousel = '';
         this.linkeBrand = '';
+        this.productBrandsLinke0 = '';
+        this.productBrandsSrc0 = '';
         this.customOptions = {
             // stagePadding: 200,
             // margin: 0,
@@ -174,6 +176,9 @@ var SiteLayoutComponent = /** @class */ (function () {
                 }
             }
         };
+        // public drawFill() {
+        //   this.canvas.drawFill();
+        // }
         this.productSelectWithoutScale = true;
         this.initFromServer();
     }
@@ -216,11 +221,14 @@ var SiteLayoutComponent = /** @class */ (function () {
         var checkWidth = window.innerWidth;
         if (checkWidth < 800) {
             console.log(800, 'ok');
+            // this.canvasHtmlWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) * 1.5;
+            // this.canvasHtmlHeight = this.canvasHtmlWidth * this.dataService.heightKey * 1.5;
+            // this.canvasCenteredPosition = (window.innerWidth / this.dataService.positionKey) * 1.5;
         }
         $('#myCarousel').trigger('refresh.owl.carousel');
-        this.canvasHtmlWidth = window.innerWidth - this.dataService.widthKey * window.innerWidth;
+        this.canvasHtmlWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth);
         this.canvasHtmlHeight = this.canvasHtmlWidth * this.dataService.heightKey;
-        this.canvasCenteredPosition = window.innerWidth / this.dataService.positionKey;
+        this.canvasCenteredPosition = (window.innerWidth / this.dataService.positionKey);
     };
     SiteLayoutComponent.prototype.Resize = function () {
         console.log('resize');
@@ -301,6 +309,8 @@ var SiteLayoutComponent = /** @class */ (function () {
         });
         this.productscolorService.fetch().subscribe(function (res) {
             _this.productBrands = res;
+            _this.productBrandsLinke0 = res[0].linkeBrand;
+            _this.productBrandsSrc0 = res[0].src;
         });
         this.fontService.fetch().subscribe(function (res) {
             _this.fonts = res;
@@ -311,6 +321,13 @@ var SiteLayoutComponent = /** @class */ (function () {
         this.dataService.horVertt.subscribe(function (res) {
             _this.horVert = res;
         });
+        var checkWidth = window.innerWidth;
+        if (checkWidth < 800) {
+            console.log(800, 'ok');
+            this.canvasHtmlWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) * 1.5;
+            this.canvasHtmlHeight = (this.canvasHtmlWidth * this.dataService.heightKey) * 1.5;
+            this.canvasCenteredPosition = (window.innerWidth / this.dataService.positionKey) * 1.5;
+        }
         this.canvasHtmlWidth = this.dataService.canvasHtmlWidth;
         this.canvasHtmlHeight = this.dataService.canvasHtmlHeight;
         this.canvasCenteredPosition = this.dataService.canvasCenteredPosition;
@@ -325,11 +342,11 @@ var SiteLayoutComponent = /** @class */ (function () {
                 image: this.canvas.reqImage,
                 image1: this.canvas.reqImage1
             };
-            // this.httpService.sendEmail("http://localhost:5000/sendmail", image)
-            // data => {
-            //   let res: any = data;
-            //   console.log('all is ok');
-            // }
+            this.httpService.sendEmail("/sendmail", image);
+            (function (data) {
+                var res = data;
+                console.log('all is ok');
+            });
         }
         else {
             return;
@@ -440,9 +457,6 @@ var SiteLayoutComponent = /** @class */ (function () {
     SiteLayoutComponent.prototype.setCanvasFill = function () {
         this.canvas.setCanvasFill();
     };
-    SiteLayoutComponent.prototype.drawFill = function () {
-        this.canvas.drawFill();
-    };
     SiteLayoutComponent.prototype.setCanvasImage = function () {
         // this.arrColor.length = 0;
         var _this = this;
@@ -544,10 +558,11 @@ var SiteLayoutComponent = /** @class */ (function () {
     SiteLayoutComponent.prototype.setCharSpacing = function () {
         this.canvas.setCharSpacing();
     };
-    SiteLayoutComponent.prototype.rasterizeJSON = function () {
-        this.canvas.rasterizeJSON();
-    };
+    // public rasterizeJSON() {
+    //   this.canvas.rasterizeJSON();
+    // }
     SiteLayoutComponent.prototype.link = function () {
+        console.log(this.canvas.linkk);
         console.log(this.canvas.linkk);
     };
     __decorate([

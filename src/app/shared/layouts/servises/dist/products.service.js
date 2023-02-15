@@ -18,7 +18,7 @@ var ProdutsService = /** @class */ (function () {
         // )   
     }
     ProdutsService.prototype.fetch = function () {
-        return this.http.get('http://localhost:5000/api/product').pipe();
+        return this.http.get('/api/product').pipe();
     };
     ProdutsService = __decorate([
         core_1.Injectable({

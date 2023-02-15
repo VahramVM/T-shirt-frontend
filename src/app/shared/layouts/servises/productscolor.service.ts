@@ -14,7 +14,7 @@ export class ProdutsColorService {
     constructor (private http: HttpClient) {}
 
     fetch() {
-      return this.http.get('http://localhost:5000/api/productcolor').pipe(        
+      return this.http.get('/api/productcolor').pipe(        
         )   
      
     }

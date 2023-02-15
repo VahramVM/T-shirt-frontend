@@ -13,7 +13,7 @@ var FontService = /** @class */ (function () {
         this.http = http;
     }
     FontService.prototype.fetch = function () {
-        return this.http.get('http://localhost:5000/api/font').pipe();
+        return this.http.get('/api/font').pipe();
     };
     FontService = __decorate([
         core_1.Injectable({

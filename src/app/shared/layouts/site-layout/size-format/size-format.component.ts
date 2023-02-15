@@ -20,8 +20,6 @@ export class SizeFormatComponent implements OnInit {
   public sizePrintKey: number;
   public formatWithHeight: number;
   public positionTopKey: number;
-
-
   public canvasHtmlWidth: number;
   public canvasHtmlHeight: number;
   public canvasCenteredPosition: number;
@@ -29,20 +27,16 @@ export class SizeFormatComponent implements OnInit {
   public canvasSizeFormatHeight: number;
   public canvasSizeFormatTop: number;
   public canvasSizeFormatLeft: number;
-
   public selectOpen: boolean = false;
   public counter: number = 0;
   public upDown: boolean = null;
   public canvasSelect: boolean = null;
-
   public objectWidth: number;
   public objectWidthHeight: number;
-
   public scaleKey: number;
   public scaleBlock: boolean = false;
   public formatValue: string = 'A4';
   public horVert: boolean;
-
   public endPrise: number = 0;
 
   constructor(private dataService: DataService,
@@ -95,7 +89,7 @@ export class SizeFormatComponent implements OnInit {
 
 
 
-  private getUpdatedMessage() {
+  private getUpdatedMessage(): void {
 
 
     this.dataService.formatA4Horizontal.subscribe(

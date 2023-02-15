@@ -4,7 +4,7 @@ import { EditorPicComponent } from '../editor-pic/editor-pic.component';
 @Component({
   selector: 'app-side-design',
   templateUrl: './side-design.component.html',
-  styleUrls: ['./side-design.component.css']
+  styleUrls: ['./side-design.component.scss']
 })
 export class SideDesignComponent implements OnInit, AfterViewInit {
 

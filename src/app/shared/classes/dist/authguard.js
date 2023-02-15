@@ -22,7 +22,7 @@ var AuthGuard = /** @class */ (function () {
         else {
             this.router.navigate(['/login'], {
                 queryParams: {
-                    access: true
+                    accessDenied: true
                 }
             });
             return rxjs_1.of(false);

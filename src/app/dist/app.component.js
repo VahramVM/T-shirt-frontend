@@ -6,20 +6,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.AuthLayoutComponent = void 0;
+exports.AppComponent = void 0;
 var core_1 = require("@angular/core");
-var AuthLayoutComponent = /** @class */ (function () {
-    function AuthLayoutComponent() {
+var AppComponent = /** @class */ (function () {
+    function AppComponent(auth) {
+        this.auth = auth;
     }
-    AuthLayoutComponent.prototype.ngOnInit = function () {
+    AppComponent.prototype.ngOnInit = function () {
+        var correntToken = localStorage.getItem('auth-token');
+        if (correntToken !== null) {
+            this.auth.setToken(correntToken);
+        }
     };
-    AuthLayoutComponent = __decorate([
+    AppComponent = __decorate([
         core_1.Component({
-            selector: 'app-auth-layout',
-            templateUrl: './auth-layout.component.html',
-            styleUrls: ['./auth-layout.component.css']
+            selector: 'app-root',
+            templateUrl: './app.component.html'
         })
-    ], AuthLayoutComponent);
-    return AuthLayoutComponent;
+    ], AppComponent);
+    return AppComponent;
 }());
-exports.AuthLayoutComponent = AuthLayoutComponent;
+exports.AppComponent = AppComponent;

@@ -13,19 +13,18 @@ export class MainPageComponent implements OnInit {
   public preview: boolean = false;
 
   constructor(
-    private router: Router, private order: OrderDatasService, private data: DataService) {}
+    private router: Router, private order: OrderDatasService, private data: DataService) { }
 
   ngOnInit(): void {
   }
-  
-  redirectPreview() {
+
+ public redirectPreview(): void {
 
     this.preview = false;
     this.router.navigate(['/main']);
-setTimeout(() => {
-  location.reload();
-
-}, 10);
+    setTimeout(() => {
+      location.reload();
+    }, 10);
   }
 
 }

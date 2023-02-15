@@ -250,7 +250,7 @@
 
 
 
-        <div (window:resize)="onResize($event)" Load="myFunction()" [ngClass]="{'class1': toggle === true}"
+        <div (window:resize)="onResize($event)" [ngClass]="{'class1': toggle === true}"
             style="margin-top: -3%; position: absolute; z-index: 0;"
             class="owlCarousel owl-theme selectPic col s12 m12 l8 xl8 offset-s0 offset-m0 offset-l0 offset-xl0">
             <owl-carousel-o id="myCarousel" #owlElement [options]="customOptions" (translated)="getPassedData($event)">
@@ -387,27 +387,27 @@
 
 
                         <div style="margin-top: 5%;" class="card">
-                            <div class="card-content" style="height: 120px; width: 100%;">
+                            <div  class="card-content" style="height: 120px; width: 100%;">
                                 <a
-                                    [href]="indexBrand=== null ? productBrands[0].linkeBrand: productBrands[indexBrand].linkeBrand">
+                                    [href]="indexBrand === null ? productBrands[0].linkeBrand : productBrands[indexBrand].linkeBrand">
                                     <img style="width: 40%; height: auto;  display: flex;
                                     justify-content: center; margin-top: 0%;
                                     align-items: center;" class="activator"
-                                        [src]="indexBrand=== null ? productBrands[0].src: productBrands[indexBrand].src">
+                                        [src]="indexBrand === null ? productBrands[0].src: productBrands[indexBrand].src">
                                 </a>
                             </div>
                             <br>
                             <div class="card-tabs">
 
                                 <ul class="tabs tabs-fixed-width">
-                                    <li *ngFor="let productBrand of productBrands; let i = index" (click)="indexBrand = i; allColors = false;  
+                                    <li  *ngFor="let productBrand of productBrands; let i = index" (click)="indexBrand = i; allColors = false;  
                                             canvas.props.brandName = productBrand.name;
                                             orderDatas.brendName = productBrand.name;
                                             productBrandColor(); 
                                             productBrandSize();
                                             setCanvasImage();  
                                             productsTypeColor();
-                                            " class="tab"><a href="#test[i]">{{productBrand.name}}</a>
+                                            " class="tab"><a href="#test1[i]">{{productBrand.name}}</a>
                                     </li>
                                     <!-- <li class="tab"><a class="active" href="#test5">Test 2</a></li>
                                             <li class="tab"><a  href="#test6">Test 3</a></li> -->
@@ -437,11 +437,8 @@
                                     <div style="margin-top: 5%;" class="row">
                                         <label *ngFor="let size of productBrandSizes | keyvalue:ret; let i = index;"
                                             class="col s5 m3 l2 offset-s0 offset-m0 offset-l0">
-                                            <input (click)="
-                                            orderDatas.productSize = size.key; 
-                                            sizeValuePass(size.key)" [disabled]="size.value" type="radio"
-                                                name="sizeKey" value="big"
-                                                [checked]="orderDatas.productSize === '' ? size.key === 'M' : size.key === orderDatas.productSize">
+                                            <input (click)="orderDatas.productSize = size.key; sizeValuePass(size.key)" [disabled]="size.value" 
+                                            type="radio" name="sizeKey" value="big" [checked]="orderDatas.productSize === '' ? size.key === 'M' : size.key === orderDatas.productSize">
                                             <div style="font-size: 120%; text-align: center; width: 120%;">
                                                 <b> {{size.key}} </b>
                                             </div>
@@ -518,11 +515,11 @@
                         </label>
                         <label class="col s2" style="margin: 5px;">
                             <input id="sepia" type="radio" name="test" value="sepia">
-                            <img class="hoverable" width="60px" height="60px" src="../assets/img/Vintage.png">
+                            <img class="hoverable" width="60px" height="60px" src="../assets/img/oldstyle.png">
                         </label>
                         <label class="col s2" style="margin: 5px;">
                             <input id="invert" type="radio" name="test" value="invert">
-                            <img class="hoverable" width="60px" height="60px" src="../assets/img/Vintage.png">
+                            <img class="hoverable" width="60px" height="60px" src="../assets/img/Negative.png">
                         </label>
                     </div>
                     <br>
@@ -870,46 +867,47 @@
                                     <form action="#">
                                         <div style="float:left">
                                             <label>
-                                                <input (change)="canvas.props.textCurved = 1; "
+                                                <input style="margin-left: 1%;" (change)="canvas.props.textCurved = 1; "
                                                     (click)="canvas.reRender()" name="group1" type="radio" checked />
-                                                <span>Red</span>
+                                                <span>Straight</span>
                                             </label>
+                                            
                                             <label>
-                                                <input
+                                                <input style="margin-left: 10px;"
                                                     [disabled]="canvas.intCountText > 1 && canvas.intCountText !== 0 "
-                                                    (change)="canvas.props.textCurved = 2" (click)="canvas.reRender1()"
+                                                    (change)="canvas.props.textCurved = 2" (click)="canvas.reRender1(); canvas.props.diametr = 300"
                                                     name="group1" type="radio" />
-                                                <span>Yellow</span>
+                                                <span>Bend</span>
                                             </label>
                                         </div>
                                     </form>
                                 </div>
-                                <div>{{canvas.props.diametr}}</div>
+                                <!-- <div>{{canvas.props.diametr}}</div> -->
                             </div>
 
 
 
-                            <div *ngIf="canvas.props.textCurved !== 1; " class="col s12 offset-s0"
+                            <div *ngIf="canvas.props.textCurved !== 1" class="col s12 offset-s0"
                                 style="padding-top: 20px;">
 
-                                <div class="col s2">Line Height</div>
+                                <div class="col s2">Diameter</div>
                                 <div class="col s8">
                                     <input [attr.disabled]="!canvas.textEditor ? '' : null" type="range"
                                         [(ngModel)]="canvas.props.diametr" (ngModelChange)="canvas.addText()" step="3"
                                         min="80" max="300">
                                 </div>
-                                <div>{{canvas.props.diametr}}</div>
+                                <!-- <div>{{canvas.props.diametr}}</div> -->
                             </div>
 
-                            <div class="col s12 offset-s0" style="padding-top: 20px;">
+                            <div *ngIf="canvas.props.textCurved !== 1 && canvas.props.diametr < 300" class="col s12 offset-s0" style="padding-top: 20px;">
 
                                 <div class="col s2">Font Size</div>
                                 <div class="col s8">
                                     <input [attr.disabled]="!canvas.textEditor ? '' : null" type="range"
                                         [(ngModel)]="canvas.props.fontSize" (ngModelChange)="setFontSize()" step="1"
-                                        min="1" max="170">
+                                        min="1" max="80">
                                 </div>
-                                <div>{{canvas.props.fontSize}}</div>
+                                <!-- <div>{{canvas.props.fontSize}}</div> -->
                             </div>
                         </div>
                     </div>

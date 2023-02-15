@@ -1,19 +1,14 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, Input, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import 'fabric';
-import { Color } from 'fabric/fabric-impl';
-import { Width } from 'ngx-owl-carousel-o/lib/services/carousel.service';
 import { DataService } from '../shared/layouts/servises/data.service';
 import { OrderDatasService } from '../shared/layouts/servises/order-datas.service';
-import { Injectable } from '@angular/core'
+import { Injectable } from '@angular/core';
+import { SiteLayoutComponent } from '../shared/layouts/site-layout/site-layout.component';
+import { Products } from '../shared/interface';
+import { ProdutsService } from '../shared/layouts/servises/products.service';
 
 // var svgToMiniDataURI = require('mini-svg-data-uri');
 // import 'jquery';
-
-import { SiteLayoutComponent } from '../shared/layouts/site-layout/site-layout.component'
-import { SizeFormatComponent } from '../shared/layouts/site-layout/size-format/size-format.component';
-import { ProdutsColorService } from '../shared/layouts/servises/productscolor.service';
-import { Products } from '../shared/interface';
-import { ProdutsService } from '../shared/layouts/servises/products.service';
 // import { SiteLayoutComponent } from '../ass'
 
 
@@ -28,7 +23,7 @@ declare const $: any;
 @Component({
   selector: 'app-editor-pic',
   templateUrl: './editor-pic.component.html',
-  styleUrls: ['./editor-pic.component.css']
+  styleUrls: ['./editor-pic.component.scss']
 })
 
 // @HostListener('window:resize', ['$event'])
@@ -68,7 +63,7 @@ export class EditorPicComponent implements AfterViewInit {
     brandName: '',
   };
 
-  public canvasHtml;
+  // public canvasHtml;
   // public canvasHtml1;
   public textString: string = '';
   public url: string | ArrayBuffer = '';
@@ -101,11 +96,9 @@ export class EditorPicComponent implements AfterViewInit {
 
 
 
-  public json: any;
-  private globalEditor = false;
-  public textEditor = false;
-  private imageEditor = false;
-  public figureEditor = false;
+  public json: string;
+  public textEditor: boolean = false;
+  public figureEditor: boolean = false;
   public selected: any;
 
   public disableBtn: boolean = false;
@@ -115,36 +108,33 @@ export class EditorPicComponent implements AfterViewInit {
   //delate button on pictures
   public left: number = 10;
   public top: number = -11;
-  public widthHeight = 10;
+  public widthHeight: number = 10;
 
-  public value = null;
+  public value: string = null;
   public id: string = '';
-  public filterName = '';
+  public filterName: string = '';
 
-  public imageCoordy = null;
+  public imageCoordy: number = null;
 
-  public imageCoordxx = null;
-  public imageCoordyy = null;
-  public reqImage = null;
-  public reqImage1 = null;
+  public imageCoordxx: number = null;
+  public imageCoordyy: number = null;
+  public reqImage: string = null;
+  public reqImage1: string = null;
 
-  public _handleScaling
-  public _setScalingProperties
-
-  public linkk = false;
-  public drawObject = null;
+  public linkk: boolean = false;
+  public drawObject: object = null;
 
   // public objWidthLimit = 170;
   // public objHeightLimit = 170;
 
-  public test = null;
+  // public test = null;
   public path = null;
-  public svg_text = null;
-  public intCountText = null;
+  // public svg_text: string = null;
+  public intCountText: number = null;
 
-  public imageFilter = null;
-  public textPadding = 15;
-  public image;
+  // public imageFilter = null;
+  public textPadding: number = 15;
+  public image: string;
   public objectTypeImage: string = null
 
 
@@ -192,6 +182,9 @@ export class EditorPicComponent implements AfterViewInit {
   public b: number;
   public c: number;
   public d: number;
+
+  private imageEditor: boolean = false;
+
 
 
   constructor(private siteLayout: SiteLayoutComponent,
@@ -241,25 +234,8 @@ export class EditorPicComponent implements AfterViewInit {
     //   res => this.canvasCount = res      
     // );
 
-    console.log(this.canvasCount);
 
   }
-
-  defoultUpdate() {
-
-    $('.owl-theme').on('changed.owl-carousel', (event) => {
-      var current = event.item.index;
-      this.id = $(event.target).find(".owl-item").eq(current).find("img").attr('id');
-      console.log(this.id, current);
-
-    })
-
-  }
-
-  ngOnInit(): void {
-    
-  }
-
 
 
   ngAfterViewInit(): void {
@@ -294,12 +270,6 @@ export class EditorPicComponent implements AfterViewInit {
     let numLeft = this.left;
     let numTop = this.top;
 
-
-
-
-
-
-
     this.canvas.on({
 
 
@@ -317,6 +287,8 @@ export class EditorPicComponent implements AfterViewInit {
         let matrix = e.target.calcTransformMatrix();
         let imageCoordx = matrix[4];
         let imageCoordy = matrix[5];
+        console.log(imageCoordy);
+
         this.siteLayout.imageCoordy = Math.floor(imageCoordy);
         this.siteLayout.imageCoordx = Math.floor(imageCoordx);
         let moveSizeLimit = this.canvas.width / this.b;
@@ -1050,6 +1022,15 @@ export class EditorPicComponent implements AfterViewInit {
 
   }
 
+
+  public defoultUpdate(): void {
+
+    $('.owl-theme').on('changed.owl-carousel', (event) => {
+      var current = event.item.index;
+      this.id = $(event.target).find(".owl-item").eq(current).find("img").attr('id');
+    })
+
+  }
   /*------------------------Block elements------------------------*/
 
   // Block "Size"
@@ -1064,44 +1045,20 @@ export class EditorPicComponent implements AfterViewInit {
   // Block "Add text"
 
 
-  addArrowUp(o, p) {
-    var arrow = '<img src="../assets/img/output-onlinepngtools-up.png" class="distance" style="position:absolute; top:' + p + 'px; left:' + (o - 5) + 'px; cursor:crosshair; width:10px; height:40px;"/>';
-    $(".canvas-container").append(arrow);
-    this.canvas.renderAll();
-  }
 
-  addArrow(o, p) {
-    var arrow = '<img src="../assets/img/green-arrow-clipart-2.png" class="distance" style="position:absolute; top:' + o + 'px; left:' + p + 'px; cursor:crosshair; width:40px; height:10px;"/>';
-    $(".canvas-container").append(arrow);
-    this.canvas.renderAll();
-  }
+  // resizeEbiten(iframe, parentId, aspectRatio) {
+  //   let parent = document.getElementById(parentId);
+  //   let w = parent.clientWidth;
+  //   iframe.width = w;
+  //   iframe.height = w * aspectRatio;
+  //   iframe.contentWindow.addEventListener('resize', () => {
+  //     let w = parent.clientWidth;
+  //     iframe.width = w;
+  //     iframe.height = w * aspectRatio;
+  //   });
+  // }
 
-  addDeleteBtn(x, y) {
-
-    $(".deleteBtn").remove();
-    var btnLeft = x - this.left;
-    var btnTop = y + this.top;
-    var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
-    $(".canvas-container").append(deleteBtn);
-    this.canvas.renderAll();
-  }
-
-
-  resizeEbiten(iframe, parentId, aspectRatio) {
-    let parent = document.getElementById(parentId);
-    let w = parent.clientWidth;
-    iframe.width = w;
-    iframe.height = w * aspectRatio;
-    iframe.contentWindow.addEventListener('resize', () => {
-      let w = parent.clientWidth;
-      iframe.width = w;
-      iframe.height = w * aspectRatio;
-    });
-  }
-
-
-
-  canvasDrawing(target) {
+  public canvasDrawing(target): void {
 
 
     $(document).on('click', ".deleteBtn", (event) => {
@@ -1181,38 +1138,59 @@ export class EditorPicComponent implements AfterViewInit {
     }
   }
 
+  public discardActiveObj(): void {
+    this.props.diametr = 300;
+    this.canvas.discardActiveObject().renderAll()
+  }
 
+  public reRender(): void {
 
-  addText() {
+    this.canvas.getObjects().filter((o) => {
+      if (o.get('type') === 'i-text') {
+        return this.canvas.setActiveObject(o);
+      }
+    });
+
+    if (this.intCountText !== 0) {
+
+      this.canvas.remove(this.canvas.getActiveObject());
+      this.canvas.add(this.props.textStraight);
+      this.selectItemAfterAdded(this.props.textStraight);
+      // this.canvas.setActiveObject(this.props.textStraight);
+      this.canvas.renderAll();
+    }
+
+  }
+
+  public reRender1(): void {
+
+    this.canvas.getObjects().filter((o) => {
+      if (o.get('type') === 'i-text') {
+        return this.canvas.setActiveObject(o);
+      }
+    });
+
+    // if (this.canvasCount !== 0) {
+
+    //   // this.selectItemAfterAdded(this.props.textStraight);
+    //   this.canvas.remove(this.canvas.getActiveObject());
+    //   this.canvas.add(this.props.textStraight);
+    //   this.canvas.renderAll();
+    // }
+
+  }
+
+  public addText(): void {
 
     // console.log(this.props.textCurved);
     this.objectType = true;
 
 
+    $(document).on('click', '.deleteBtn', (event) => {
 
-    let numLeft = this.left;
-    let numTop = this.top;
-
-    function addDeleteBtn(x, y) {
-
-      $(".deleteBtn").remove();
-      var btnLeft = x - numLeft;
-      var btnTop = y + numTop;
-      var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
-      $(".canvas-container").append(deleteBtn);
-
-    }
-
-    this.canvas.on('selection:created', function (e) {
-
-
-      $(".deleteBtn").remove();
-      // console.log('selected');
-      addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
+      this.removeSelected();
 
     });
-
-    console.log('texttt');
 
 
     if (this.props.diametr < 299) {
@@ -1307,11 +1285,21 @@ export class EditorPicComponent implements AfterViewInit {
 
           this.canvas.renderAll();
 
-        }),
+        });
+
+        if (this.dataService.horizontalVertical === true) {
+
+          text.scaleToHeight(textHeight / this.d / 0.3);
+          text.scaleToWidth(textWidth / this.d / 0.3);
+        } else {
 
           text.scaleToHeight(textHeight / this.d / 1.5);
-        text.scaleToWidth(textWidth / this.d / 1.5);
-        console.log(this.a, this.b, this.d);
+          text.scaleToWidth(textWidth / this.d / 1.5);
+        }
+
+        //   text.scaleToHeight(textHeight / this.d / 1.5);
+        // text.scaleToWidth(textWidth / this.d / 1.5);
+        // console.log(this.a, this.b, this.d);
 
         this.extend(text, this.randomId());
 
@@ -1340,7 +1328,7 @@ export class EditorPicComponent implements AfterViewInit {
       if (this.props.diametr === 300) {
         this.intCountText += 1;
         this.canvasCount += 1;
-        console.log(this.canvasCount, 'this.props.diametr === 300');
+        // console.log(this.canvasCount, 'this.props.diametr === 300');
       }
 
       console.log('>280', 'sff');
@@ -1500,10 +1488,10 @@ export class EditorPicComponent implements AfterViewInit {
         }),
 
 
-          console.log(this.a, this.b, this.d);
+          // console.log(this.a, this.b, this.d);
 
 
-        this.extend(text, this.randomId());
+          this.extend(text, this.randomId());
 
         // text.charSpacing = pathLength;
         this.canvas.add(text);
@@ -1524,55 +1512,9 @@ export class EditorPicComponent implements AfterViewInit {
 
   }
 
-
-
-  discardActiveObj() {
-    this.props.diametr = 300;
-    this.canvas.discardActiveObject().renderAll()
-  }
-
-  reRender() {
-
-    this.canvas.getObjects().filter((o) => {
-      if (o.get('type') === 'i-text') {
-        return this.canvas.setActiveObject(o);
-      }
-    });
-
-    if (this.intCountText !== 0) {
-
-      this.canvas.remove(this.canvas.getActiveObject());
-      this.canvas.add(this.props.textStraight);
-      this.selectItemAfterAdded(this.props.textStraight);
-      // this.canvas.setActiveObject(this.props.textStraight);
-      this.canvas.renderAll();
-    }
-
-  }
-
-  reRender1() {
-
-    this.canvas.getObjects().filter((o) => {
-      if (o.get('type') === 'i-text') {
-        return this.canvas.setActiveObject(o);
-      }
-    });
-
-    // if (this.canvasCount !== 0) {
-
-    //   // this.selectItemAfterAdded(this.props.textStraight);
-    //   this.canvas.remove(this.canvas.getActiveObject());
-    //   this.canvas.add(this.props.textStraight);
-    //   this.canvas.renderAll();
-    // }
-
-  }
-
-
-
   // Block "Add images"
 
-  getImgPolaroid(event: any) {
+  public getImgPolaroid(event: any): void {
 
     $(document).on('click', '.deleteBtn', (event) => {
 
@@ -1584,8 +1526,6 @@ export class EditorPicComponent implements AfterViewInit {
     this.objectTypeImage = 'image'
 
     this.canvasCount += 1;
-    console.log(this.canvasCount, 'this.canvasCount');
-
     const el = event;
     let scale = 1;
 
@@ -1931,9 +1871,9 @@ export class EditorPicComponent implements AfterViewInit {
 
         this.selectItemAfterAdded(image);
 
-        setTimeout(() => {
-          this.canvas.discardActiveObject().renderAll();
-        }, 1500);
+      setTimeout(() => {
+        this.canvas.discardActiveObject().renderAll();
+      }, 1500);
       // this.addDeleteBtn(image.oCoords.mb.x, image.oCoords.mb.y);
 
 
@@ -1951,33 +1891,15 @@ export class EditorPicComponent implements AfterViewInit {
     // event.target.setCoords()
   }
 
-
   // Block "Upload Image"
 
-  addImageOnCanvas(url) {
+  public addImageOnCanvas(url): void {
 
-    let numLeft = this.left;
-    let numTop = this.top;
+    $(document).on('click', '.deleteBtn', (event) => {
 
-    function addDeleteBtn(x, y) {
-
-      $(".deleteBtn").remove();
-      var btnLeft = x - numLeft;
-      var btnTop = y + numTop;
-      var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px; cursor:pointer; width:25px; height:25px;"/>';
-      $(".canvas-container").append(deleteBtn);
-
-    }
-
-    this.canvas.on('selection:created', function (e) {
-
-
-      $(".deleteBtn").remove();
-      // console.log('selected');
-      addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
+      this.removeSelected();
 
     });
-
 
 
     $(document).on('click', ".deleteBtn", (event) => {
@@ -2135,17 +2057,11 @@ export class EditorPicComponent implements AfterViewInit {
 
               // scale = this.dataService.scaleKey;
             }
-
-
           }
-
         }
 
 
-
-
         this.dataService.calcEndPrise();
-
 
         const imageWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) - 2 * ((window.innerWidth - this.dataService.widthKey * window.innerWidth) / this.b + (window.innerWidth - this.dataService.widthKey * window.innerWidth) / 40);
         const imageHeight = imageWidth * this.c;
@@ -2355,30 +2271,19 @@ export class EditorPicComponent implements AfterViewInit {
             this.canvas.renderAll();
           }),
 
-          this.selectItemAfterAdded(image1)
-        this.canvas.discardActiveObject().renderAll();
-        this.addDeleteBtn(image1.oCoords.mb.x, image1.oCoords.mb.y);
+          this.selectItemAfterAdded(image1);
+
+        setTimeout(() => {
+          this.canvas.discardActiveObject().renderAll();
+        }, 1500);
+
       });
     }
   }
 
-  readUrl(event) {
-    if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (readerEvent) => {
-        this.url = readerEvent.target.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
-    }
-  }
-
-  removeWhite(url) {
-    this.url = '';
-  }
-
   // Block "Add figure"
 
-  addFigure(figure) {
+  public addFigure(figure): void {
 
 
 
@@ -2489,8 +2394,21 @@ export class EditorPicComponent implements AfterViewInit {
 
   /*Canvas*/
 
+  public readUrl(event): void {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (readerEvent) => {
+        this.url = readerEvent.target.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
 
-  public moveWithFormat(scaleKey, scaleBlock) {
+  public removeWhite(url): void {
+    this.url = '';
+  }
+
+  public moveWithFormat(scaleKey, scaleBlock): void {
     console.log(this.a, this.b, this.c, 'scale', scaleBlock, this.d, scaleKey);
     this.scaleKey = 0;
 
@@ -2641,9 +2559,7 @@ export class EditorPicComponent implements AfterViewInit {
 
   }
 
-
-
-  cleanSelect() {
+  public cleanSelect(): void {
 
     // this.canvas.discardActiveObject().renderAll();
     // var Group = new fabric.Group([...this.canvas.getObjects()]);
@@ -2681,16 +2597,18 @@ export class EditorPicComponent implements AfterViewInit {
 
   }
 
-  selectItemAfterAdded(obj) {
-    this.getOpacity()
+  private selectItemAfterAdded(obj): void {
+    // this.getOpacity();
     this.canvas.discardActiveObject().renderAll();
     this.canvas.setActiveObject(obj);
   }
 
-  setCanvasFill() {
+  public setCanvasFill(): void {
     // if (!this.props.canvasImage) {
     this.canvas.backgroundColor = this.props.canvasFill;
     this.canvas.renderAll();
+    console.log(this.props.canvasFill);
+
 
     const inputProductColor = this.siteLayout.inputColor.nativeElement;
     inputProductColor.style.backgroundColor = this.props.canvasFill;
@@ -2703,7 +2621,7 @@ export class EditorPicComponent implements AfterViewInit {
     // }
   }
 
-  drawFill() {
+  public drawFill(): void {
     // if (!this.props.canvasImage) {
     // this.canvas.backgroundColor = this.props.canvasFill;
     this.canvas.renderAll();
@@ -2712,7 +2630,7 @@ export class EditorPicComponent implements AfterViewInit {
     // }
   }
 
-  extend(obj, id) {
+  public extend(obj, id): void {
     obj.toObject = ((toObject) => {
       return function () {
         return fabric.util.object.extend(toObject.call(this), {
@@ -2722,7 +2640,7 @@ export class EditorPicComponent implements AfterViewInit {
     })(obj.toObject);
   }
 
-  productsTypeColor() {
+  public productsTypeColor(): void {
 
 
     if (this.siteLayout.allColors === true) {
@@ -2740,27 +2658,7 @@ export class EditorPicComponent implements AfterViewInit {
 
   }
 
-  // productsTypeSise() {
-
-
-  //   if (this.siteLayout.allColors === true) {
-
-  //     this.siteLayout.productBrandSizes = this.siteLayout.arrColor[0];
-  //     this.canvas.backgroundColor = this.siteLayout.arrColor[0];
-
-  //   } else if (this.siteLayout.allColors === false) {
-
-  //     this.props.canvasFill = this.siteLayout.productBrandColors[0];
-  //     this.canvas.backgroundColor = this.siteLayout.productBrandColors[0];
-
-  //     // this.canvas.renderAll();
-  //   }
-
-  // }
-
-
-  setCanvasImage() {
-
+  public setCanvasImage(): void {
 
     const image = this.props.canvasImage;
     this.canvas.setBackgroundImage(image,
@@ -2813,98 +2711,35 @@ export class EditorPicComponent implements AfterViewInit {
 
   }
 
-
-
-  // sizeFormat() {
-
-  //   // const image = this.props.canvasImage;
-  //   // this.canvas.setBackgroundImage(image,
-  //   //   this.canvas.renderAll.bind(this.canvas), {)
-  //   const square = new fabric.Rect({
-
-  //     width: this.canvas.width - 2 * (this.canvas.width / 4.37 + this.canvas.width / 40),
-  //     height: this.canvas.height - 2 * (this.canvas.width / 4.37 + this.canvas.width / 40),
-  //     left: this.canvas.width / 40 + this.canvas.width / 4.37,
-  //     top: this.canvas.width / 40 + this.canvas.width / 4.37,
-  //     // borderColor: '#000',
-  //     // fill: '#000',
-  //     // Color: '#000',
-  //     hasControls: false,
-  //     lockMovementX: true,
-  //     lockMovementY: true,
-  //     // strokeWidth: 5,
-  //     strokeDashArray: [7],
-  //     stroke: '#474747',
-  //     strokeWidth: 2,
-  //     fill: 'rgba(0,0,0,0)',
-  //     selectable: false,
-  //     evented: false,
-
-  //   });
-
-  //   this.canvas.add(square);
-  //    console.log(this.canvas.width / 40 + this.canvas.width / 4.37);
-
-
-  // this.canvas.add(square);
-
-
-  // if (checkWidth = 640) {
-  //   this.canvas.add(square);
-  //   return
-  // }
-
-  // if (checkWidth > 640 && checkWidth < 1007) {
-  //   this.canvas.add(square);
-  //   return
-  // }
-
-  // if (checkWidth > 1007) {
-  //   this.canvas.add(square);
-  //   return
-  // }
-
-  // this.canvasCount -=1;
-  // this.canvas.renderAll();
-  // this.canvas.setActiveObject(square); 
-  // }
-
-  // setCanvasImage1() {
-
-  //   const image2 = this.props.canvasImage;
-  //   this.canvas1.setBackgroundImage(image2,
-  //     this.canvas1.renderAll.bind(this.canvas1), {
-  //     opacity: 1,
-  //     angle: 0,
-  //     left: 0,
-  //     top: 0,
-  //     originX: 'left',
-  //     originY: 'top',
-  //     crossOrigin: 'anonymous',
-
-  //     scaleX: this.canvas1.width / 360,
-  //     scaleY: this.canvas1.height / 460,
-  //     // width: this.siteLayout.canvasHtmlWidth,
-  //     // height: this.siteLayout.canvasHtmlHeight + 93
-  //     // crossOrigin: 'anonymous'
-  //     // this.canvas.setBackgroundImage(img);
-  //     // this.canvas.requestRenderAll();
-  //   });
-  //   console.log(this.canvas1.toSVG());
-
-
-  // }
-
-  randomId() {
+  private randomId(): number {
     return Math.floor(Math.random() * 999999) + 1;
   }
 
+  private addArrowUp(o, p): void {
+    var arrow = '<img src="../assets/img/output-onlinepngtools-up.png" class="distance" style="position:absolute; top:' + p + 'px; left:' + (o - 5) + 'px; cursor:crosshair; width:10px; height:40px;"/>';
+    $(".canvas-container").append(arrow);
+    this.canvas.renderAll();
+  }
 
+  private addArrow(o, p): void {
+    var arrow = '<img src="../assets/img/green-arrow-clipart-2.png" class="distance" style="position:absolute; top:' + o + 'px; left:' + p + 'px; cursor:crosshair; width:40px; height:10px;"/>';
+    $(".canvas-container").append(arrow);
+    this.canvas.renderAll();
+  }
 
+  private addDeleteBtn(x, y): void {
+
+    $(".deleteBtn").remove();
+    var btnLeft = x - this.left;
+    var btnTop = y + this.top;
+    var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
+    $(".canvas-container").append(deleteBtn);
+    this.canvas.renderAll();
+  }
 
   /*------------------------Global actions for element------------------------*/
 
-  getActiveStyle(styleName, object) {
+  private getActiveStyle(styleName, object): any {
     object = object || this.canvas.getActiveObject();
     if (!object) { return ''; }
 
@@ -2916,7 +2751,7 @@ export class EditorPicComponent implements AfterViewInit {
   }
 
 
-  setActiveStyle(styleName, value: string | number, object: fabric.IText) {
+  private setActiveStyle(styleName, value: string | number, object: fabric.IText) {
     object = object || this.canvas.getActiveObject() as fabric.IText;
     if (!object) { return; }
     if (object.setSelectionStyles && object.isEditing) {
@@ -2975,21 +2810,21 @@ export class EditorPicComponent implements AfterViewInit {
   }
 
 
-  getActiveProp(name) {
+  private getActiveProp(name): any {
     const object = this.canvas.getActiveObject();
     if (!object) { return ''; }
 
     return object[name] || '';
   }
 
-  setActiveProp(name, value) {
+  private setActiveProp(name, value): any {
     const object = this.canvas.getActiveObject();
     if (!object) { return; }
     object.set(name, value).setCoords();
     this.canvas.renderAll();
   }
 
-  clone() {
+  public clone(): void {
     // this.defoultUpdate()
 
     const activeObject = this.canvas.getActiveObject();
@@ -3040,14 +2875,12 @@ export class EditorPicComponent implements AfterViewInit {
     }
   }
 
-  getId() {
+  private getId() {
     this.props.id = this.canvas.getActiveObject().toObject().id;
     this.canvas.toSVG();
-    console.log(this.canvas);
-
   }
 
-  setId() {
+  public setId() {
     const val = this.props.id;
     const complete = this.canvas.getActiveObject().toObject();
     // console.log(complete);
@@ -3058,65 +2891,58 @@ export class EditorPicComponent implements AfterViewInit {
   }
 
 
-
-
-  getDistance() {
+  public getDistance(): void {
     this.props.distance = this.getActiveStyle('distance', null) * 10;
-    console.log('getDistance');
 
   }
 
-  setDistance() {
+  public setDistance(): void {
     this.setActiveStyle('distance', parseInt(this.props.distance, 10) / 100, null);
   }
 
-  getOpacity() {
+  public getOpacity(): void {
     this.props.opacity = this.getActiveStyle('opacity', null) * 100;
   }
 
-  setOpacity() {
+  public setOpacity(): void {
     this.setActiveStyle('opacity', parseInt(this.props.opacity, 10) / 100, null);
   }
 
-  getFill() {
+  public getFill(): void {
     this.props.fill = this.getActiveStyle('fill', null);
   }
 
-  setFill() {
+  public setFill(): void {
     this.setActiveStyle('fill', this.props.fill, null);
   }
 
-  getCharSpacing() {
+  public getCharSpacing(): void {
     this.props.charSpacing = this.getActiveStyle('charSpacing', null);
   }
 
-  setCharSpacing() {
+  public setCharSpacing(): void {
 
     this.setActiveStyle('charSpacing', this.props.charSpacing, null);
   }
 
-  getFontSize() {
+  public getFontSize(): void {
     this.props.fontSize = this.getActiveStyle('fontSize', null);
-    console.log('getFontSize');
-
   }
 
-  setFontSize() {
+  public setFontSize(): void {
     this.setActiveStyle('fontSize', parseInt(this.props.fontSize, 10), null);
-    console.log('setFontSize');
-
   }
 
-  getBold() {
+  public getBold(): void {
     this.props.fontWeight = this.getActiveStyle('fontWeight', null);
   }
 
-  setBold() {
+  public setBold(): void {
     this.props.fontWeight = !this.props.fontWeight;
     this.setActiveStyle('fontWeight', this.props.fontWeight ? 'bold' : '', null);
   }
 
-  setFontStyle() {
+  public setFontStyle(): void {
     this.props.fontStyle = !this.props.fontStyle;
     if (this.props.fontStyle) {
       this.setActiveStyle('fontStyle', 'italic', null);
@@ -3125,11 +2951,11 @@ export class EditorPicComponent implements AfterViewInit {
     }
   }
 
-  getTextDecoration() {
+  public getTextDecoration(): void {
     this.props.TextDecoration = this.getActiveStyle('textDecoration', null);
   }
 
-  setTextDecoration(value) {
+  public setTextDecoration(value): void {
     let iclass = this.props.TextDecoration;
     if (iclass.includes(value)) {
       iclass = iclass.replace(RegExp(value, 'g'), '');
@@ -3140,36 +2966,33 @@ export class EditorPicComponent implements AfterViewInit {
     this.setActiveStyle('textDecoration', this.props.TextDecoration, null);
   }
 
-  hasTextDecoration(value) {
+  public hasTextDecoration(value): boolean {
     return this.props.TextDecoration.includes(value);
   }
 
-  getTextAlign() {
+  public getTextAlign(): void {
     this.props.textAlign = this.getActiveProp('textAlign');
   }
 
-  setTextAlign(value) {
+  public setTextAlign(value): void {
     this.props.textAlign = value;
     this.setActiveProp('textAlign', this.props.textAlign);
   }
 
-  getFontFamily() {
+  public getFontFamily(): void {
     this.props.fontFamily = this.getActiveProp('fontFamily');
   }
 
-  setFontFamily() {
+  public setFontFamily(): void {
     this.setActiveProp('fontFamily', this.props.fontFamily);
   }
 
   /*System*/
 
+  public removeSelected(): void {
 
-  removeSelected() {
-
-    
 
     // if (this.canvasCount === 1 && this.objectTypeImage === 'image') {
-      
 
     //   this.canvas.remove(...this.canvas.getObjects());
 
@@ -3218,8 +3041,6 @@ export class EditorPicComponent implements AfterViewInit {
     }
     if (activeObject) {
       this.canvas.remove(activeObject);
-      
-
       // this.textString = '';
     } else if (activeGroup) {
       // console.log('group');
@@ -3230,14 +3051,9 @@ export class EditorPicComponent implements AfterViewInit {
       });
     }
 
-    
-
-    console.log(this.canvasCount, 'soso');
-
-
   }
 
-  bringToFront() {
+  public bringToFront(): void {
     const activeObject = this.canvas.getActiveObject();
     const activeGroup = this.canvas.getActiveObjects();
 
@@ -3256,7 +3072,7 @@ export class EditorPicComponent implements AfterViewInit {
     }
   }
 
-  sendToBack() {
+  public sendToBack(): void {
     const activeObject = this.canvas.getActiveObject();
     const activeGroup = this.canvas.getActiveObjects();
 
@@ -3276,7 +3092,7 @@ export class EditorPicComponent implements AfterViewInit {
     }
   }
 
-  confirmClear() {
+  public confirmClear(): void {
 
     if (confirm('Are you sure?')) {
       // location.reload(); 
@@ -3292,30 +3108,9 @@ export class EditorPicComponent implements AfterViewInit {
     }
   }
 
-
-
-  // grayScale(url) {
-  //   console.log(url);
-  //   const activeObject = this.canvas.getActiveObject();
-
-  //   fabric.Image.fromURL(url, (image) => {
-  //     var filter =  fabric.Image.filters.Grayscale();
-  //     image.filters.push(filter);
-  //     // image.applyFilters();
-  //     // this.canvas.add(image);
-  //     image.applyFilters( this.canvas.renderAll.bind( this.canvas ) );
-
-  //     this.canvas.renderAll();
-
-  //   })
-
-  // }
-
-
-  rasterize() {
+  public rasterize(): void {
 
     const image = new Image(360, 460);
-
 
     // const w = window.open('');
     // w.document.write(this.canvas.toSVG());
@@ -3343,7 +3138,7 @@ export class EditorPicComponent implements AfterViewInit {
     // this.saveCanvasToJSON();
 
     this.canvas.backgroundImage = null;
-    // this.canvas.backgroundColor = null;
+    this.canvas.backgroundColor = null;
 
 
 
@@ -3411,13 +3206,7 @@ export class EditorPicComponent implements AfterViewInit {
 
   }
 
-  // cloneCanvas() {
-  //   this.canvas1.loadFromJSON(JSON.stringify(this.canvas),
-  //     () => this.canvas1.renderAll());
-
-  // }
-
-  rasterizeSVG() {
+  public rasterizeSVG(): void {
 
     const image = new Image(360, 460);
     // image.scaleToWidth(150);
@@ -3484,14 +3273,10 @@ export class EditorPicComponent implements AfterViewInit {
 
   }
 
-  topp() {
-    // console.log(this.canvas._activeObject.top);
-
-  }
-
   rasterizeJSON() {
 
     this.json = JSON.stringify(this.canvas, null, 2);
+
   }
 
   resetPanels() {
@@ -3499,5 +3284,11 @@ export class EditorPicComponent implements AfterViewInit {
     this.imageEditor = false;
     this.figureEditor = false;
   }
+
+  // cloneCanvas() {
+  //   this.canvas1.loadFromJSON(JSON.stringify(this.canvas),
+  //     () => this.canvas1.renderAll());
+
+  // }
 
 }

@@ -11,7 +11,7 @@ import { Material } from '../shared/classes/material.service';
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
-  styleUrls: ['./login-page.component.css']
+  styleUrls: ['./login-page.component.scss']
 })
 export class LoginPageComponent implements OnInit {
 
@@ -22,7 +22,6 @@ export class LoginPageComponent implements OnInit {
 
   ngOnInit(): void {
 
-    
     this.form = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email]),
       password: new FormControl(null, [Validators.required, Validators.minLength(6)])
@@ -38,27 +37,25 @@ export class LoginPageComponent implements OnInit {
 
       if (params['registered']) {
         console.log(params);
-        Material.mat('Created. Now you can login')
-        alert('Created. Now you can login')
+        Material.mat('Created. Now you can login');
+        alert('Created. Now you can login');
 
       } else if (params['accessDenied']) {
-        Material.mat('first log in to the system ')
-        alert('first log in to the system ')
-
-        console.log('OOOO');
+        Material.mat('first log in to the system');
+        alert('first log in to the system ');
 
       }
     })
   }
 
-  ngOnDestroy(): void {
+   ngOnDestroy(): void {
     if (this.aSub) {
       this.aSub.unsubscribe()
     }
 
   }
 
-  onSubmit() {
+  public onSubmit(): void {
 
     this.form.disable()
     this.aSub = this.auth.login(this.form.value).subscribe(

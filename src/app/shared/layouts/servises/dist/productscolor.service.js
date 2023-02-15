@@ -13,7 +13,7 @@ var ProdutsColorService = /** @class */ (function () {
         this.http = http;
     }
     ProdutsColorService.prototype.fetch = function () {
-        return this.http.get('http://localhost:5000/api/productcolor').pipe();
+        return this.http.get('/api/productcolor').pipe();
     };
     ProdutsColorService = __decorate([
         core_1.Injectable({

@@ -25,11 +25,11 @@ var AuthServices = /** @class */ (function () {
         return this.http.get('api/category').pipe();
     };
     AuthServices.prototype.register = function (user) {
-        return this.http.post('http://localhost:5000/api/auth/register', user);
+        return this.http.post('/api/auth/register', user);
     };
     AuthServices.prototype.login = function (user) {
         var _this = this;
-        return this.http.post('http://localhost:5000/api/auth/login', user).
+        return this.http.post('/api/auth/login', user).
             pipe(operators_1.tap(function (_a) {
             var token = _a.token;
             localStorage.setItem('auth-token', token);

@@ -145,7 +145,8 @@ export class SiteLayoutComponent implements AfterViewInit {
   public canvasCenteredPosition;
 
   public linkeBrand: string = '';
-
+  public productBrandsLinke0 = '';
+  public productBrandsSrc0 = '';
 
   // public marvelHeroes =  this.productsColor.filter((hero) => {
   //   return hero.hex == this.productsColor[this.index].hex;
@@ -218,7 +219,7 @@ export class SiteLayoutComponent implements AfterViewInit {
 
 
     this.initFromServer();
-    
+
   }
 
 
@@ -256,7 +257,7 @@ export class SiteLayoutComponent implements AfterViewInit {
     this.activeSlides = data;
     let index = this.activeSlides.startPosition;
 
-    
+
 
     let src = $('.owlCarousel').find(".owl-item").eq(index).find("img").attr('src');
     $('.divv').text(src)
@@ -290,15 +291,17 @@ export class SiteLayoutComponent implements AfterViewInit {
 
     if (checkWidth < 800) {
       console.log(800, 'ok');
-
+      // this.canvasHtmlWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) * 1.5;
+      // this.canvasHtmlHeight = this.canvasHtmlWidth * this.dataService.heightKey * 1.5;
+      // this.canvasCenteredPosition = (window.innerWidth / this.dataService.positionKey) * 1.5;
     }
 
     $('#myCarousel').trigger('refresh.owl.carousel');
 
 
-    this.canvasHtmlWidth = window.innerWidth - this.dataService.widthKey * window.innerWidth;
+    this.canvasHtmlWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth);
     this.canvasHtmlHeight = this.canvasHtmlWidth * this.dataService.heightKey;
-    this.canvasCenteredPosition = window.innerWidth / this.dataService.positionKey;
+    this.canvasCenteredPosition = (window.innerWidth / this.dataService.positionKey);
   }
 
   Resize() {
@@ -467,7 +470,8 @@ export class SiteLayoutComponent implements AfterViewInit {
     this.productscolorService.fetch().subscribe(
       (res: ProductsColor[]) => {
         this.productBrands = res;
-
+        this.productBrandsLinke0 = res[0].linkeBrand;
+        this.productBrandsSrc0 = res[0].src;
       }
     )
 
@@ -488,6 +492,16 @@ export class SiteLayoutComponent implements AfterViewInit {
         this.horVert = res;
       }
     );
+
+    let checkWidth = window.innerWidth;
+
+
+    if (checkWidth < 800) {
+      console.log(800, 'ok');
+      this.canvasHtmlWidth = (window.innerWidth - this.dataService.widthKey * window.innerWidth) * 1.5;
+      this.canvasHtmlHeight = (this.canvasHtmlWidth * this.dataService.heightKey) * 1.5;
+      this.canvasCenteredPosition = (window.innerWidth / this.dataService.positionKey) * 1.5;
+    }
 
 
     this.canvasHtmlWidth = this.dataService.canvasHtmlWidth;
@@ -511,11 +525,11 @@ export class SiteLayoutComponent implements AfterViewInit {
         image1: this.canvas.reqImage1
       }
 
-      // this.httpService.sendEmail("http://localhost:5000/sendmail", image)
-      // data => {
-      //   let res: any = data;
-      //   console.log('all is ok');
-      // }
+      this.httpService.sendEmail("/sendmail", image)
+      data => {
+        let res: any = data;
+        console.log('all is ok');
+      }
     } else {
       return
     }
@@ -559,7 +573,7 @@ export class SiteLayoutComponent implements AfterViewInit {
 
   }
 
-  
+
 
 
   public selectPicture() {
@@ -680,9 +694,9 @@ export class SiteLayoutComponent implements AfterViewInit {
     this.canvas.setCanvasFill();
   }
 
-  public drawFill() {
-    this.canvas.drawFill();
-  }
+  // public drawFill() {
+  //   this.canvas.drawFill();
+  // }
 
   public productSelectWithoutScale = true;
 
@@ -833,9 +847,9 @@ export class SiteLayoutComponent implements AfterViewInit {
     this.canvas.setCharSpacing();
   }
 
-  public rasterizeJSON() {
-    this.canvas.rasterizeJSON();
-  }
+  // public rasterizeJSON() {
+  //   this.canvas.rasterizeJSON();
+  // }
 
   public link() {
     console.log(this.canvas.linkk);

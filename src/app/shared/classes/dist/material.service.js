@@ -85,6 +85,10 @@ var Material = /** @class */ (function () {
             });
         });
     };
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   var elems = document.querySelectorAll('select');
+    //   var instances = M.FormSelect.init(elems, options);
+    // });
     Material.scrolSpy = function () {
         document.addEventListener('DOMContentLoaded', function () {
             var elems = document.querySelectorAll('.scrollspy');

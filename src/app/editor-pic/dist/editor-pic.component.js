@@ -42,13 +42,12 @@ var EditorPicComponent = /** @class */ (function () {
             textStraight: null,
             brandName: ''
         };
+        // public canvasHtml;
         // public canvasHtml1;
         this.textString = '';
         this.url = '';
         this.objectType = false;
-        this.globalEditor = false;
         this.textEditor = false;
-        this.imageEditor = false;
         this.figureEditor = false;
         this.disableBtn = false;
         this.canvasCount = 0;
@@ -69,11 +68,11 @@ var EditorPicComponent = /** @class */ (function () {
         this.drawObject = null;
         // public objWidthLimit = 170;
         // public objHeightLimit = 170;
-        this.test = null;
+        // public test = null;
         this.path = null;
-        this.svg_text = null;
+        // public svg_text: string = null;
         this.intCountText = null;
-        this.imageFilter = null;
+        // public imageFilter = null;
         this.textPadding = 15;
         this.objectTypeImage = null;
         // public checked = false;
@@ -110,6 +109,7 @@ var EditorPicComponent = /** @class */ (function () {
             opacity: 0.7,
             affectStroke: false
         };
+        this.imageEditor = false;
         this.productsService.fetch().subscribe(function (res) {
             _this.props.canvasImage = res[1].type;
         });
@@ -126,7 +126,6 @@ var EditorPicComponent = /** @class */ (function () {
         // this.dataService.canvasCount1.subscribe(
         //   res => this.canvasCount = res      
         // );
-        console.log(this.canvasCount);
     }
     EditorPicComponent.prototype.onResize = function (event) {
         // --!
@@ -139,16 +138,6 @@ var EditorPicComponent = /** @class */ (function () {
         // this.canvas1.setHeight(this.siteLayout.canvasHtmlHeight);
         // this.setCanvasImage1();
         // this.canvas1.renderAll();
-    };
-    EditorPicComponent.prototype.defoultUpdate = function () {
-        var _this = this;
-        $('.owl-theme').on('changed.owl-carousel', function (event) {
-            var current = event.item.index;
-            _this.id = $(event.target).find(".owl-item").eq(current).find("img").attr('id');
-            console.log(_this.id, current);
-        });
-    };
-    EditorPicComponent.prototype.ngOnInit = function () {
     };
     EditorPicComponent.prototype.ngAfterViewInit = function () {
         // setup front side canvas
@@ -186,6 +175,7 @@ var EditorPicComponent = /** @class */ (function () {
                 var matrix = e.target.calcTransformMatrix();
                 var imageCoordx = matrix[4];
                 var imageCoordy = matrix[5];
+                console.log(imageCoordy);
                 _this.siteLayout.imageCoordy = Math.floor(imageCoordy);
                 _this.siteLayout.imageCoordx = Math.floor(imageCoordx);
                 var moveSizeLimit = _this.canvas.width / _this.b;
@@ -724,6 +714,13 @@ var EditorPicComponent = /** @class */ (function () {
             // freeDrawing=false; // **Disables line drawing
         });
     };
+    EditorPicComponent.prototype.defoultUpdate = function () {
+        var _this = this;
+        $('.owl-theme').on('changed.owl-carousel', function (event) {
+            var current = event.item.index;
+            _this.id = $(event.target).find(".owl-item").eq(current).find("img").attr('id');
+        });
+    };
     /*------------------------Block elements------------------------*/
     // Block "Size"
     // changeSize() {
@@ -732,35 +729,17 @@ var EditorPicComponent = /** @class */ (function () {
     //   this.canvas.renderAll()
     // }
     // Block "Add text"
-    EditorPicComponent.prototype.addArrowUp = function (o, p) {
-        var arrow = '<img src="../assets/img/output-onlinepngtools-up.png" class="distance" style="position:absolute; top:' + p + 'px; left:' + (o - 5) + 'px; cursor:crosshair; width:10px; height:40px;"/>';
-        $(".canvas-container").append(arrow);
-        this.canvas.renderAll();
-    };
-    EditorPicComponent.prototype.addArrow = function (o, p) {
-        var arrow = '<img src="../assets/img/green-arrow-clipart-2.png" class="distance" style="position:absolute; top:' + o + 'px; left:' + p + 'px; cursor:crosshair; width:40px; height:10px;"/>';
-        $(".canvas-container").append(arrow);
-        this.canvas.renderAll();
-    };
-    EditorPicComponent.prototype.addDeleteBtn = function (x, y) {
-        $(".deleteBtn").remove();
-        var btnLeft = x - this.left;
-        var btnTop = y + this.top;
-        var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
-        $(".canvas-container").append(deleteBtn);
-        this.canvas.renderAll();
-    };
-    EditorPicComponent.prototype.resizeEbiten = function (iframe, parentId, aspectRatio) {
-        var parent = document.getElementById(parentId);
-        var w = parent.clientWidth;
-        iframe.width = w;
-        iframe.height = w * aspectRatio;
-        iframe.contentWindow.addEventListener('resize', function () {
-            var w = parent.clientWidth;
-            iframe.width = w;
-            iframe.height = w * aspectRatio;
-        });
-    };
+    // resizeEbiten(iframe, parentId, aspectRatio) {
+    //   let parent = document.getElementById(parentId);
+    //   let w = parent.clientWidth;
+    //   iframe.width = w;
+    //   iframe.height = w * aspectRatio;
+    //   iframe.contentWindow.addEventListener('resize', () => {
+    //     let w = parent.clientWidth;
+    //     iframe.width = w;
+    //     iframe.height = w * aspectRatio;
+    //   });
+    // }
     EditorPicComponent.prototype.canvasDrawing = function (target) {
         var _this = this;
         $(document).on('click', ".deleteBtn", function (event) {
@@ -830,25 +809,46 @@ var EditorPicComponent = /** @class */ (function () {
                 break;
         }
     };
+    EditorPicComponent.prototype.discardActiveObj = function () {
+        this.props.diametr = 300;
+        this.canvas.discardActiveObject().renderAll();
+    };
+    EditorPicComponent.prototype.reRender = function () {
+        var _this = this;
+        this.canvas.getObjects().filter(function (o) {
+            if (o.get('type') === 'i-text') {
+                return _this.canvas.setActiveObject(o);
+            }
+        });
+        if (this.intCountText !== 0) {
+            this.canvas.remove(this.canvas.getActiveObject());
+            this.canvas.add(this.props.textStraight);
+            this.selectItemAfterAdded(this.props.textStraight);
+            // this.canvas.setActiveObject(this.props.textStraight);
+            this.canvas.renderAll();
+        }
+    };
+    EditorPicComponent.prototype.reRender1 = function () {
+        var _this = this;
+        this.canvas.getObjects().filter(function (o) {
+            if (o.get('type') === 'i-text') {
+                return _this.canvas.setActiveObject(o);
+            }
+        });
+        // if (this.canvasCount !== 0) {
+        //   // this.selectItemAfterAdded(this.props.textStraight);
+        //   this.canvas.remove(this.canvas.getActiveObject());
+        //   this.canvas.add(this.props.textStraight);
+        //   this.canvas.renderAll();
+        // }
+    };
     EditorPicComponent.prototype.addText = function () {
         var _this = this;
         // console.log(this.props.textCurved);
         this.objectType = true;
-        var numLeft = this.left;
-        var numTop = this.top;
-        function addDeleteBtn(x, y) {
-            $(".deleteBtn").remove();
-            var btnLeft = x - numLeft;
-            var btnTop = y + numTop;
-            var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
-            $(".canvas-container").append(deleteBtn);
-        }
-        this.canvas.on('selection:created', function (e) {
-            $(".deleteBtn").remove();
-            // console.log('selected');
-            addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
+        $(document).on('click', '.deleteBtn', function (event) {
+            _this.removeSelected();
         });
-        console.log('texttt');
         if (this.props.diametr < 299) {
             console.log('<280');
             this.props.inputDisabled = 'inputDisabled';
@@ -911,10 +911,18 @@ var EditorPicComponent = /** @class */ (function () {
                         // console.log('text');
                     }
                     _this.canvas.renderAll();
-                }),
+                });
+                if (this.dataService.horizontalVertical === true) {
+                    text_1.scaleToHeight(textHeight / this.d / 0.3);
+                    text_1.scaleToWidth(textWidth / this.d / 0.3);
+                }
+                else {
                     text_1.scaleToHeight(textHeight / this.d / 1.5);
-                text_1.scaleToWidth(textWidth / this.d / 1.5);
-                console.log(this.a, this.b, this.d);
+                    text_1.scaleToWidth(textWidth / this.d / 1.5);
+                }
+                //   text.scaleToHeight(textHeight / this.d / 1.5);
+                // text.scaleToWidth(textWidth / this.d / 1.5);
+                // console.log(this.a, this.b, this.d);
                 this.extend(text_1, this.randomId());
                 // text.charSpacing = pathLength;
                 this.canvas.add(text_1);
@@ -935,7 +943,7 @@ var EditorPicComponent = /** @class */ (function () {
             if (this.props.diametr === 300) {
                 this.intCountText += 1;
                 this.canvasCount += 1;
-                console.log(this.canvasCount, 'this.props.diametr === 300');
+                // console.log(this.canvasCount, 'this.props.diametr === 300');
             }
             console.log('>280', 'sff');
             // $(document).on('click', ".deleteBtn", (event) => {
@@ -1053,8 +1061,8 @@ var EditorPicComponent = /** @class */ (function () {
                     }
                     _this.canvas.renderAll();
                 }),
-                    console.log(this.a, this.b, this.d);
-                this.extend(text_2, this.randomId());
+                    // console.log(this.a, this.b, this.d);
+                    this.extend(text_2, this.randomId());
                 // text.charSpacing = pathLength;
                 this.canvas.add(text_2);
                 this.canvas.centerObjectH(text_2);
@@ -1070,39 +1078,6 @@ var EditorPicComponent = /** @class */ (function () {
             }
         }
     };
-    EditorPicComponent.prototype.discardActiveObj = function () {
-        this.props.diametr = 300;
-        this.canvas.discardActiveObject().renderAll();
-    };
-    EditorPicComponent.prototype.reRender = function () {
-        var _this = this;
-        this.canvas.getObjects().filter(function (o) {
-            if (o.get('type') === 'i-text') {
-                return _this.canvas.setActiveObject(o);
-            }
-        });
-        if (this.intCountText !== 0) {
-            this.canvas.remove(this.canvas.getActiveObject());
-            this.canvas.add(this.props.textStraight);
-            this.selectItemAfterAdded(this.props.textStraight);
-            // this.canvas.setActiveObject(this.props.textStraight);
-            this.canvas.renderAll();
-        }
-    };
-    EditorPicComponent.prototype.reRender1 = function () {
-        var _this = this;
-        this.canvas.getObjects().filter(function (o) {
-            if (o.get('type') === 'i-text') {
-                return _this.canvas.setActiveObject(o);
-            }
-        });
-        // if (this.canvasCount !== 0) {
-        //   // this.selectItemAfterAdded(this.props.textStraight);
-        //   this.canvas.remove(this.canvas.getActiveObject());
-        //   this.canvas.add(this.props.textStraight);
-        //   this.canvas.renderAll();
-        // }
-    };
     // Block "Add images"
     EditorPicComponent.prototype.getImgPolaroid = function (event) {
         var _this = this;
@@ -1112,7 +1087,6 @@ var EditorPicComponent = /** @class */ (function () {
         this.canvas.includeDefaultValues;
         this.objectTypeImage = 'image';
         this.canvasCount += 1;
-        console.log(this.canvasCount, 'this.canvasCount');
         var el = event;
         var scale = 1;
         fabric.Image.fromURL(el, function (image) {
@@ -1400,19 +1374,8 @@ var EditorPicComponent = /** @class */ (function () {
     // Block "Upload Image"
     EditorPicComponent.prototype.addImageOnCanvas = function (url) {
         var _this = this;
-        var numLeft = this.left;
-        var numTop = this.top;
-        function addDeleteBtn(x, y) {
-            $(".deleteBtn").remove();
-            var btnLeft = x - numLeft;
-            var btnTop = y + numTop;
-            var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px; cursor:pointer; width:25px; height:25px;"/>';
-            $(".canvas-container").append(deleteBtn);
-        }
-        this.canvas.on('selection:created', function (e) {
-            $(".deleteBtn").remove();
-            // console.log('selected');
-            addDeleteBtn(e.target.oCoords.mb.x, e.target.oCoords.mb.y);
+        $(document).on('click', '.deleteBtn', function (event) {
+            _this.removeSelected();
         });
         $(document).on('click', ".deleteBtn", function (event) {
             event.stopImmediatePropagation();
@@ -1725,23 +1688,11 @@ var EditorPicComponent = /** @class */ (function () {
                         _this.canvas.renderAll();
                     }),
                     _this.selectItemAfterAdded(image1);
-                _this.canvas.discardActiveObject().renderAll();
-                _this.addDeleteBtn(image1.oCoords.mb.x, image1.oCoords.mb.y);
+                setTimeout(function () {
+                    _this.canvas.discardActiveObject().renderAll();
+                }, 1500);
             });
         }
-    };
-    EditorPicComponent.prototype.readUrl = function (event) {
-        var _this = this;
-        if (event.target.files && event.target.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (readerEvent) {
-                _this.url = readerEvent.target.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-    };
-    EditorPicComponent.prototype.removeWhite = function (url) {
-        this.url = '';
     };
     // Block "Add figure"
     EditorPicComponent.prototype.addFigure = function (figure) {
@@ -1834,6 +1785,19 @@ var EditorPicComponent = /** @class */ (function () {
         this.selectItemAfterAdded(add);
     };
     /*Canvas*/
+    EditorPicComponent.prototype.readUrl = function (event) {
+        var _this = this;
+        if (event.target.files && event.target.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (readerEvent) {
+                _this.url = readerEvent.target.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    };
+    EditorPicComponent.prototype.removeWhite = function (url) {
+        this.url = '';
+    };
     EditorPicComponent.prototype.moveWithFormat = function (scaleKey, scaleBlock) {
         var _a;
         console.log(this.a, this.b, this.c, 'scale', scaleBlock, this.d, scaleKey);
@@ -1974,7 +1938,7 @@ var EditorPicComponent = /** @class */ (function () {
         // }
     };
     EditorPicComponent.prototype.selectItemAfterAdded = function (obj) {
-        this.getOpacity();
+        // this.getOpacity();
         this.canvas.discardActiveObject().renderAll();
         this.canvas.setActiveObject(obj);
     };
@@ -1982,6 +1946,7 @@ var EditorPicComponent = /** @class */ (function () {
         // if (!this.props.canvasImage) {
         this.canvas.backgroundColor = this.props.canvasFill;
         this.canvas.renderAll();
+        console.log(this.props.canvasFill);
         var inputProductColor = this.siteLayout.inputColor.nativeElement;
         inputProductColor.style.backgroundColor = this.props.canvasFill;
         inputProductColor.value = this.props.canvasFill;
@@ -2017,16 +1982,6 @@ var EditorPicComponent = /** @class */ (function () {
             // this.canvas.renderAll();
         }
     };
-    // productsTypeSise() {
-    //   if (this.siteLayout.allColors === true) {
-    //     this.siteLayout.productBrandSizes = this.siteLayout.arrColor[0];
-    //     this.canvas.backgroundColor = this.siteLayout.arrColor[0];
-    //   } else if (this.siteLayout.allColors === false) {
-    //     this.props.canvasFill = this.siteLayout.productBrandColors[0];
-    //     this.canvas.backgroundColor = this.siteLayout.productBrandColors[0];
-    //     // this.canvas.renderAll();
-    //   }
-    // }
     EditorPicComponent.prototype.setCanvasImage = function () {
         var image = this.props.canvasImage;
         this.canvas.setBackgroundImage(image, this.canvas.renderAll.bind(this.canvas), {
@@ -2064,71 +2019,26 @@ var EditorPicComponent = /** @class */ (function () {
         // // this.canvas.renderAll();
         // // this.canvas.setActiveObject(square);
     };
-    // sizeFormat() {
-    //   // const image = this.props.canvasImage;
-    //   // this.canvas.setBackgroundImage(image,
-    //   //   this.canvas.renderAll.bind(this.canvas), {)
-    //   const square = new fabric.Rect({
-    //     width: this.canvas.width - 2 * (this.canvas.width / 4.37 + this.canvas.width / 40),
-    //     height: this.canvas.height - 2 * (this.canvas.width / 4.37 + this.canvas.width / 40),
-    //     left: this.canvas.width / 40 + this.canvas.width / 4.37,
-    //     top: this.canvas.width / 40 + this.canvas.width / 4.37,
-    //     // borderColor: '#000',
-    //     // fill: '#000',
-    //     // Color: '#000',
-    //     hasControls: false,
-    //     lockMovementX: true,
-    //     lockMovementY: true,
-    //     // strokeWidth: 5,
-    //     strokeDashArray: [7],
-    //     stroke: '#474747',
-    //     strokeWidth: 2,
-    //     fill: 'rgba(0,0,0,0)',
-    //     selectable: false,
-    //     evented: false,
-    //   });
-    //   this.canvas.add(square);
-    //    console.log(this.canvas.width / 40 + this.canvas.width / 4.37);
-    // this.canvas.add(square);
-    // if (checkWidth = 640) {
-    //   this.canvas.add(square);
-    //   return
-    // }
-    // if (checkWidth > 640 && checkWidth < 1007) {
-    //   this.canvas.add(square);
-    //   return
-    // }
-    // if (checkWidth > 1007) {
-    //   this.canvas.add(square);
-    //   return
-    // }
-    // this.canvasCount -=1;
-    // this.canvas.renderAll();
-    // this.canvas.setActiveObject(square); 
-    // }
-    // setCanvasImage1() {
-    //   const image2 = this.props.canvasImage;
-    //   this.canvas1.setBackgroundImage(image2,
-    //     this.canvas1.renderAll.bind(this.canvas1), {
-    //     opacity: 1,
-    //     angle: 0,
-    //     left: 0,
-    //     top: 0,
-    //     originX: 'left',
-    //     originY: 'top',
-    //     crossOrigin: 'anonymous',
-    //     scaleX: this.canvas1.width / 360,
-    //     scaleY: this.canvas1.height / 460,
-    //     // width: this.siteLayout.canvasHtmlWidth,
-    //     // height: this.siteLayout.canvasHtmlHeight + 93
-    //     // crossOrigin: 'anonymous'
-    //     // this.canvas.setBackgroundImage(img);
-    //     // this.canvas.requestRenderAll();
-    //   });
-    //   console.log(this.canvas1.toSVG());
-    // }
     EditorPicComponent.prototype.randomId = function () {
         return Math.floor(Math.random() * 999999) + 1;
+    };
+    EditorPicComponent.prototype.addArrowUp = function (o, p) {
+        var arrow = '<img src="../assets/img/output-onlinepngtools-up.png" class="distance" style="position:absolute; top:' + p + 'px; left:' + (o - 5) + 'px; cursor:crosshair; width:10px; height:40px;"/>';
+        $(".canvas-container").append(arrow);
+        this.canvas.renderAll();
+    };
+    EditorPicComponent.prototype.addArrow = function (o, p) {
+        var arrow = '<img src="../assets/img/green-arrow-clipart-2.png" class="distance" style="position:absolute; top:' + o + 'px; left:' + p + 'px; cursor:crosshair; width:40px; height:10px;"/>';
+        $(".canvas-container").append(arrow);
+        this.canvas.renderAll();
+    };
+    EditorPicComponent.prototype.addDeleteBtn = function (x, y) {
+        $(".deleteBtn").remove();
+        var btnLeft = x - this.left;
+        var btnTop = y + this.top;
+        var deleteBtn = '<img src="../assets/img/remove-icon-png-15.png" class="deleteBtn" style="position:absolute;top:' + btnTop + 'px;left:' + btnLeft + 'px;cursor:pointer;width:25px;height:25px;"/>';
+        $(".canvas-container").append(deleteBtn);
+        this.canvas.renderAll();
     };
     /*------------------------Global actions for element------------------------*/
     EditorPicComponent.prototype.getActiveStyle = function (styleName, object) {
@@ -2265,7 +2175,6 @@ var EditorPicComponent = /** @class */ (function () {
     EditorPicComponent.prototype.getId = function () {
         this.props.id = this.canvas.getActiveObject().toObject().id;
         this.canvas.toSVG();
-        console.log(this.canvas);
     };
     EditorPicComponent.prototype.setId = function () {
         var val = this.props.id;
@@ -2278,7 +2187,6 @@ var EditorPicComponent = /** @class */ (function () {
     };
     EditorPicComponent.prototype.getDistance = function () {
         this.props.distance = this.getActiveStyle('distance', null) * 10;
-        console.log('getDistance');
     };
     EditorPicComponent.prototype.setDistance = function () {
         this.setActiveStyle('distance', parseInt(this.props.distance, 10) / 100, null);
@@ -2303,11 +2211,9 @@ var EditorPicComponent = /** @class */ (function () {
     };
     EditorPicComponent.prototype.getFontSize = function () {
         this.props.fontSize = this.getActiveStyle('fontSize', null);
-        console.log('getFontSize');
     };
     EditorPicComponent.prototype.setFontSize = function () {
         this.setActiveStyle('fontSize', parseInt(this.props.fontSize, 10), null);
-        console.log('setFontSize');
     };
     EditorPicComponent.prototype.getBold = function () {
         this.props.fontWeight = this.getActiveStyle('fontWeight', null);
@@ -2403,7 +2309,6 @@ var EditorPicComponent = /** @class */ (function () {
                 self_4.canvas.remove(object);
             });
         }
-        console.log(this.canvasCount, 'soso');
     };
     EditorPicComponent.prototype.bringToFront = function () {
         var activeObject = this.canvas.getActiveObject();
@@ -2455,18 +2360,6 @@ var EditorPicComponent = /** @class */ (function () {
             // $(".distance").remove();
         }
     };
-    // grayScale(url) {
-    //   console.log(url);
-    //   const activeObject = this.canvas.getActiveObject();
-    //   fabric.Image.fromURL(url, (image) => {
-    //     var filter =  fabric.Image.filters.Grayscale();
-    //     image.filters.push(filter);
-    //     // image.applyFilters();
-    //     // this.canvas.add(image);
-    //     image.applyFilters( this.canvas.renderAll.bind( this.canvas ) );
-    //     this.canvas.renderAll();
-    //   })
-    // }
     EditorPicComponent.prototype.rasterize = function () {
         var image = new Image(360, 460);
         // const w = window.open('');
@@ -2484,7 +2377,7 @@ var EditorPicComponent = /** @class */ (function () {
         var lastColor = this.props.canvasFill;
         // this.saveCanvasToJSON();
         this.canvas.backgroundImage = null;
-        // this.canvas.backgroundColor = null;
+        this.canvas.backgroundColor = null;
         this.canvas.renderAll();
         this.canvas.backgroundImage = null;
         // this.canvas.remove(...this.canvas.getObjects())
@@ -2519,10 +2412,6 @@ var EditorPicComponent = /** @class */ (function () {
         // this.canvas.backgroundColor = lastColor;
         var CANVAS = localStorage.getItem('Canvas');
     };
-    // cloneCanvas() {
-    //   this.canvas1.loadFromJSON(JSON.stringify(this.canvas),
-    //     () => this.canvas1.renderAll());
-    // }
     EditorPicComponent.prototype.rasterizeSVG = function () {
         var image = new Image(360, 460);
         // image.scaleToWidth(150);
@@ -2572,9 +2461,6 @@ var EditorPicComponent = /** @class */ (function () {
         //   console.log(this.canvas);
         // });
     };
-    EditorPicComponent.prototype.topp = function () {
-        // console.log(this.canvas._activeObject.top);
-    };
     EditorPicComponent.prototype.rasterizeJSON = function () {
         this.json = JSON.stringify(this.canvas, null, 2);
     };
@@ -2593,7 +2479,7 @@ var EditorPicComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'app-editor-pic',
             templateUrl: './editor-pic.component.html',
-            styleUrls: ['./editor-pic.component.css']
+            styleUrls: ['./editor-pic.component.scss']
         })
         // @HostListener('window:resize', ['$event'])
     ], EditorPicComponent);

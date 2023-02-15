@@ -15,13 +15,13 @@ export class CategoriesService {
 
   Themes(a) {
 
-    return this.http.get('http://localhost:5000/api/category?name='+ a).pipe(
+    return this.http.get('/api/category?name='+ a).pipe(
      
     )
   }
 
   fetch() {
-    return this.http.get('http://localhost:5000/api/category').pipe(
+    return this.http.get('/api/category').pipe(
 
     )
   }

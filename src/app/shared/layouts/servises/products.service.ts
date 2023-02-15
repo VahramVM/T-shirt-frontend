@@ -22,7 +22,7 @@ export class ProdutsService {
     }
 
     fetch() {
-      return this.http.get('http://localhost:5000/api/product').pipe(        
+      return this.http.get('/api/product').pipe(        
         )
      
     }

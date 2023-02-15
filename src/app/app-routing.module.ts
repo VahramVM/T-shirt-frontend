@@ -20,8 +20,8 @@ const routes: Routes = [
   },
   {
     path: '', component: MainPageComponent, canActivate: [AuthGuard], children: [
-      { path: 'main', component: SiteLayoutComponent},
-      { path: 'order', component: ShopingPageComponent},
+      { path: 'main', component: SiteLayoutComponent, canActivate: [AuthGuard]},
+      { path: 'order', component: ShopingPageComponent, canActivate: [AuthGuard]},
     ]
   }
 ];

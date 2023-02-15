@@ -33,11 +33,11 @@ export class AuthServices {
 
 
     register(user: User): Observable<User> {
-        return this.http.post<User>('http://localhost:5000/api/auth/register', user)
+        return this.http.post<User>('/api/auth/register', user)
     }
 
     login(user: User): Observable<{ token: string }> {
-        return this.http.post<{ token: string }>('http://localhost:5000/api/auth/login', user).
+        return this.http.post<{ token: string }>('/api/auth/login', user).
             pipe(
                 tap(
                     ({ token }) => {

@@ -13,10 +13,10 @@ var CategoriesService = /** @class */ (function () {
         this.http = http;
     }
     CategoriesService.prototype.Themes = function (a) {
-        return this.http.get('http://localhost:5000/api/category?name=' + a).pipe();
+        return this.http.get('/api/category?name=' + a).pipe();
     };
     CategoriesService.prototype.fetch = function () {
-        return this.http.get('http://localhost:5000/api/category').pipe();
+        return this.http.get('/api/category').pipe();
     };
     CategoriesService.prototype.create = function (name, image) {
         var fd = new FormData();

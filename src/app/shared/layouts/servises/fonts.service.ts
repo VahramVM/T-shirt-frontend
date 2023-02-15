@@ -14,7 +14,7 @@ export class FontService {
     constructor (private http: HttpClient) {}
 
     fetch() {
-      return this.http.get('http://localhost:5000/api/font').pipe(        
+      return this.http.get('/api/font').pipe(        
         )   
      
     }
